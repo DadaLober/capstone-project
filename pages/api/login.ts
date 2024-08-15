@@ -7,10 +7,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             console.log('Request body:', body);
             const response = await axios.post('http://localhost:8080/login', body);
-            console.log('Server response:', response.data);
             res.status(200).json(response.data);
         } catch (error) {
-            res.status(500).json({ message: 'Error submitting form' });
+            res.status(401).json({ message: 'Password or email is incorrect' });
         }
     } else {
         res.status(405).json({ message: 'Method not allowed' });
