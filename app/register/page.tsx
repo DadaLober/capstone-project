@@ -17,7 +17,6 @@ export default function Register() {
         handleSubmit,
         formState: { errors, isSubmitting },
         reset,
-        getValues
     } = useForm<TypeForm>();
 
     const onSubmit = async (data: FieldValues) => {
@@ -26,6 +25,7 @@ export default function Register() {
             const response = await axios.post('/api/register', data);
             const responseData = response.data;
             console.log('Server response:', responseData);
+            reset();
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -41,6 +41,9 @@ export default function Register() {
                 placeholder="First Name"
                 className="px-4 py-2 rounded"
             />
+            {errors.firstName && (
+                <p className="text-red-500">{`${errors.firstName.message}`}</p>
+            )}
             <input
                 {...register("lastName", {
                     required: "Last Name is required",
@@ -49,6 +52,9 @@ export default function Register() {
                 placeholder="Last Name"
                 className="px-4 py-2 rounded"
             />
+            {errors.lastName && (
+                <p className="text-red-500">{`${errors.lastName.message}`}</p>
+            )}
             <input
                 {...register("contactNumber", {
                     required: "Contact Number is required",
@@ -57,6 +63,9 @@ export default function Register() {
                 placeholder="Contact No."
                 className="px-4 py-2 rounded"
             />
+            {errors.contactNumber && (
+                <p className="text-red-500">{`${errors.contactNumber.message}`}</p>
+            )}
             <input
                 {...register("email", {
                     required: "Email is required",
@@ -65,14 +74,24 @@ export default function Register() {
                 placeholder="Email"
                 className="px-4 py-2 rounded"
             />
+            {errors.email && (
+                <p className="text-red-500">{`${errors.email.message}`}</p>
+            )}
             <input
                 {...register("password", {
                     required: "Password is required",
+                    minLength: {
+                        value: 8,
+                        message: "Password must be at least 8 characters",
+                    },
                 })}
                 type="password"
                 placeholder="Password"
                 className="px-4 py-2 rounded"
             />
+            {errors.password && (
+                <p className="text-red-500">{`${errors.password.message}`}</p>
+            )}
             <button
                 disabled={isSubmitting}
                 type="submit"
