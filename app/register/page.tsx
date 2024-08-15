@@ -35,7 +35,7 @@ export default function Register() {
     };
 
     return (
-        <div className='w-full min-h-screen bg-slate-100 flex justify-center items-center p-4'>
+        <div className='svg-background w-full min-h-screen flex flex-col justify-center items-center p-4'>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
                 <div className='flex justify-center mb-4'>
                     <img src="/logo.png" alt="Logo" className='w-20 h-20' />
@@ -93,7 +93,7 @@ export default function Register() {
                                 message: "Password must be at least 8 characters",
                             },
                         })}
-                        type={showPassword ?   "text" : "password"}
+                        type={showPassword ?"text" : "password"}
                         placeholder="Enter password"
 
                         className="px-4 py-2 rounded border w-full focus:outline-none focus:ring-2 focus:ring-green-500"
