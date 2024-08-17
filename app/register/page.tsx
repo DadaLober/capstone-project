@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useForm, type FieldValues } from "react-hook-form";
+import Link from 'next/link';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import './register.css';
+import '@/app/register/register.css';
 
 interface TypeForm {
     firstName: string;
@@ -14,7 +15,7 @@ interface TypeForm {
     password: string;
 }
 
-export default function Register() {
+export default function RegisterPage() {
     const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<TypeForm>();
     const [showPassword, setShowPassword] = useState(false);
 
@@ -93,11 +94,11 @@ export default function Register() {
                                 message: "Password must be at least 8 characters",
                             },
                         })}
-                        type={showPassword ?"text" : "password"}
+                        type={showPassword ? "text" : "password"}
                         placeholder="Enter password"
 
                         className="px-4 py-2 rounded border w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />  
+                    />
                     <span
                         onClick={togglePasswordVisibility}
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
@@ -117,7 +118,7 @@ export default function Register() {
                 </button>
 
                 <div className='mt-4 text-center'>
-                    <p className="text-sm">Already have an account? <a href='' className='text-blue-500 hover:underline'>Login</a></p>
+                    <p className="text-sm">Already have an account? <Link href='/login' className='text-blue-500 hover:underline'>Login</Link></p>
                 </div>
             </form>
         </div>

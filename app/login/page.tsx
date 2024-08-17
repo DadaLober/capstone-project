@@ -2,7 +2,9 @@
 import React from 'react';
 import axios from 'axios';
 import { useForm } from "react-hook-form";
-import "./login.css";
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import "@/app/login/login.css";
 
 interface TypeForm {
     email: string;
@@ -12,17 +14,19 @@ interface TypeForm {
 export default function Login() {
 
     const { register, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<TypeForm>();
+    const router = useRouter();
 
     const onSubmit = async (data: TypeForm) => {
         try {
             const response = await axios.post('/api/login', data);
             const responseData = response.data;
             console.log('Server response:', responseData);
-            // Handle successful login (e.g., redirect) TODO
+            router.push('/dashboard');
         } catch (error: any) {
             if (error.response && error.response.status === 401) {
                 setError('password', { message: 'Invalid email or password' });
             } else {
+                setError('password', { message: 'Error submitting form' });
                 console.error('Error submitting form:', error);
             }
         }
@@ -43,7 +47,7 @@ export default function Login() {
                     className="px-4 py-2 my-4 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
                 {errors.email && <div className="text-red-500">{errors.email.message}</div>}
-                <input 
+                <input
                     {...register("password", {
                         required: "Password is required",
                         minLength: { value: 8, message: "Password must be at least 8 characters" },
@@ -68,7 +72,7 @@ export default function Login() {
                 </button>
             </form>
             <div className='text-center my-8 border border-slate-100 w-full max-w-md bg-transparent p-6'>
-                <p className='text-slate-100'>New here? <span className='text-purple-700'>Create an Account</span></p>
+                <p className='text-slate-100'>New here? <Link href="/register" className='text-blue-500 hover:underline'>Create an Account</Link></p>
             </div>
 
             <div className='my-8'>
@@ -76,6 +80,6 @@ export default function Login() {
             </div>
         </div>
     );
-    
-    
+
+
 }
