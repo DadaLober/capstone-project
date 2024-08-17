@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useForm, type FieldValues } from "react-hook-form";
@@ -36,11 +35,14 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className='svg-background w-full min-h-screen flex flex-col justify-center items-center p-4'>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
-                <div className='flex justify-center mb-4'>
+        <div className='svg-background relative w-full min-h-screen flex flex-col justify-center items-center p-4'>
+            <div className='absolute top-0  '>
+                <img src="./map2.svg" alt="" className='w-32 h-32 '/>
+            </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 w-full max-w-md bg-white p-10 rounded-lg border shadow-lg">
+                {/* <div className='flex justify-center mb-4'>
                     <img src="/logo.png" alt="Logo" className='w-20 h-20' />
-                </div>
+                </div> */}
                 <input
                     {...register("firstName", {
                         required: "First Name is required",
