@@ -35,33 +35,38 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className='svg-background relative w-full min-h-screen flex flex-col justify-center items-center p-4'>
+        <div className='svg-register-background relative w-full min-h-screen flex flex-col justify-center items-center p-4'>
             <div className='absolute top-0  '>
-                <img src="./map2.svg" alt="" className='w-32 h-32 '/>
+                <img src="./map2.svg" alt="" className='w-32 h-32 ' />
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 w-full max-w-md bg-white p-10 rounded-lg border shadow-lg">
                 {/* <div className='flex justify-center mb-4'>
                     <img src="/logo.png" alt="Logo" className='w-20 h-20' />
                 </div> */}
-                <input
-                    {...register("firstName", {
-                        required: "First Name is required",
-                    })}
-                    type="text"
-                    placeholder="Enter first name"
-                    className="px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                {errors.firstName && (
-                    <p className="text-red-500 text-sm">{errors.firstName.message}</p>
-                )}
-                <input
-                    {...register("lastName", {
-                        required: "Last Name is required",
-                    })}
-                    type="text"
-                    placeholder="Enter last name"
-                    className="px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
+                <div className="flex gap-x-4">
+                    <input
+                        {...register("firstName", {
+                            required: "First Name is required",
+                        })}
+                        type="text"
+                        placeholder="First Name"
+                        className="px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                    {errors.firstName && (
+                        <p className="text-red-500 text-sm">{errors.firstName.message}</p>
+                    )}
+                    <input
+                        {...register("lastName", {
+                            required: "Last Name is required",
+                        })}
+                        type="text"
+                        placeholder="Last Name"
+                        className="px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                    {errors.lastName && (
+                        <p className="text-red-500 text-sm">{errors.lastName.message}</p>
+                    )}
+                </div>
                 {errors.lastName && (
                     <p className="text-red-500 text-sm">{errors.lastName.message}</p>
                 )}
@@ -70,7 +75,7 @@ export default function RegisterPage() {
                         required: "Contact Number is required",
                     })}
                     type="text"
-                    placeholder="Enter contact number"
+                    placeholder="Contact Number"
                     className="px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
                 {errors.contactNumber && (
@@ -81,7 +86,7 @@ export default function RegisterPage() {
                         required: "Email is required",
                     })}
                     type="email"
-                    placeholder="Enter email"
+                    placeholder="Email"
                     className="px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
                 {errors.email && (
@@ -97,7 +102,7 @@ export default function RegisterPage() {
                             },
                         })}
                         type={showPassword ? "text" : "password"}
-                        placeholder="Enter password"
+                        placeholder="Password"
 
                         className="px-4 py-2 rounded border w-full focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
@@ -105,7 +110,7 @@ export default function RegisterPage() {
                         onClick={togglePasswordVisibility}
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
                     >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        {showPassword ? <FaEye /> : <FaEyeSlash />}
                     </span>
                 </div>
                 {errors.password && (
@@ -114,7 +119,7 @@ export default function RegisterPage() {
                 <button
                     disabled={isSubmitting}
                     type="submit"
-                    className="bg-green-700 text-white py-2 rounded hover:bg-green-600 disabled:bg-gray-400"
+                    className="bg-green-500 text-white py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
                 >
                     {isSubmitting ? 'Submitting...' : 'Register'}
                 </button>

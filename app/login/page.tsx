@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import "@/app/login/login.css";
-// import {FaEyeSlash,FaEye} from "react-icons";
+import { FaEyeSlash, FaEye } from 'react-icons/fa';
 
 interface TypeForm {
     email: string;
@@ -40,8 +40,8 @@ export default function Login() {
     };
 
     return (
-        <div className='svg-background w-full min-h-screen flex flex-col justify-center items-center p-4'>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 w-full max-w-md bg-slate-100 p-6 rounded-lg shadow-lg">
+        <div className='svg-login-background w-full min-h-screen flex flex-col justify-center items-center p-4'>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 w-full max-w-md bg-white p-6 rounded-lg shadow-lg border">
                 <div className='flex justify-center mb-4'>
                     <img src="/login.png" alt="Logo" className='w-16 h-16' />
                 </div>
@@ -63,16 +63,16 @@ export default function Login() {
                                 message: "Password must be at least 8 characters",
                             },
                         })}
-                        type={showPassword ?"text" : "password"}
-                        placeholder="Enter password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Password"
 
                         className="px-4 py-2 rounded border w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />  
+                    />
                     <span
                         onClick={togglePasswordVisibility}
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
                     >
-                        {/* {showPassword ? <FaEyeSlash /> : <FaEye />} */}
+                        {showPassword ? <FaEye /> : <FaEyeSlash />}
                     </span>
                 </div>
                 {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
@@ -90,12 +90,8 @@ export default function Login() {
                     )}
                 </button>
             </form>
-            <div className='text-center my-8 border border-slate-100 w-full max-w-md bg-transparent p-6'>
-                <p className='text-slate-100'>New here? <Link href="/register" className='text-blue-500 hover:underline'>Create an Account</Link></p>
-            </div>
-
-            <div className='my-8'>
-                <p className='text-slate-100'>Terms and Condition</p>
+            <div className='text-center mt-4'>
+                <p className='text-slate-100'>New here? <Link href="/register" className='text-blue-600 hover:underline'>Create an Account</Link></p>
             </div>
         </div>
     );
