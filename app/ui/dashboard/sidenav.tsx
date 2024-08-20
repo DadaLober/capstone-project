@@ -10,7 +10,7 @@ export default function SideNav() {
                 <NavLinks />
                 <div className="h-auto w-full grow rounded-md bg-gray-50 block"></div>
                 <form>
-                    <button className="flex h-[48px] w-full grow items-center gap-2 rounded-md bg-gray-50 text-sm font-medium hover:bg-green-100 hover:text-green-600 flex-none justify-start p-2 px-3">
+                    <button className="flex w-full grow items-center gap-2 rounded-md bg-gray-50 text-sm font-medium hover:bg-green-100 hover:text-green-600 flex-none justify-start p-2 px-3">
                         <div>Sign Out</div>
                     </button>
                 </form>

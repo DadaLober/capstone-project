@@ -13,17 +13,28 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export type Payment = {
+export type Users = {
     id: string
-    amount: number
-    status: "pending" | "processing" | "success" | "failed"
+    firstName: string
+    lastName: string
+    contactNumber: string
+    roles: "agent" | "broker"
+    status: "pending" | "active"
     email: string
 }
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Users>[] = [
     {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: "lastName",
+        header: "Last Name",
+    },
+    {
+        accessorKey: "firstName",
+        header: "First Name",
+    },
+    {
+        accessorKey: "contactNumber",
+        header: "Contact No.",
     },
     {
         accessorKey: "email",
@@ -40,14 +51,14 @@ export const columns: ColumnDef<Payment>[] = [
         },
     },
     {
-        accessorKey: "amount",
-        header: "Amount",
+        accessorKey: "status",
+        header: "Status",
     },
     {
         header: () => <div className="text-right">Actions</div>,
         id: "actions",
         cell: ({ row }) => {
-            const payment = row.original
+            const users = row.original
 
             return (<div className="text-right">
                 <DropdownMenu>
@@ -60,13 +71,13 @@ export const columns: ColumnDef<Payment>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(payment.id)}
+                            onClick={() => navigator.clipboard.writeText(users.id)}
                         >
-                            Copy payment ID
+                            Copy ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
-                        <DropdownMenuItem>View payment details</DropdownMenuItem>
+                        <DropdownMenuItem>...</DropdownMenuItem>
+                        <DropdownMenuItem>...</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
