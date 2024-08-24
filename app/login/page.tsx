@@ -8,10 +8,10 @@ import { useRouter } from 'next/navigation';
 import "@/app/login/login.css";
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
 
-interface TypeForm {
+type TypeForm = {
     email: string;
     password: string;
-}
+};
 
 export default function Login() {
 
@@ -24,16 +24,20 @@ export default function Login() {
             const response = await axios.post('/api/login', data);
             const responseData = response.data;
             console.log('Server response:', responseData);
-            router.push('/dashboard');
-        } catch (error: any) {
-            if (error.response && error.response.status === 401) {
+
+            if (response.status === 200) {
+                router.push('/dashboard');
+            }
+        } catch (errors: any) {
+            if (errors.response.status === 400 || errors.response.status === 401) {
                 setError('password', { message: 'Invalid email or password' });
-            } else {
-                setError('password', { message: 'Error submitting form' });
-                console.error('Error submitting form:', error);
+            }
+            else {
+                console.error('Error submitting form:', errors);
             }
         }
     };
+
 
     const togglePasswordVisibility = () => {
         setShowPassword((prevState) => !prevState);

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '@/app/register/register.css';
 
-interface TypeForm {
+type TypeForm = {
     firstName: string;
     lastName: string;
     contactNumber: string;
