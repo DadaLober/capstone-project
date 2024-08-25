@@ -1,153 +1,71 @@
-import { Users, columns } from "./columns"
-import { DataTable } from "./data-table"
+'use client';
 
-async function getData(): Promise<Users[]> {
-    // Fetch data TODO
-    return [
-        {
-            id: "728ed52f",
-            firstName: "dog",
-            lastName: "arf",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "zzz@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "John Miller",
-            lastName: "Lorenzo",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "miller@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-        {
-            id: "728ed52f",
-            firstName: "meow",
-            lastName: "cat",
-            contactNumber: "09123456789",
-            roles: "agent",
-            status: "pending",
-            email: "jerald@example.com",
-        },
-    ]
+import axios from 'axios';
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
+import { useState, useEffect } from 'react';
+
+interface UserData {
+    id: number;
+    firstName: string;
+    lastName: string;
+    contactNumber: string;
+    email: string;
+    roles: string[];
+    status: string;
 }
 
-export default async function UserAccountsPage() {
-    const data = await getData()
+type UsersType = UserData[];
+
+const API_ENDPOINT = '/api/users';
+
+async function getData(): Promise<UsersType> {
+    try {
+        const response = await axios.get<UsersType>(API_ENDPOINT);
+
+        if (response.status < 200 || response.status >= 300) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.data;
+    } catch (error: any) {
+        console.error('Error fetching user data:', error);
+        console.error('Response Data:', error.response?.data);
+        console.error('Full URL:', API_ENDPOINT);
+        return [] as UsersType;
+    }
+}
+
+export default function UserAccountsPage() {
+    const [users, setUsers] = useState<UsersType>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const userData = await getData();
+                setUsers(userData);
+            } catch (error: any) {
+                console.error('Error fetching user data:', error);
+                console.error('Response Data:', error.response?.data);
+                console.error('Full URL:', API_ENDPOINT);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    if (isLoading) {
+        return <div>Loading... (fallback skeleton here)</div>;
+    }
+
+    if (users.length === 0) {
+        return <div>Token is expired</div>;
+    }
 
     return (
         <div className="container mx-auto py-10">
-            <DataTable columns={columns} data={data} />
+            <DataTable columns={columns} data={users} />
         </div>
-    )
+    );
 }

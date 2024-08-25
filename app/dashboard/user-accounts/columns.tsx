@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export type Users = {
-    id: string
+    id: number
     firstName: string
     lastName: string
     contactNumber: string
-    roles: "agent" | "broker"
-    status: "pending" | "active"
+    roles: string | string[]
+    status: string
     email: string
 }
 
@@ -71,7 +71,7 @@ export const columns: ColumnDef<Users>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(users.id)}
+                            onClick={() => navigator.clipboard.writeText(`${users.id}`)}
                         >
                             Copy ID
                         </DropdownMenuItem>

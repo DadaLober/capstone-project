@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // }
 
                 const response = await axiosInstance.get('http://localhost:8080/api/v1/users');
-
+                console.log(response.data);
                 res.status(200).json(response.data);
             } else {
                 res.status(401).json({ message: 'Invalid cookie format' });
