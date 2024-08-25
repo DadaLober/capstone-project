@@ -22,15 +22,13 @@ const API_ENDPOINT = '/api/users';
 async function getData(): Promise<UsersType> {
     try {
         const response = await axios.get<UsersType>(API_ENDPOINT);
-
-        if (response.status < 200 || response.status >= 300) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
         return response.data;
     } catch (error: any) {
-        console.error('Error fetching user data:', error);
-        console.error('Response Data:', error.response?.data);
-        console.error('Full URL:', API_ENDPOINT);
+        if (error.response?.status) {
+            console.error('status:', error.response?.status);
+            console.error('data:', error.response?.data);
+            return [] as UsersType;
+        }
         return [] as UsersType;
     }
 }
@@ -60,9 +58,8 @@ export default function UserAccountsPage() {
     }
 
     if (users.length === 0) {
-        return <div>Token is expired</div>;
+        return <div>Check console</div>;
     }
-
     return (
         <div className="container mx-auto py-10">
             <DataTable columns={columns} data={users} />
