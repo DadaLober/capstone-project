@@ -1,4 +1,4 @@
-// components/MapComponent.tsx
+
 import React, { useState, useEffect , useCallback} from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -68,7 +68,7 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom }) => {
 
   return (
     <div className="relative border rounded w-full h-full flex">
-      {/* Sidebar with form component */}
+      {/*Side bar*/}
       <div className="w-1/4">
         <FormComp
           selectedPosition={selectedPosition}
