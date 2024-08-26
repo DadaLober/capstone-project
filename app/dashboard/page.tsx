@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import MapComponent from './map/MapComponent';
+import MapComponent from './(components)/MapComponent';
 
 const Page = () => {
     return (

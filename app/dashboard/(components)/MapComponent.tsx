@@ -1,9 +1,9 @@
 // components/MapComponent.tsx
-import React, { useState, useEffect , useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import FormComp from '../form/FormComp';
+import FormComp from './FormComp';
 
 interface MapProps {
   center: [number, number];
@@ -63,8 +63,8 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom }) => {
     );
     setSelectedPosition(newPosition);
   };
-  
-  
+
+
 
   return (
     <div className="relative border rounded w-full h-full flex">
@@ -87,7 +87,7 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom }) => {
           <LocationMarker addMarker={addMarker} />
           {marker && (
             <Marker
-            position={{ lat: marker.lat, lng: marker.lng }}
+              position={{ lat: marker.lat, lng: marker.lng }}
               icon={customIcon}
               draggable={true}
               eventHandlers={{
