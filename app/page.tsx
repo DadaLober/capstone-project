@@ -1,7 +1,12 @@
+"use client";
+
+import ParticleBackground from "@/components/particles";
+
 export default function RootPage() {
   return (
-    <div>
-      <h1>PortMan Root Page</h1>
+    <div style={{ position: 'relative', width: '100vw', height: '100vh' }} className="h-52 w-52 my-auto mx-auto text-white">
+      Root Page
+      <ParticleBackground />
     </div>
   );
 }
