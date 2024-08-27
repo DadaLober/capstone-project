@@ -57,9 +57,9 @@ export default function UserAccountsPage() {
         return <div>Loading... (fallback skeleton here)</div>;
     }
 
-    if (users.length === 0) {
-        return <div>Check console</div>;
-    }
+    // if (users.length === 0) {
+    //     return <div>Check console</div>;
+    // }
     return (
         <div className="container mx-auto py-10">
             <DataTable columns={columns} data={users} />

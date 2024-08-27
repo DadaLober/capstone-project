@@ -40,6 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 switch (error.response?.status) {
                     case 403:
                         res.status(403).json({ message: 'User not authorized' });
+                        console.error(error.response?.data);
                         break;
                     default:
                         res.status(500).json({ message: 'Internal Server Error' });

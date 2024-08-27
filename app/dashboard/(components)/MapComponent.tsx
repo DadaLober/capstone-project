@@ -66,18 +66,17 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom }) => {
 
 
   return (
-    <div className="relative border rounded w-full h-full flex">
+    <div className="relative rounded w-full h-full flex gap-5">
       {/*Side bar*/}
-      <div className="w-1/4">
+      <div className="w-1/4 ">
         <FormComp
           selectedPosition={selectedPosition}
           Address={locationName}
           setAddress={setLocationName}
         />
       </div>
-
       {/* Map container */}
-      <div className="w-3/4 h-full">
+      <div className="w-full h-full ">
         <MapContainer style={{ height: '100%', width: '100%' }} center={center} zoom={zoom} scrollWheelZoom={true}>
           <TileLayer
             attribution=""
@@ -101,6 +100,15 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom }) => {
             </Marker>
           )}
         </MapContainer>
+      </div>
+
+      {/*Side bar*/}
+      <div className="w-1/4 ">
+        <FormComp
+          selectedPosition={selectedPosition}
+          Address={locationName}
+          setAddress={setLocationName}
+        />
       </div>
     </div>
   );

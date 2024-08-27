@@ -12,17 +12,21 @@ import { useDropzone } from 'react-dropzone';
     const FormComp: React.FC<MarkerFormProps> = ({ selectedPosition, Address, setAddress }) => {
     const [additionalFields, setAdditionalFields] = useState<number[]>([0]);
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-
+    
+    // Function for adding field
     const addField = () => {
         setAdditionalFields((prevFields) => [...prevFields, prevFields.length]);
     };
+    // Function for removing field
     const removeField = (indexToRemove: number) => {
         setAdditionalFields((prevFields) => prevFields.filter((_, index) => index !== indexToRemove));
     };
+    // Function for removing file
     const removeFile = (indexToRemove: number, event: React.MouseEvent) => {
         event.stopPropagation(); // Para d clickable buong drop zone
         setUploadedFiles((prevFiles) => prevFiles.filter((_, index) => index !== indexToRemove));
     };
+    // Function in using dropZone
     const onDrop = (acceptedFiles: File[]) => {
         setUploadedFiles([...uploadedFiles, ...acceptedFiles]);
     };
@@ -34,7 +38,7 @@ import { useDropzone } from 'react-dropzone';
 
     return (
         <div className="w-full bg-white p-4 shadow-md">
-        <h3 className="font-bold mb-2">Selected Area</h3>
+        <h3 className="font-bold mb-2">Selected Position</h3>
         <input
             type="text"
             className="w-full mb-2 p-2 border rounded"
@@ -69,9 +73,8 @@ import { useDropzone } from 'react-dropzone';
         <div
             {...getRootProps()}
             className={`w-full p-6 border-2 border-dashed rounded-lg mb-4 text-center cursor-pointer ${
-            isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
-            }`}
-        >
+            isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'}`}>
+                
             <input {...getInputProps()} />
             {uploadedFiles.length === 0 ? (
             <p>Drag & drop some files here, or click to select files</p>
@@ -99,26 +102,25 @@ import { useDropzone } from 'react-dropzone';
 
         {additionalFields.map((_, index) => (
             <div key={index} className="mb-2 flex  items-center">
-            <div className="flex-grow ">
-                <label htmlFor={`field-${index}`} className="block mb-1">
-                Other Attributes: {index + 1}
-                </label>
-                <div className=' flex justify-center items-center '>
-                    <input
-                    type="text"
-                    id={`field-${index}`}
-                    className="w-full p-2 border rounded"
-                    />
-                    <button
-                        type="button"
-                        onClick={() => removeField(index)}
-                        className="ml-2 text-red-500  hover:text-red-700"
-                    >
-                        <FiX size={20} />   
-                    </button>
+                <div className="flex-grow ">
+                    <label htmlFor={`field-${index}`} className="block mb-1">
+                    Other Attributes: {index + 1}
+                    </label>
+                    <div className=' flex justify-center items-center '>
+                        <input
+                        type="text"
+                        id={`field-${index}`}
+                        className="w-full p-2 border rounded"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => removeField(index)}
+                            className="ml-2 text-red-500  hover:text-red-700"
+                        >
+                            <FiX size={20} />   
+                        </button>
+                    </div>
                 </div>
-            </div>
-            
             </div>
         ))}
         

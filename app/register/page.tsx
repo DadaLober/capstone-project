@@ -46,7 +46,7 @@ export default function RegisterPage() {
                 <div className="flex gap-x-4">
                     <input
                         {...register("firstName", {
-                            required: "First Name is required",
+                            required: "First Name required",
                         })}
                         type="text"
                         placeholder="First Name"
@@ -57,7 +57,7 @@ export default function RegisterPage() {
                     )}
                     <input
                         {...register("lastName", {
-                            required: "Last Name is required",
+                            required: "Last Name required",
                         })}
                         type="text"
                         placeholder="Last Name"
