@@ -68,13 +68,13 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom }) => {
   return (
     <div className="relative rounded w-full h-full flex gap-5">
       {/*Side bar*/}
-      <div className="w-1/4 ">
+      {/* <div className="w-1/4 ">
         <FormComp
           selectedPosition={selectedPosition}
           Address={locationName}
           setAddress={setLocationName}
         />
-      </div>
+      </div> */}
       {/* Map container */}
       <div className="w-full h-full ">
         <MapContainer style={{ height: '100%', width: '100%' }} center={center} zoom={zoom} scrollWheelZoom={true}>

@@ -5,10 +5,10 @@ export default function middleware(req: NextRequest) {
     console.log('Middleware called');
 
     const tokenCookie = req.cookies.get('token');
-    console.log('Token Cookie:', tokenCookie);
+    // console.log('Token Cookie:', tokenCookie);
 
     const refreshTokenCookie = req.cookies.get('refreshToken');
-    console.log('Refresh Token Cookie:', refreshTokenCookie);
+    // console.log('Refresh Token Cookie:', refreshTokenCookie);
 
     if (!tokenCookie || !refreshTokenCookie) {
         console.log('User is not authenticated. Redirecting to login page.');
