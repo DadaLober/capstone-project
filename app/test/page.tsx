@@ -9,7 +9,7 @@ export default function TestPage() {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('api/users');
+            const response = await axios.get('api/getProperties');
             setData(response.data);
         } catch (error) {
             if (axios.isAxiosError(error)) {
