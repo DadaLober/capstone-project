@@ -3,26 +3,24 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import FormComp from './FormComp';
+import PropertyCard from './PropertyCard';
+import { propertyData, PropertyData } from './PropertyData';
 
 interface MapProps {
   center: [number, number];
   zoom: number;
 }
-
 interface MarkerPosition {
   lat: number;
   lng: number;
   name: string;
 }
-
 const customIcon = new L.Icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
 });
-
-
 const LocationMarker: React.FC<{
   addMarker: (position: { lat: number; lng: number }) => void;
 }> = ({ addMarker }) => {
@@ -63,20 +61,15 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom }) => {
     setSelectedPosition(newPosition);
   };
 
-
-
   return (
-    <div className="relative rounded w-full h-full flex gap-5">
-      {/*Side bar*/}
-      {/* <div className="w-1/4 ">
-        <FormComp
-          selectedPosition={selectedPosition}
-          Address={locationName}
-          setAddress={setLocationName}
-        />
+    <div className="relative rounded w-full h-full flex  gap-5">
+      {/* <div className='w-auto'>
+        <div>
+          <PropertyCard data= {propertyData}/>
+        </div>
       </div> */}
       {/* Map container */}
-      <div className="w-full h-full ">
+      <div className="w-full h-full -z-0 ">
         <MapContainer style={{ height: '100%', width: '100%' }} center={center} zoom={zoom} scrollWheelZoom={true}>
           <TileLayer
             attribution=""
@@ -103,10 +96,10 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom }) => {
       </div>
 
       {/*Side bar*/}
-      <div className="w-1/4 ">
+      <div className="">
         <FormComp
           selectedPosition={selectedPosition}
-          Address={locationName}
+          address={locationName}
           setAddress={setLocationName}
         />
       </div>
