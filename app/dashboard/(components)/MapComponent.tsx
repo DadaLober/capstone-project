@@ -5,6 +5,7 @@ import L from 'leaflet';
 import FormComp from './FormComp';
 import PropertyCard from './PropertyCard';
 import { propertyData, PropertyData } from './PropertyData';
+import Header from './Header';
 
 interface MapProps {
   center: [number, number];
@@ -62,47 +63,58 @@ const MapComponent: React.FC<MapProps> = ({ center, zoom }) => {
   };
 
   return (
-    <div className="relative rounded w-full h-full flex  gap-5">
-      {/* <div className='w-auto'>
-        <div>
-          <PropertyCard data= {propertyData}/>
+    <div className='w-full h-full'>
+    <div className="relative z-10">
+      <div className='absolute top-0 left-0'>
+          <FormComp
+            selectedPosition={selectedPosition}
+            address={locationName}
+            setAddress={setLocationName}
+          /> 
+      </div>
+    </div>
+    <div className='w-full'>
+      <Header/>
+    </div>
+      <div className="relative  rounded w-full h-full flex  gap-5">
+        
+        <div className='w-auto'>
+          <div>
+            <PropertyCard data= {propertyData}/>
+          </div>
         </div>
-      </div> */}
-      {/* Map container */}
-      <div className="w-full h-full -z-0 ">
-        <MapContainer style={{ height: '100%', width: '100%' }} center={center} zoom={zoom} scrollWheelZoom={true}>
-          <TileLayer
-            attribution=""
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <LocationMarker addMarker={addMarker} />
-          {marker && (
-            <Marker
-              position={{ lat: marker.lat, lng: marker.lng }}
-              icon={customIcon}
-              draggable={true}
-              eventHandlers={{
-                dragend: updateMarkerPosition,
-              }}
-            >
-              <Popup>
-                <strong>{marker.name}</strong> <br />
-                Latitude: {marker.lat.toFixed(5)} <br />
-                Longitude: {marker.lng.toFixed(5)}
-              </Popup>
-            </Marker>
-          )}
-        </MapContainer>
-      </div>
+        {/*Side bar*/}
+        
+        {/* Map container */}
+        <div className="w-full h-full z-0 shadow-lg border ">
+          <MapContainer style={{ height: '100%', width: '100%' }} center={center} zoom={zoom} scrollWheelZoom={true}>
+            <TileLayer
+              attribution=""
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <LocationMarker addMarker={addMarker} />
+            {marker && (
+              <Marker
+                position={{ lat: marker.lat, lng: marker.lng }}
+                icon={customIcon}
+                draggable={true}
+                eventHandlers={{
+                  dragend: updateMarkerPosition,
+                }}
+              >
+                <Popup>
+                  <strong>{marker.name}</strong> <br />
+                  Latitude: {marker.lat.toFixed(5)} <br />
+                  Longitude: {marker.lng.toFixed(5)}
+                </Popup>
+              </Marker>
+            )}
+          </MapContainer>
+        </div>
 
-      {/*Side bar*/}
-      <div className="">
-        <FormComp
-          selectedPosition={selectedPosition}
-          address={locationName}
-          setAddress={setLocationName}
-        />
+        
       </div>
+      
     </div>
   );
 };

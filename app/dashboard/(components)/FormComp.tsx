@@ -4,6 +4,7 @@ import { FiX } from 'react-icons/fi';
 import { useDropzone } from 'react-dropzone';
 import { FiPlus } from 'react-icons/fi';
 
+
 interface FormData {
     address: string;
     latitude: number;
@@ -73,7 +74,7 @@ const FormComp: React.FC<MarkerFormProps> = ({ selectedPosition, address, setAdd
     return (
         
         <div className=' relative'>
-            <Button onClick={toggleFormVisibility} className="bg-green-400 absolute right-10 top-5  hover:bg-green-700">
+            <Button onClick={toggleFormVisibility} className="bg-green-400 absolute right-0 top-5  hover:bg-green-700">
                 <FiPlus size={24}/>
             </Button>
         {isFormVisible && (

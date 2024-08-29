@@ -4,7 +4,7 @@ import MapComponent from './(components)/MapWrapper';
 
 const Page = () => {
     return (
-        <div className="container mx-auto py-10">
+        <div className="container py-5">
             <MapComponent center={[15.448316636431805, 120.9408208391264]} zoom={17} />
         </div>
     );
