@@ -1,7 +1,6 @@
 import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { extractCookies, updateCookie } from '@/pages/api/utils';
-import { getRefreshToken, checkRefreshTokenExpiration } from '@/pages/api/utils';
+import { extractCookies } from '@/pages/api/utils';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
@@ -15,20 +14,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         'Authorization': `Bearer ${token}`,
                     },
                 });
-
-                // const isTokenExpired = await checkRefreshTokenExpiration(axiosInstance);
-
-                // if (isTokenExpired) {
-                //     // If token is expired, try to refresh it
-                //     const refreshedResponse = await getRefreshToken(axiosInstance, refreshToken);
-
-                //     if (refreshedResponse) {
-                //         // Update token and refreshToken in cookie
-                //         updateCookie(req, res, refreshedResponse.token, refreshedResponse.refreshToken);
-                //     } else {
-                //         throw new Error('Failed to refresh token');
-                //     }
-                // }
                 const response = await axiosInstance.get('http://localhost:8080/api/v1/users');
                 console.log("Server response:", response.data);
                 res.status(200).json(response.data);

@@ -26,31 +26,3 @@ export function extractCookies(req: NextApiRequest): { token?: string; refreshTo
         refreshToken: refreshTokenCookie ? refreshTokenCookie.split('=')[1] : undefined,
     };
 }
-
-export async function getRefreshToken(axiosInstance: any, refreshToken: string) {
-    try {
-        const response = await axiosInstance.post('http//localhost:8080/refresh', {
-            refreshToken,
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error refreshing token:', error);
-        throw new Error('Failed to refresh token');
-    }
-}
-
-export async function checkRefreshTokenExpiration(axiosInstance: any) {
-    try {
-        const response = await axiosInstance.get('http//localhost:8080/refresh');
-        return response.data.isExpired;
-    } catch (error) {
-        console.error('Error checking token expiration:', error);
-        return true;
-    }
-}
-
-export function updateCookie(req: NextApiRequest, res: NextApiResponse, newToken: string, newRefreshToken: string) {
-    const cookie = `token=${newToken}; Path=/; HttpOnly; Max-Age=900;`;
-    const refreshCookie = `refreshToken=${newRefreshToken}; Path=/; HttpOnly; Max-Age=3600;`;
-    res.setHeader('Set-Cookie', [cookie, refreshCookie]);
-}
