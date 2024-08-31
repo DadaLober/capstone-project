@@ -5,7 +5,6 @@ import { useState, useEffect, Suspense } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
 import dynamic from 'next/dynamic';
-import { PropertyInfo } from '@/app/test/(components)/MapComponent';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 interface Location {
@@ -114,7 +113,8 @@ export default function TestPage() {
                             {data.map((item) => (
                                 <Card
                                     key={item.id}
-                                    className={`mb-4 ${selectedPropertyId === item.id ? 'border border-blue-500' : ''}`}
+                                    className={`mb-4 ${selectedPropertyId === item.id ? 'border border-blue-500' : ''
+                                        } hover:shadow-md hover:transition-all hover:duration-300`}
                                     onClick={() => handleCardClick(item.id)}
                                 >
                                     <CardContent className="p-6">
