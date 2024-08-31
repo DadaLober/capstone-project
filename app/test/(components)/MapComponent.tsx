@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -17,6 +18,11 @@ export interface PropertyInfo {
     createdAt: string;
 }
 
+interface MapProps {
+    location: Location | null;
+    propertyInfo: PropertyInfo | null;
+}
+
 const customIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
     iconSize: [25, 41],
@@ -24,14 +30,19 @@ const customIcon = L.icon({
     popupAnchor: [1, -34],
 });
 
-interface MapProps {
-    location: Location | null;
-    propertyInfo: PropertyInfo | null;
-}
+const RecenterAutomatically = ({ lat, lng }: Location) => {
+    const map = useMap();
+
+    useEffect(() => {
+        map.setView([lat, lng]);
+    }, [lat, lng]);
+
+    return null;
+};
 
 export default function MapComponent({ location, propertyInfo }: MapProps) {
     return (
-        <div style={{ height: '400px', width: '900px' }}>
+        <div style={{ height: '700px', width: '900px' }}>
             <MapContainer
                 center={[location?.lat || 0, location?.lng || 0]}
                 zoom={12}
@@ -42,21 +53,24 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
                 {location != null && (
-                    <Marker position={[location.lat, location.lng]} icon={customIcon}>
-                        <Popup>
-                            {propertyInfo ? (
-                                <>
-                                    <h3>{propertyInfo.address}</h3>
-                                    <p>Status: {propertyInfo.status || 'Not Available'}</p>
-                                    <p>SQM: {propertyInfo.sqm} m²</p>
-                                    <p>Price: {propertyInfo.priceHistory?.[0]?.price || 'Price not available'}</p>
-                                    <p>Created At: {new Date(propertyInfo.createdAt).toLocaleString()}</p>
-                                </>
-                            ) : (
-                                'No property selected'
-                            )}
-                        </Popup>
-                    </Marker>
+                    <>
+                        <Marker position={[location.lat, location.lng]} icon={customIcon}>
+                            <Popup>
+                                {propertyInfo ? (
+                                    <>
+                                        <h3>{propertyInfo.address}</h3>
+                                        <p>Status: {propertyInfo.status || 'Not Available'}</p>
+                                        <p>SQM: {propertyInfo.sqm} m²</p>
+                                        <p>Price: {propertyInfo.priceHistory?.[0]?.price || 'Price not available'}</p>
+                                        <p>Created At: {new Date(propertyInfo.createdAt).toLocaleString()}</p>
+                                    </>
+                                ) : (
+                                    'No property selected'
+                                )}
+                            </Popup>
+                        </Marker>
+                        <RecenterAutomatically lat={location.lat} lng={location.lng} />
+                    </>
                 )}
             </MapContainer>
         </div>
