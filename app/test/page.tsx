@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
 import dynamic from 'next/dynamic';
 import { PropertyInfo } from '@/app/test/(components)/MapComponent';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 interface Location {
     lng: number;
@@ -85,12 +86,24 @@ export default function TestPage() {
         }
     };
 
-
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-4">Property Listings</h1>
-
-            <div className="flex flex-row">
+            <Breadcrumb>
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink>Home</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbLink>Components</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
+            <div className="flex flex-row mt-5">
                 <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
                     {loading ? (
                         <p>Loading...</p>
