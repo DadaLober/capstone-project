@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
 import dynamic from 'next/dynamic';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { PropertyInfo } from '@/app/test/(components)/MapComponent';
 
 interface Location {
     lng: number;
