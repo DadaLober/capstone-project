@@ -1,12 +1,12 @@
 'use client'
 
 import axios from 'axios';
+import dynamic from 'next/dynamic';
 import { useState, useEffect, Suspense } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
-import dynamic from 'next/dynamic';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { PropertyInfo } from '@/app/test/(components)/MapComponent';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 interface Location {
     lng: number;
@@ -19,72 +19,64 @@ interface Data {
     address: string;
     status?: string;
     sqm: number;
-    priceHistory?: null | Array<any>;
+    priceHistory?: Array<{ price: number }> | null;
     createdAt: string;
-    otherAttributes?: null;
+    otherAttributes?: { [key: string]: string };
 }
 
 const MapComponent = dynamic(() => import('@/app/test/(components)/MapComponent'), {
     ssr: false,
 });
 
-export default function TestPage() {
-    const [data, setData] = useState<Data[]>([]);
+function TestPage() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
     const [selectedPropertyLocation, setSelectedPropertyLocation] = useState<Location | null>(null);
     const [selectedPropertyInfo, setSelectedPropertyInfo] = useState<PropertyInfo | null>(null);
+    const [data, setData] = useState<Data[]>([]);
 
     useEffect(() => {
-        console.log("TestPage component mounted");
+        fetchData();
     }, []);
 
-    useEffect(() => {
-        console.log("Data state:", data);
-    }, [data]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get<Data[]>('api/getProperties');
-                console.log("API Response:", response.data);
-                setData(response.data);
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    setError(error.message);
-                } else {
-                    setError('An unknown error occurred');
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []); // empty dependency array to run the effect only once
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get<Data[]>('api/getProperties');
+            setData(response.data);
+        } catch (error) {
+            setError(error instanceof Error ? error.message : 'An unknown error occurred');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleCardClick = (propertyId: number) => {
         const property = data.find(item => item.id === propertyId);
         if (property && property.location) {
             setSelectedPropertyId(propertyId);
             setSelectedPropertyLocation(property.location);
-
-            // Get additional property info
-            const propertyInfo = {
-                address: property.address,
-                status: property.status,
-                sqm: property.sqm,
-                priceHistory: property.priceHistory ? [{ price: property.priceHistory[0].price }] : undefined,
-                createdAt: property.createdAt,
-            };
-            setSelectedPropertyInfo(() => ({
-                ...propertyInfo,
-                priceHistory: propertyInfo.priceHistory || []
-            }));
+            setSelectedPropertyInfo(getPropertyInfo(property));
+        } else {
+            console.warn(`Property not found with ID: ${propertyId}`);
         }
     };
+
+
+    const getPropertyInfo = (property: Data): PropertyInfo => ({
+        id: property.id,
+        location: {
+            lng: property.location?.lng || 0,
+            lat: property.location?.lat || 0,
+        },
+        address: property.address,
+        status: property.status || 'Not Available',
+        sqm: property.sqm,
+        priceHistory: property.priceHistory?.[0]?.price ? [{ price: property.priceHistory[0].price }] : [],
+        createdAt: property.createdAt,
+        otherAttributes: property.otherAttributes || {},
+    });
 
     return (
         <div className="container mx-auto p-4">
@@ -105,17 +97,14 @@ export default function TestPage() {
             </Breadcrumb>
             <div className="flex flex-row mt-5">
                 <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
-                    {loading ? (
-                        <p>Loading...</p>
-                    ) : error ? (
-                        <p>Error: {error}</p>
-                    ) : data.length > 0 ? (
+                    {loading && <p>Loading...</p>}
+                    {error && <p>Error: {error}</p>}
+                    {!loading && !error && data.length > 0 && (
                         <div className="flex flex-col min-h-[calc(100vh-200px)]">
                             {data.map((item) => (
                                 <Card
                                     key={item.id}
-                                    className={`mb-4 ${selectedPropertyId === item.id ? 'border border-blue-500' : ''
-                                        } hover:shadow-md hover:transition-all hover:duration-300`}
+                                    className={`mb-4 ${selectedPropertyId === item.id ? 'border border-blue-500' : ''} hover:shadow-md transition-all duration-300`}
                                     onClick={() => handleCardClick(item.id)}
                                 >
                                     <CardContent className="p-6">
@@ -132,7 +121,7 @@ export default function TestPage() {
                                                 <p className="text-sm text-gray-600">Status: {item.status || 'Not Available'}</p>
                                             </div>
                                         </div>
-                                        <div className="flex justify-between items-end">
+                                        <div className="flex justify-between items-end mb-2">
                                             <p className="text-lg font-medium">${item.priceHistory?.[0]?.price || 'Price not available'}</p>
                                             <p className="text-sm text-gray-500">{item.sqm} m²</p>
                                         </div>
@@ -140,9 +129,8 @@ export default function TestPage() {
                                 </Card>
                             ))}
                         </div>
-                    ) : (
-                        <p>No data available.</p>
                     )}
+                    {!loading && !error && data.length === 0 && <p>No data available.</p>}
                 </div>
 
                 <Suspense fallback={<div>Loading map...</div>}>
@@ -152,3 +140,5 @@ export default function TestPage() {
         </div>
     );
 }
+
+export default TestPage;
