@@ -12,6 +12,12 @@ interface Location {
     lat: number;
 }
 
+interface MapProps {
+    location: Location | null;
+    propertyInfo: PropertyInfo | null;
+    onInit?: () => void;
+}
+
 export interface PropertyInfo {
     id: number;
     location?: Location;
@@ -23,12 +29,6 @@ export interface PropertyInfo {
     otherAttributes?: {
         [key: string]: string;
     };
-}
-
-interface MapProps {
-    location: Location | null;
-    propertyInfo: PropertyInfo | null;
-    onInit?: () => void;
 }
 
 const customIcon = L.icon({

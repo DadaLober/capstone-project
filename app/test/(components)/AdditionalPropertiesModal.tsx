@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react';
 import { PropertyInfo } from './MapComponent';
 import { Button } from '@/components/ui/button';
 import './modal.css';
@@ -13,16 +12,6 @@ interface AdditionalPropertiesModalProps {
 }
 
 export default function AdditionalPropertiesModal({ isOpen, onClose, propertyInfo }: AdditionalPropertiesModalProps) {
-    const [displayedKeys, setDisplayedKeys] = useState<string[]>([]);
-
-    const toggleKeyVisibility = (key: string) => {
-        const currentIndex = displayedKeys.indexOf(key);
-        if (currentIndex === -1) {
-            setDisplayedKeys([...displayedKeys, key]);
-        } else {
-            setDisplayedKeys(displayedKeys.filter(k => k !== key));
-        }
-    };
 
     return (
         <div className={`modal ${isOpen ? 'is-open' : ''}`}>
