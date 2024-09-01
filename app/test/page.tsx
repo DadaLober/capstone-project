@@ -95,35 +95,35 @@ function TestPage() {
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
-            <div className="flex flex-row mt-5">
+            <div className="flex flex-col md:flex-row mt-5 gap-4">
                 <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
                     {loading && <p>Loading...</p>}
                     {error && <p>Error: {error}</p>}
                     {!loading && !error && data.length > 0 && (
-                        <div className="flex flex-col min-h-[calc(100vh-200px)]">
+                        <div className="flex flex-col">
                             {data.map((item) => (
                                 <Card
                                     key={item.id}
                                     className={`mb-4 ${selectedPropertyId === item.id ? 'border border-blue-500' : ''} hover:shadow-md transition-all duration-300`}
                                     onClick={() => handleCardClick(item.id)}
                                 >
-                                    <CardContent className="p-6">
-                                        <h2 className="text-xl font-semibold mb-2">{item.address}</h2>
-                                        <div className="flex justify-between items-start mb-4">
+                                    <CardContent className="p-4">
+                                        <h2 className="text-base font-semibold mb-2">{item.address}</h2>
+                                        <div className="flex justify-between items-start mb-2">
                                             <div className="flex items-center">
-                                                <FaMapMarkerAlt className="mr-2 text-red-500" size={18} />
-                                                <p className="text-sm text-gray-600">
+                                                <FaMapMarkerAlt className="mr-2 text-red-500" size={14} />
+                                                <p className="text-xs text-gray-600">
                                                     {item.location ? `${item.location.lng}, ${item.location.lat}` : 'Location not available'}
                                                 </p>
                                             </div>
                                             <div className="flex items-center">
-                                                <FaCalendarAlt className="mr-2 text-green-500" size={18} />
-                                                <p className="text-sm text-gray-600">Status: {item.status || 'Not Available'}</p>
+                                                <FaCalendarAlt className="mr-2 text-green-500" size={14} />
+                                                <p className="text-xs text-gray-600">Status: {item.status || 'Not Available'}</p>
                                             </div>
                                         </div>
                                         <div className="flex justify-between items-end mb-2">
-                                            <p className="text-lg font-medium">${item.priceHistory?.[0]?.price || 'Price not available'}</p>
-                                            <p className="text-sm text-gray-500">{item.sqm} m²</p>
+                                            <p className="text-base font-medium">${item.priceHistory?.[0]?.price || 'Price not available'}</p>
+                                            <p className="text-xs text-gray-500">{item.sqm} m²</p>
                                         </div>
                                     </CardContent>
                                 </Card>
