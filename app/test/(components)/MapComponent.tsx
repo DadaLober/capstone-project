@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import AdditionalPropertiesModal from './AdditionalPropertiesModal';
 interface Location {
     lng: number;
     lat: number;
+    name?: string;
 }
 
 interface MapProps {
@@ -40,16 +41,27 @@ const customIcon = L.icon({
 
 const RecenterAutomatically = ({ lat, lng }: Location) => {
     const map = useMap();
-
     useEffect(() => {
         map.setView([lat, lng]);
     }, [lat, lng]);
-
     return null;
 };
 
+const LocationMarker: React.FC<{ addMarker: (position: { lat: number; lng: number }) => void; }> = ({ addMarker }) => {
+    useMapEvents({
+        click(e) {
+            const newPosition = e.latlng;
+            addMarker(newPosition);
+        },
+    });
+    return null;
+};
+
+
 export default function MapComponent({ location, propertyInfo }: MapProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [marker, setMarker] = useState<Location | null>(null);
+    const [selectedPosition, setSelectedPosition] = useState<{ lat: number; lng: number } | null>(null);
 
     const handleViewAdditionalProperties = () => {
         setIsModalOpen(true);
@@ -57,6 +69,29 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+    };
+
+    const addMarker = (position: { lat: number; lng: number }) => {
+        setSelectedPosition(position);
+        setMarker({ ...position });
+    };
+
+    useEffect(() => {
+        if (marker) {
+            setMarker((prevMarker) =>
+                prevMarker ? { ...prevMarker } : null
+            );
+        }
+    });
+
+    const updateMarkerPosition: (e: L.LeafletEvent) => void = (e) => {
+        const newPosition = e.target.getLatLng();
+        setMarker((prevMarker) =>
+            prevMarker
+                ? { ...prevMarker, lat: newPosition.lat, lng: newPosition.lng }
+                : null
+        );
+        setSelectedPosition(newPosition);
     };
 
     return (
@@ -68,9 +103,12 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                 zoomControl={false}
             >
                 <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                    subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+                    maxZoom={20}
+                    attribution='&copy; <a href="https://www.google.com/maps/">Google Maps</a>'
                 />
+                <LocationMarker addMarker={addMarker} />
                 {location != null && (
                     <>
                         <Marker position={[location.lat, location.lng]} icon={customIcon}>
@@ -112,6 +150,34 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                         <RecenterAutomatically lat={location.lat} lng={location.lng} />
                     </>
                 )}
+                {marker && (
+                    <Marker
+                        position={{ lat: marker.lat, lng: marker.lng }}
+                        icon={customIcon}
+                        draggable={true}
+                        eventHandlers={{
+                            dragend: updateMarkerPosition,
+                        }}
+                    >
+                        <Popup className="bg-white rounded-lg shadow-md p-4 w-64 flex flex-col items-center justify-center text-center">
+                            <h3 className="text-xl font-semibold mb-2 text-gray-800">{marker.name || 'Unnamed Location'}</h3>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500">Latitude: {marker.lat}</p>
+                                <p className="text-sm text-gray-500">Longitude: {marker.lng}</p>
+                            </div>
+                            <div className="text-center">
+                                <Button
+                                    variant="default"
+                                    className="mt-4 w-full"
+                                    onClick={() => console.log('Marker details viewed')}
+                                >
+                                    Add Property
+                                </Button>
+                            </div>
+                        </Popup>
+                    </Marker>
+                )}
+
             </MapContainer>
             <AdditionalPropertiesModal
                 isOpen={isModalOpen}
