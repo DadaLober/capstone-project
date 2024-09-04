@@ -97,7 +97,7 @@ function TestPage() {
             </Breadcrumb>
             <div className="flex flex-col md:flex-row mt-5 gap-4">
                 <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
-                    {loading && <p>Loading...</p>}
+                    {loading && <p>Loading....</p>}
                     {error && <p>Error: {error}</p>}
                     {!loading && !error && data.length > 0 && (
                         <div className="flex flex-col">
