@@ -5,24 +5,9 @@ import dynamic from 'next/dynamic';
 import { useState, useEffect, Suspense } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
-import { PropertyInfo } from '@/app/test/(components)/MapComponent';
+import type { PropertyInfo, Location } from '@/app/test/(components)/types';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
-interface Location {
-    lng: number;
-    lat: number;
-}
-
-interface Data {
-    id: number;
-    location?: Location;
-    address: string;
-    status?: string;
-    sqm: number;
-    priceHistory?: Array<{ price: number }> | null;
-    createdAt: string;
-    otherAttributes?: { [key: string]: string };
-}
 
 const MapComponent = dynamic(() => import('@/app/test/(components)/MapComponent'), {
     ssr: false,
@@ -34,7 +19,7 @@ function TestPage() {
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
     const [selectedPropertyLocation, setSelectedPropertyLocation] = useState<Location | null>(null);
     const [selectedPropertyInfo, setSelectedPropertyInfo] = useState<PropertyInfo | null>(null);
-    const [data, setData] = useState<Data[]>([]);
+    const [data, setData] = useState<PropertyInfo[]>([]);
 
     useEffect(() => {
         fetchData();
@@ -43,7 +28,7 @@ function TestPage() {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await axios.get<Data[]>('api/getProperties');
+            const response = await axios.get<PropertyInfo[]>('api/getProperties');
             setData(response.data);
         } catch (error) {
             setError(error instanceof Error ? error.message : 'An unknown error occurred');
@@ -64,7 +49,7 @@ function TestPage() {
     };
 
 
-    const getPropertyInfo = (property: Data): PropertyInfo => ({
+    const getPropertyInfo = (property: PropertyInfo) => ({
         id: property.id,
         location: {
             lng: property.location?.lng || 0,

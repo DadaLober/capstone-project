@@ -1,8 +1,8 @@
 'use client'
 
-import { PropertyInfo } from './MapComponent';
+import type { PropertyInfo } from './types';
 import { Button } from '@/components/ui/button';
-import './modal.css';
+import '@/app/test/(components)/modal.css';
 import React from 'react';
 
 interface AdditionalPropertiesModalProps {

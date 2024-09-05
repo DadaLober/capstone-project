@@ -6,31 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { Button } from "@/components/ui/button"
 import AdditionalPropertiesModal from './AdditionalPropertiesModal';
-
-interface Location {
-    lng: number;
-    lat: number;
-    name?: string;
-}
-
-interface MapProps {
-    location: Location | null;
-    propertyInfo: PropertyInfo | null;
-    onInit?: () => void;
-}
-
-export interface PropertyInfo {
-    id: number;
-    location?: Location;
-    address: string;
-    status?: string;
-    sqm: number;
-    priceHistory?: Array<{ price: number }>;
-    createdAt: string;
-    otherAttributes?: {
-        [key: string]: string;
-    };
-}
+import type { Location, MapProps } from './types';
 
 const customIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
