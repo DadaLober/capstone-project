@@ -16,7 +16,7 @@ interface PropertyInfo {
     address: string;
     status?: string;
     sqm: number;
-    priceHistory?: Array<{ price: number }>;
+    priceHistory?: { date: string; price: number }[];
     createdAt: string;
     otherAttributes?: {
         [key: string]: string;

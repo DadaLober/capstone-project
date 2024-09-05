@@ -58,7 +58,10 @@ function TestPage() {
         address: property.address,
         status: property.status || 'Not Available',
         sqm: property.sqm,
-        priceHistory: property.priceHistory?.[0]?.price ? [{ price: property.priceHistory[0].price }] : [],
+        priceHistory: property.priceHistory?.map(priceHistoryItem => ({
+            date: new Date().toISOString(),
+            price: priceHistoryItem.price,
+        })),
         createdAt: property.createdAt,
         otherAttributes: property.otherAttributes || {},
     });

@@ -6,14 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PropertyInfo } from '@/app/test/(components)/types';
 import '@/app/test/(components)/modal.css';
+import axios, { isAxiosError } from 'axios';
 
 interface AddFormModalProps {
     isOpen: boolean;
-    location: { lat: number; lng: number; };
+    location: { lng: number; lat: number; };
     onClose: () => void;
 }
 
-const useLocation = (location: { lat: number; lng: number; }) => {
+const useLocation = (location: { lng: number; lat: number; }) => {
     const [currentLocation, setCurrentLocation] = useState(location);
 
     useEffect(() => {
@@ -25,11 +26,26 @@ const useLocation = (location: { lat: number; lng: number; }) => {
 
 function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
     const currentLocation = useLocation(location);
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<PropertyInfo>();
-    const onSubmit = (data: PropertyInfo) => {
-        const newData = { ...data, location: currentLocation };
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<PropertyInfo>(
+        {
+            defaultValues: {
+                priceHistory: [{ date: new Date().toISOString(), price: 0 }],
+                createdAt: new Date().toISOString(),
+                otherAttributes: { "hello": "world" },
+            }
+        }
+    );
+    const onSubmit = async (data: PropertyInfo) => {
+        const newData = { ...data, location: currentLocation, sqm: Number(data.sqm) };
         console.log(newData);
-        // Handle form submission
+        try {
+            const response = await axios.post('/api/addProperty', newData);
+            console.log(response.data);
+        } catch (error: any) {
+            if (isAxiosError(error)) {
+                console.error(error.response?.data);
+            }
+        }
     };
 
     return (
@@ -58,7 +74,13 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
                         <Input
                             type="number"
                             placeholder="Square meters"
-                            {...register('sqm'), { valueAsNumber: true }}
+                            {...register("sqm", {
+                                required: "Square meter is required",
+                                pattern: {
+                                    value: /^[1-9]\d*$/,
+                                    message: "Square meter must be a positive number greater than 0"
+                                }
+                            })}
                         />
                         {errors.sqm && (<p className="text-red-500 text-sm">{errors.sqm.message}</p>)}
                         <Button
