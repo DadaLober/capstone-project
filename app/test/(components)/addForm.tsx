@@ -1,34 +1,37 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import type { PropertyInfo } from '@/app/test/(components)/types';
+import FormField from '@/components/ui/form-field';
 import '@/app/test/(components)/modal.css';
 
 interface AddFormModalProps {
     isOpen: boolean;
-    onClose: () => void;
     location: { lat: number; lng: number; };
+    onClose: () => void;
 }
 
-function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
+const useLocation = (location: { lat: number; lng: number; }) => {
     const [currentLocation, setCurrentLocation] = useState(location);
+
+    useEffect(() => {
+        setCurrentLocation(location);
+    }, [location]);
+
+    return currentLocation;
+};
+
+function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
+    const currentLocation = useLocation(location);
     const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<PropertyInfo>({
         defaultValues: {
-            location: {
-                lat: location.lat,
-                lng: location.lng,
-            },
+            location: currentLocation,
             address: '',
             sqm: 0,
         }
     });
-
-    React.useEffect(() => {
-        setCurrentLocation(location);
-    }, [location]);
-
     const onSubmit = (data: PropertyInfo) => {
         const newData = { ...data, location: currentLocation };
         console.log(newData);
@@ -41,57 +44,33 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
                 <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
                     <h2 className="text-lg font-bold mb-4">{isOpen ? 'Edit Property' : 'Add Property'}</h2>
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
-                        <Controller
+                        <FormField
                             name="location.lat"
+                            type="text"
+                            placeholder="Latitude"
                             control={control}
-                            render={({ field }) => (
-                                <input
-                                    type="text"
-                                    {...field}
-                                    placeholder="Latitude"
-                                    className="block w-full p-2 rounded-lg border border-gray-300"
-                                    value={location.lat}
-                                    disabled
-                                />
-                            )}
+                            value={location.lat}
+                            disabled
                         />
-                        <Controller
+                        <FormField
                             name="location.lng"
+                            type="text"
+                            placeholder="Longitude"
                             control={control}
-                            render={({ field }) => (
-                                <input
-                                    type="text"
-                                    {...field}
-                                    placeholder="Longitude"
-                                    className="block w-full p-2 rounded-lg border border-gray-300"
-                                    value={location.lng}
-                                    disabled
-                                />
-                            )}
+                            value={location.lng}
+                            disabled
                         />
-                        <Controller
+                        <FormField
                             name="address"
+                            type="text"
+                            placeholder="Address"
                             control={control}
-                            render={({ field }) => (
-                                <input
-                                    type="text"
-                                    {...field}
-                                    placeholder="Address"
-                                    className="block w-full p-2 rounded-lg border border-gray-300"
-                                />
-                            )}
                         />
-                        <Controller
+                        <FormField
                             name="sqm"
+                            type="number"
+                            placeholder="Square meters"
                             control={control}
-                            render={({ field }) => (
-                                <input
-                                    type="number"
-                                    {...field}
-                                    placeholder="Square meters"
-                                    className="block w-full p-2 rounded-lg border border-gray-300"
-                                />
-                            )}
                         />
 
                         <Button
