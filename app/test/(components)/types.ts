@@ -23,4 +23,13 @@ interface PropertyInfo {
     };
 }
 
-export type { Location, MapProps, PropertyInfo }
+interface GeocodeResult {
+    display_name: string;
+    address: {
+        city: string;
+        state: string;
+        country: string;
+    };
+}
+
+export type { Location, MapProps, PropertyInfo, GeocodeResult }

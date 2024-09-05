@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import type { PropertyInfo } from '@/app/test/(components)/types';
-import FormField from '@/components/ui/form-field';
+import { Input } from '@/components/ui/input';
+import { PropertyInfo } from '@/app/test/(components)/types';
 import '@/app/test/(components)/modal.css';
 
 interface AddFormModalProps {
@@ -17,7 +17,7 @@ const useLocation = (location: { lat: number; lng: number; }) => {
     const [currentLocation, setCurrentLocation] = useState(location);
 
     useEffect(() => {
-        setCurrentLocation(location);
+        setCurrentLocation({ ...location });
     }, [location]);
 
     return currentLocation;
@@ -25,13 +25,7 @@ const useLocation = (location: { lat: number; lng: number; }) => {
 
 function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
     const currentLocation = useLocation(location);
-    const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<PropertyInfo>({
-        defaultValues: {
-            location: currentLocation,
-            address: '',
-            sqm: 0,
-        }
-    });
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<PropertyInfo>();
     const onSubmit = (data: PropertyInfo) => {
         const newData = { ...data, location: currentLocation };
         console.log(newData);
@@ -42,37 +36,31 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
         <div className={`modal ${isOpen ? 'is-open' : ''}`}>
             <div className="flex flex-col items-center justify-center min-h-screen p-4">
                 <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
-                    <h2 className="text-lg font-bold mb-4">{isOpen ? 'Edit Property' : 'Add Property'}</h2>
+                    <h2 className="text-lg font-bold mb-4">Add Property</h2>
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
-                        <FormField
-                            name="location.lat"
+                        <Input
                             type="text"
                             placeholder="Latitude"
-                            control={control}
-                            value={location.lat}
+                            value={`Latitude: ${currentLocation.lat}`}
                             disabled
                         />
-                        <FormField
-                            name="location.lng"
+                        <Input
                             type="text"
-                            placeholder="Longitude"
-                            control={control}
-                            value={location.lng}
+                            placeholder="Latitude"
+                            value={`Longitude: ${currentLocation.lng}`}
                             disabled
                         />
-                        <FormField
-                            name="address"
+                        <Input
                             type="text"
                             placeholder="Address"
-                            control={control}
+                            {...register('address')}
                         />
-                        <FormField
-                            name="sqm"
+                        <Input
                             type="number"
                             placeholder="Square meters"
-                            control={control}
+                            {...register('sqm'), { valueAsNumber: true }}
                         />
-
+                        {errors.sqm && (<p className="text-red-500 text-sm">{errors.sqm.message}</p>)}
                         <Button
                             type="submit"
                             disabled={isSubmitting}
@@ -89,4 +77,4 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
     );
 }
 
-export default AddFormModal
+export default AddFormModal;
