@@ -1,7 +1,7 @@
 .modal {
     display: none;
     position: fixed;
-    z-index: 999;
+    z-index: 500;
     left: 0;
     top: 0;
     width: 100%;
@@ -33,4 +33,8 @@
 .text-emphasized {
     font-weight: bold;
     color: #333;
+}
+
+.prio {
+    z-index: 1000;
 }

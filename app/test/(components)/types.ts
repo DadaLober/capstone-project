@@ -12,7 +12,7 @@ interface MapProps {
 
 interface PropertyInfo {
     id: number;
-    location?: Location;
+    location: Location;
     address: string;
     status?: string;
     sqm: number;

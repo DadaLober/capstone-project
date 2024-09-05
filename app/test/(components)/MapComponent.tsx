@@ -6,7 +6,9 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { Button } from "@/components/ui/button"
 import AdditionalPropertiesModal from './AdditionalPropertiesModal';
-import type { Location, MapProps } from './types';
+import AddFormModal from './addForm';
+import { Location, MapProps } from './types';
+import '@/app/test/(components)/modal.css';
 
 const customIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -36,8 +38,10 @@ const LocationMarker: React.FC<{ addMarker: (position: { lat: number; lng: numbe
 
 export default function MapComponent({ location, propertyInfo }: MapProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isFormOpen, setIsFormOpen] = useState(false);
     const [marker, setMarker] = useState<Location | null>(null);
     const [selectedPosition, setSelectedPosition] = useState<{ lat: number; lng: number } | null>(null);
+    const [formLocation, setFormLocation] = useState<Location | null>(null);
 
     const handleViewAdditionalProperties = () => {
         setIsModalOpen(true);
@@ -47,28 +51,19 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
         setIsModalOpen(false);
     };
 
-    const addMarker = (position: { lat: number; lng: number }) => {
+    const addMarker = (position: Location) => {
         setSelectedPosition(position);
         setMarker({ ...position });
     };
 
-    useEffect(() => {
-        if (marker) {
-            setMarker((prevMarker) =>
-                prevMarker ? { ...prevMarker } : null
-            );
-        }
-    });
-    const updateMarkerPosition: (e: L.LeafletEvent) => void = (e) => {
-        const newPosition = e.target.getLatLng();
-        setMarker((prevMarker) =>
-            prevMarker
-                ? { ...prevMarker, lat: newPosition.lat, lng: newPosition.lng }
-                : null
-        );
-        setSelectedPosition(newPosition);
-    };
 
+    const handleOpenForm = (location: Location) => {
+        setIsFormOpen(true);
+        setFormLocation(location);
+    };
+    const handleCloseForm = () => {
+        setIsFormOpen(false);
+    };
 
     return (
         <div className="relative w-full h-[700px]">
@@ -130,10 +125,6 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                     <Marker
                         position={{ lat: marker.lat, lng: marker.lng }}
                         icon={customIcon}
-                        draggable={true}
-                        eventHandlers={{
-                            dragend: updateMarkerPosition,
-                        }}
                     >
                         <Popup className="bg-white rounded-lg shadow-md p-4 w-64 flex flex-col items-center justify-center text-center">
                             <h3 className="text-xl font-semibold mb-2 text-gray-800">{marker.name || 'Unnamed Location'}</h3>
@@ -145,21 +136,19 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                                 <Button
                                     variant="default"
                                     className="mt-4 w-full"
-                                    onClick={() => console.log('Marker details viewed')}
+                                    onClick={() => handleOpenForm({ lat: marker.lat, lng: marker.lng })}
                                 >
                                     Add Property
                                 </Button>
+
                             </div>
                         </Popup>
+
                     </Marker>
                 )}
-
             </MapContainer>
-            <AdditionalPropertiesModal
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
-                propertyInfo={propertyInfo}
-            />
+            <AdditionalPropertiesModal isOpen={isModalOpen} onClose={handleCloseModal} propertyInfo={propertyInfo} />
+            <AddFormModal isOpen={isFormOpen} onClose={handleCloseForm} location={formLocation || { lat: 0, lng: 0 }} />
         </div>
     );
 }
