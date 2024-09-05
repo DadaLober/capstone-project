@@ -3,7 +3,7 @@
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { useState, useEffect, Suspense } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardCarousel, CardContent } from '@/components/ui/card';
 import { FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
 import { PropertyInfo } from '@/app/test/(components)/MapComponent';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
@@ -78,6 +78,16 @@ function TestPage() {
         otherAttributes: property.otherAttributes || {},
     });
 
+    // kaw na bahala dine mag fetch :> dko alam yan boss
+    const images = [
+        "https://picsum.photos/400/300?random=1",
+        "https://picsum.photos/400/300?random=2",
+        "https://picsum.photos/400/300?random=3",
+        "https://picsum.photos/400/300?random=4",
+        "https://picsum.photos/400/300?random=5",
+        "https://picsum.photos/400/300?random=6",
+    ];
+
     return (
         <div className="container mx-auto p-4">
             <Breadcrumb>
@@ -95,19 +105,23 @@ function TestPage() {
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
-            <div className="flex flex-col md:flex-row mt-5 gap-4">
+            <div className="flex flex-col md:flex-row mt-5 gap-4 cool-scrollbar ">
                 <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
                     {loading && <p>Loading....</p>}
                     {error && <p>Error: {error}</p>}
                     {!loading && !error && data.length > 0 && (
-                        <div className="flex flex-col">
+                        <div className="flex flex-col ">
                             {data.map((item) => (
                                 <Card
                                     key={item.id}
                                     className={`mb-4 ${selectedPropertyId === item.id ? 'border border-blue-500' : ''} hover:shadow-md transition-all duration-300`}
                                     onClick={() => handleCardClick(item.id)}
                                 >
+                                    
                                     <CardContent className="p-4">
+                                        <div className=' w-72'>
+                                            <CardCarousel images={images} className=''/>
+                                        </div>
                                         <h2 className="text-base font-semibold mb-2">{item.address}</h2>
                                         <div className="flex justify-between items-start mb-2">
                                             <div className="flex items-center">
