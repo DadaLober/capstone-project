@@ -59,7 +59,6 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
             );
         }
     });
-
     const updateMarkerPosition: (e: L.LeafletEvent) => void = (e) => {
         const newPosition = e.target.getLatLng();
         setMarker((prevMarker) =>
@@ -69,6 +68,7 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
         );
         setSelectedPosition(newPosition);
     };
+
 
     return (
         <div className="relative w-full h-[700px]">

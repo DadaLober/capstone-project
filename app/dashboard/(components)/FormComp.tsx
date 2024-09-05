@@ -82,19 +82,19 @@ const FormComp: React.FC<MarkerFormProps> = ({ selectedPosition, address, setAdd
                             placeholder="Address"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
-                        />
+                        /> 
                         <input
                             type="text"
                             className="w-full mb-2 p-2 border rounded"
                             placeholder="Latitude"
-                            value={selectedPosition ? selectedPosition.lat.toFixed(5) : ''}
+                            value={selectedPosition ? selectedPosition.lat : ''}
                             readOnly
                         />
                         <input
                             type="text"
                             className="w-full mb-2 p-2 border rounded"
                             placeholder="Longitude"
-                            value={selectedPosition ? selectedPosition.lng.toFixed(5) : ''}
+                            value={selectedPosition ? selectedPosition.lng : ''}
                             readOnly
                         />
                         <input
