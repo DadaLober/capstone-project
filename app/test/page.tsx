@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useProperties } from '@/app/test/(hooks)/useProperties';
 import { PropertyCard } from '@/app/test/(components)/propertyCard';
 
-const MapComponent = dynamic(() => import('@/app/test/(components)/mapComponent'), {
+const MapComponent = dynamic(() => import('@/app/test/(components)/MapComponent'), {
     ssr: false,
 });
 
@@ -40,7 +40,7 @@ function TestPage() {
                 </div>
             </div>
             <MapComponent
-                location={data?.find(p => p.id === selectedPropertyId)?.location ?? null}
+                location={data?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
                 propertyInfo={data?.find(p => p.id === selectedPropertyId) ?? null}
             />
         </div>

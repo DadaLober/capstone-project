@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import AdditionalPropertiesModal from '@/app/test/(components)/additionalPropertiesModal';
+import AdditionalPropertiesModal from '@/app/test/(components)/AdditionalPropertiesModal';
 import AddFormModal from '@/app/test/(components)/addFormModal';
 import { Location, PropertyInfo, customIcon } from '@/app/test/(hooks)/types';
 import { FormMarker, LocationMarker, PropertyMarker } from '@/app/test/(components)/formMarker';
@@ -17,7 +17,7 @@ interface MapProps {
 const RecenterAutomatically = ({ lat, lng }: Location) => {
     const map = useMap();
     useEffect(() => {
-        map.flyTo([lat, lng], 19);
+        map.setView([lat, lng], 16);
     }, [lat, lng]);
     return null;
 };
@@ -30,24 +30,16 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
     const handleOpenView = () => {
         setIsModalOpen(true);
     };
-
-    const handleCloseView = () => {
-        setIsModalOpen(false);
+    const handleOpenForm = () => {
+        setIsFormOpen(true);
     };
-
     const addMarker = (position: Location) => {
         setMarker(position);
     };
 
-    const handleOpenForm = () => {
-        setIsFormOpen(true);
-    };
-    const handleCloseForm = () => {
-        setIsFormOpen(false);
-    };
 
     return (
-        <div className="relative w-full h-[calc(100vh-64px)]">
+        <div className="relative w-full h-[700px]">
             <MapContainer
                 center={[location?.lat || 0, location?.lng || 0]}
                 zoom={12}
@@ -74,8 +66,8 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                     </>
                 )}
             </MapContainer>
-            <AdditionalPropertiesModal isOpen={isModalOpen} onClose={handleCloseView} propertyInfo={propertyInfo} />
-            <AddFormModal isOpen={isFormOpen} onClose={handleCloseForm} location={marker || { lat: 0, lng: 0 }} />
+            <AdditionalPropertiesModal isOpen={isModalOpen} onClose={() => setIsFormOpen(false)} propertyInfo={propertyInfo} />
+            <AddFormModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} location={marker || { lat: 0, lng: 0 }} />
         </div>
     );
 }
