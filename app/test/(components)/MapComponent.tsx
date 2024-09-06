@@ -1,72 +1,53 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-import { Button } from "@/components/ui/button"
-import AdditionalPropertiesModal from './AdditionalPropertiesModal';
-import AddFormModal from './addForm';
-import { Location, MapProps } from '../(hooks)/types';
+import AdditionalPropertiesModal from '@/app/test/(components)/additionalPropertiesModal';
+import AddFormModal from '@/app/test/(components)/addFormModal';
+import { Location, PropertyInfo, customIcon } from '@/app/test/(hooks)/types';
+import { FormMarker, LocationMarker, PropertyMarker } from '@/app/test/(components)/formMarker';
 import '@/app/test/(components)/modal.css';
 
-const customIcon = L.icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-});
+interface MapProps {
+    location: Location | null;
+    propertyInfo: PropertyInfo | null;
+}
 
 const RecenterAutomatically = ({ lat, lng }: Location) => {
     const map = useMap();
     useEffect(() => {
-        map.setView([lat, lng]);
+        map.flyTo([lat, lng], 19);
     }, [lat, lng]);
     return null;
 };
-
-const LocationMarker: React.FC<{ addMarker: (position: { lat: number; lng: number }) => void; }> = ({ addMarker }) => {
-    useMapEvents({
-        click(e) {
-            const newPosition = e.latlng;
-            addMarker(newPosition);
-        },
-    });
-    return null;
-};
-
 
 export default function MapComponent({ location, propertyInfo }: MapProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [marker, setMarker] = useState<Location | null>(null);
-    const [selectedPosition, setSelectedPosition] = useState<{ lat: number; lng: number } | null>(null);
-    const [formLocation, setFormLocation] = useState<Location | null>(null);
 
-    const handleViewAdditionalProperties = () => {
+    const handleOpenView = () => {
         setIsModalOpen(true);
     };
 
-    const handleCloseModal = () => {
+    const handleCloseView = () => {
         setIsModalOpen(false);
     };
 
     const addMarker = (position: Location) => {
-        setSelectedPosition(position);
-        setMarker({ ...position });
+        setMarker(position);
     };
 
-
-    const handleOpenForm = (location: Location) => {
+    const handleOpenForm = () => {
         setIsFormOpen(true);
-        setFormLocation(location);
     };
     const handleCloseForm = () => {
         setIsFormOpen(false);
     };
 
     return (
-        <div className="relative w-full h-[700px]">
+        <div className="relative w-full h-[calc(100vh-64px)]">
             <MapContainer
                 center={[location?.lat || 0, location?.lng || 0]}
                 zoom={12}
@@ -80,75 +61,21 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                     attribution='&copy; <a href="https://www.google.com/maps/">Google Maps</a>'
                 />
                 <LocationMarker addMarker={addMarker} />
-                {location != null && (
+                {marker && (
                     <>
-                        <Marker position={[location.lat, location.lng]} icon={customIcon}>
-                            <Popup className="bg-white rounded-lg shadow-lg p-4 w-96 flex flex-col items-stretch">
-                                {propertyInfo ? (
-                                    <>
-                                        <h3 className="text-xl font-bold mb-4 text-blue-600">{propertyInfo.address}</h3>
-                                        <div className="flex flex-col space-y-4">
-                                            <div className="flex items-center space-x-2">
-                                                <span className="font-bold">Status:</span>
-                                                <span>{propertyInfo.status || 'Not Available'}</span>
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <span className="font-bold">Sqm:</span>
-                                                <span>{propertyInfo.sqm} m²</span>
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <span className="font-bold">Price:</span>
-                                                <span>{propertyInfo.priceHistory?.[0]?.price || 'Price not available'}</span>
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <span className="font-bold">Created At:</span>
-                                                <span>{new Date(propertyInfo.createdAt).toLocaleString()}</span>
-                                            </div>
-                                            <Button
-                                                variant="default"
-                                                className="mt-4"
-                                                onClick={handleViewAdditionalProperties}
-                                            >
-                                                View Additional Properties
-                                            </Button>
-                                        </div>
-                                    </>
-                                ) : (
-                                    'No property selected'
-                                )}
-                            </Popup>
-                        </Marker>
-                        <RecenterAutomatically lat={location.lat} lng={location.lng} />
+                        <Marker position={[marker.lat, marker.lng]} icon={customIcon} />
+                        <FormMarker location={marker} handleOpenForm={handleOpenForm} />
                     </>
                 )}
-                {marker && (
-                    <Marker
-                        position={{ lat: marker.lat, lng: marker.lng }}
-                        icon={customIcon}
-                    >
-                        <Popup className="bg-white rounded-lg shadow-md p-4 w-64 flex flex-col items-center justify-center text-center">
-                            <h3 className="text-xl font-semibold mb-2 text-gray-800">{marker.name || 'Unnamed Location'}</h3>
-                            <div className="space-y-2">
-                                <p className="text-sm text-gray-500">Latitude: {marker.lat}</p>
-                                <p className="text-sm text-gray-500">Longitude: {marker.lng}</p>
-                            </div>
-                            <div className="text-center">
-                                <Button
-                                    variant="default"
-                                    className="mt-4 w-full"
-                                    onClick={() => handleOpenForm({ lat: marker.lat, lng: marker.lng })}
-                                >
-                                    Add Property
-                                </Button>
-
-                            </div>
-                        </Popup>
-
-                    </Marker>
+                {location != null && (
+                    <>
+                        <RecenterAutomatically lat={location.lat} lng={location.lng} />
+                        <PropertyMarker propertyInfo={propertyInfo} handleViewAdditionalProperties={handleOpenView} />
+                    </>
                 )}
             </MapContainer>
-            <AdditionalPropertiesModal isOpen={isModalOpen} onClose={handleCloseModal} propertyInfo={propertyInfo} />
-            <AddFormModal isOpen={isFormOpen} onClose={handleCloseForm} location={formLocation || { lat: 0, lng: 0 }} />
+            <AdditionalPropertiesModal isOpen={isModalOpen} onClose={handleCloseView} propertyInfo={propertyInfo} />
+            <AddFormModal isOpen={isFormOpen} onClose={handleCloseForm} location={marker || { lat: 0, lng: 0 }} />
         </div>
     );
 }

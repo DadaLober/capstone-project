@@ -1,9 +1,9 @@
 'use client'
 
-import type { PropertyInfo } from '../(hooks)/types';
+import React from 'react';
+import type { PropertyInfo } from '@/app/test/(hooks)/types';
 import { Button } from '@/components/ui/button';
 import '@/app/test/(components)/modal.css';
-import React from 'react';
 
 interface AdditionalPropertiesModalProps {
     isOpen: boolean;

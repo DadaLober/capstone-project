@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useProperties } from '@/app/test/(hooks)/useProperties';
 import { PropertyCard } from '@/app/test/(components)/propertyCard';
 
-const MapComponent = dynamic(() => import('@/app/test/(components)/MapComponent'), {
+const MapComponent = dynamic(() => import('@/app/test/(components)/mapComponent'), {
     ssr: false,
 });
 
