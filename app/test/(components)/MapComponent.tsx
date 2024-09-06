@@ -7,7 +7,7 @@ import L from 'leaflet';
 import { Button } from "@/components/ui/button"
 import AdditionalPropertiesModal from './AdditionalPropertiesModal';
 import AddFormModal from './addForm';
-import { Location, MapProps } from './types';
+import { Location, MapProps } from '../(hooks)/types';
 import '@/app/test/(components)/modal.css';
 
 const customIcon = L.icon({

@@ -1,5 +1,3 @@
-"use client";
-
 import ParticleBackground from "@/components/ui/particles";
 
 export default function RootPage() {

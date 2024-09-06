@@ -1,7 +1,7 @@
 // src/hooks/useNominatimGeocode.ts
 
 import axios from 'axios';
-import { GeocodeResult } from '@/app/test/(components)/types';
+import { GeocodeResult } from '@/app/test/(hooks)/types';
 
 export interface NominatimResponse extends GeocodeResult { }
 

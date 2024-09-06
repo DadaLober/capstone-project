@@ -1,6 +1,6 @@
 'use client'
 
-import type { PropertyInfo } from './types';
+import type { PropertyInfo } from '../(hooks)/types';
 import { Button } from '@/components/ui/button';
 import '@/app/test/(components)/modal.css';
 import React from 'react';
