@@ -66,7 +66,7 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                     </>
                 )}
             </MapContainer>
-            <AdditionalPropertiesModal isOpen={isModalOpen} onClose={() => setIsFormOpen(false)} propertyInfo={propertyInfo} />
+            <AdditionalPropertiesModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} propertyInfo={propertyInfo} />
             <AddFormModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} location={marker || { lat: 0, lng: 0 }} />
         </div>
     );

@@ -11,10 +11,13 @@ const MapComponent = dynamic(() => import('@/app/test/(components)/MapComponent'
 
 function TestPage() {
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
-    const { data, isLoading, isError } = useProperties();
+    const { properties: data, isLoading, isError, mutation } = useProperties();
 
     const handleCardClick = (propertyId: number) => {
         setSelectedPropertyId(propertyId);
+    };
+    const handleDeleteProperty = (propertyId: number) => {
+        mutation.mutate(propertyId);
     };
 
     if (isLoading) {
@@ -35,6 +38,7 @@ function TestPage() {
                             property={property}
                             isSelected={selectedPropertyId === property.id}
                             onClick={() => handleCardClick(property.id)}
+                            onDelete={() => handleDeleteProperty(property.id)}
                         />
                     ))}
                 </div>
