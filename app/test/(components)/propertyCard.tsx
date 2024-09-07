@@ -17,7 +17,7 @@ interface PropertyCardProps {
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected, onClick, onDelete }) => {
     return (
         <Card
-            className={`mb-4 ${isSelected ? 'border border-blue-500' : ''} hover:shadow-md transition-all duration-300`}
+            className={`mb-4 ${isSelected ? 'border border-blue-500' : ''} hover:shadow-md transition-all duration-300 hover:cursor-pointer`}
             onClick={onClick}
         >
             <CardContent className="p-4">
@@ -26,17 +26,20 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                     <h2 className="text-base font-semibold">{property.address}</h2>
                     <div className="ml-auto">
                         <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                            <DropdownMenuTrigger >
                                 <Button variant="ghost">
                                     <SlOptions className="h-4 w-4 mr-1" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="bg-white shadow-md rounded-lg">
-                                <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onDelete}>
-                                    Delete Property
+                                <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none">
+                                    Edit Property
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none">
-                                    ...
+                                    Add to Reserved
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onDelete}>
+                                    Delete Property
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

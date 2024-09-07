@@ -45,6 +45,8 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                 zoom={12}
                 style={{ height: '100%', width: '100%' }}
                 zoomControl={false}
+                doubleClickZoom={false}
+
             >
                 <TileLayer
                     url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"

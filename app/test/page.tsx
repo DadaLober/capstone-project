@@ -4,20 +4,23 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { useProperties } from '@/app/test/(hooks)/useProperties';
 import { PropertyCard } from '@/app/test/(components)/propertyCard';
+import { useQueryClient } from '@tanstack/react-query';
 
 const MapComponent = dynamic(() => import('@/app/test/(components)/MapComponent'), {
     ssr: false,
 });
 
 function TestPage() {
+    const queryClient = useQueryClient();
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
     const { properties: data, isLoading, isError, mutation } = useProperties();
 
     const handleCardClick = (propertyId: number) => {
         setSelectedPropertyId(propertyId);
     };
-    const handleDeleteProperty = (propertyId: number) => {
-        mutation.mutate(propertyId);
+    const handleDeleteProperty = async (propertyId: number) => {
+        await mutation.mutateAsync(propertyId);
+        queryClient.invalidateQueries({ queryKey: ['properties'] });
     };
 
     if (isLoading) {

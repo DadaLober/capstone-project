@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PropertyInfo } from '@/app/test/(hooks)/types';
+import { useQueryClient } from '@tanstack/react-query';
 import '@/app/test/(components)/modal.css';
 
 interface AddFormModalProps {
@@ -25,6 +26,7 @@ const useLocation = (location: { lng: number; lat: number; }) => {
 };
 
 function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
+    const queryClient = useQueryClient();
     const currentLocation = useLocation(location);
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<PropertyInfo>(
         {
@@ -40,7 +42,9 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
         console.log(newData);
         try {
             const response = await axios.post('/api/addProperty', newData);
+            queryClient.invalidateQueries({ queryKey: ['properties'] });
             console.log(response.data);
+            return;
         } catch (error: any) {
             if (isAxiosError(error)) {
                 console.error(error.response?.data);
