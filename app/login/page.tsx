@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import "@/app/login/login.css";
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
+import { Button } from '@/components/ui/button';
 
 type TypeForm = {
     email: string;
@@ -80,7 +81,7 @@ export default function Login() {
                     </span>
                 </div>
                 {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-                <button
+                <Button
                     disabled={isSubmitting}
                     type="submit"
                     className="bg-green-500 text-slate-100 disabled:bg-gray-500 py-2 rounded hover:bg-green-700"
@@ -92,7 +93,7 @@ export default function Login() {
                     ) : (
                         'Submit'
                     )}
-                </button>
+                </Button>
             </form>
             <div className='text-center mt-4'>
                 <p className='text-slate-100'>New here? <Link href="/register" className='text-blue-600 hover:underline'>Create an Account</Link></p>

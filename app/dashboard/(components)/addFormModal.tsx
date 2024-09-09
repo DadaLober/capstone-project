@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { PropertyInfo } from '@/app/test/(hooks)/types';
+import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
 import { useQueryClient } from '@tanstack/react-query';
-import '@/app/test/(components)/modal.css';
+import '@/app/dashboard/(components)/modal.css';
 
 interface AddFormModalProps {
     isOpen: boolean;
@@ -73,8 +73,11 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
                         <Input
                             type="text"
                             placeholder="Address"
-                            {...register('address')}
+                            {...register('address', {
+                                required: "Address is required",
+                            })}
                         />
+                        {errors.address && (<p className="text-red-500 text-sm">{errors.address.message}</p>)}
                         <Input
                             type="number"
                             placeholder="Square meters"

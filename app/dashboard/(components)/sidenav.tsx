@@ -15,7 +15,7 @@ const SideNav = () => {
     };
 
     return (
-        <div className="flex h-full flex-col px-3 py-4 md:px-2 border border-e-red-100 ">
+        <div className="flex h-full flex-col px-3 py-4 md:px-2 border border-e-red-100 w-[200px] ">
             <div className="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40">
                 {/* <Logo /> or some shit */}
             </div>

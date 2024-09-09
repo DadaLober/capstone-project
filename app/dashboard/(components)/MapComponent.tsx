@@ -1,117 +1,81 @@
-'use client';
-import React, { useState, useEffect, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+'use client'
+
+import { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-import FormComp from './FormComp';
-import PropertyCard from './PropertyCard';
-import { propertyData, PropertyData } from './PropertyData';
+import AdditionalPropertiesModal from '@/app/dashboard/(components)/AdditionalPropertiesModal';
+import AddFormModal from '@/app/dashboard/(components)/addFormModal';
+import { Location, PropertyInfo, customIcon } from '@/app/dashboard/(hooks)/types';
+import { FormMarker, LocationMarker, PropertyMarker } from '@/app/dashboard/(components)/formMarker';
+import '@/app/dashboard/(components)/modal.css';
 
 interface MapProps {
-  center: [number, number];
-  zoom: number;
+    location: Location | null;
+    propertyInfo: PropertyInfo | null;
 }
-interface MarkerPosition {
-  lat: number;
-  lng: number;
-  name: string;
-}
-const customIcon = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-});
-const LocationMarker: React.FC<{
-  addMarker: (position: { lat: number; lng: number }) => void;
-}> = ({ addMarker }) => {
-  useMapEvents({
-    click(e) {
-      const newPosition = e.latlng;
-      addMarker(newPosition);
-    },
-  });
 
-  return null;
+const RecenterAutomatically = ({ lat, lng }: Location) => {
+    const map = useMap();
+    useEffect(() => {
+        map.setView([lat, lng], 16);
+    }, [lat, lng]);
+    return null;
 };
 
-const MapComponent: React.FC<MapProps> = ({ center, zoom }) => {
-  const [marker, setMarker] = useState<MarkerPosition | null>(null);
-  const [selectedPosition, setSelectedPosition] = useState<{ lat: number; lng: number } | null>(null);
-  const [locationName, setLocationName] = useState('');
+export default function MapComponent({ location, propertyInfo }: MapProps) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [marker, setMarker] = useState<Location | null>(null);
 
-  const addMarker = (position: { lat: number; lng: number }) => {
-    setSelectedPosition(position);
-    setMarker({ ...position, name: locationName || 'Unnamed Location' });
-  };
-  useEffect(() => {
-    if (marker) {
-      setMarker((prevMarker) =>
-        prevMarker ? { ...prevMarker, name: locationName || 'Unnamed Location' } : null
-      );
-    }
-  }, [locationName]);
+    const handleOpenView = () => {
+        setIsModalOpen(true);
+    };
+    const handleOpenForm = () => {
+        setIsFormOpen(true);
+    };
+    const addMarker = (position: Location) => {
+        setMarker(position);
+    };
 
-  const updateMarkerPosition = (e: L.LeafletEvent) => {
-    const newPosition = e.target.getLatLng();
-    setMarker((prevMarker) =>
-      prevMarker
-        ? { ...prevMarker, lat: newPosition.lat, lng: newPosition.lng }
-        : null
+    useEffect(() => {
+        if (!isFormOpen) {
+            setMarker(null);
+        }
+    }, [isFormOpen]);
+
+
+    return (
+        <div className="relative w-full h-[100vh] mr-4">
+            <MapContainer
+                center={[location?.lat || 0, location?.lng || 0]}
+                zoom={12}
+                style={{ height: '100%', width: '100%' }}
+                zoomControl={false}
+                doubleClickZoom={false}
+
+            >
+                <TileLayer
+                    url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                    subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+                    maxZoom={20}
+                    attribution='&copy; <a href="https://www.google.com/maps/">Google Maps</a>'
+                />
+                <LocationMarker addMarker={addMarker} />
+                {marker && (
+                    <>
+                        <Marker position={[marker.lat, marker.lng]} icon={customIcon} />
+                        <FormMarker location={marker} handleOpenForm={handleOpenForm} />
+                    </>
+                )}
+                {location != null && (
+                    <>
+                        <RecenterAutomatically lat={location.lat} lng={location.lng} />
+                        <PropertyMarker propertyInfo={propertyInfo} handleViewAdditionalProperties={handleOpenView} />
+                    </>
+                )}
+            </MapContainer>
+            <AdditionalPropertiesModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} propertyInfo={propertyInfo} />
+            <AddFormModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} location={marker || { lat: 0, lng: 0 }} />
+        </div>
     );
-    setSelectedPosition(newPosition);
-  };
-
-  return (
-    <div className='w-full h-full'>
-      <div className="relative z-10">
-        <div className='absolute top-0 left-0'>
-          <FormComp
-            selectedPosition={selectedPosition}
-            address={locationName}
-            setAddress={setLocationName}
-          />
-        </div>
-      </div>
-      <div className="relative  rounded w-full h-full flex  gap-5">
-
-        <div className='w-auto'>
-          <PropertyCard data={propertyData} />
-        </div>
-        {/*Side bar*/}
-
-        {/* Map container */}
-        <div className="w-full h-full z-0 shadow-lg border ">
-          <MapContainer style={{ height: '100%', width: '100%' }} center={center} zoom={zoom} scrollWheelZoom={true}>
-            <TileLayer
-              attribution=""
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <LocationMarker addMarker={addMarker} />
-            {marker && (
-              <Marker
-                position={{ lat: marker.lat, lng: marker.lng }}
-                icon={customIcon}
-                draggable={true}
-                eventHandlers={{
-                  dragend: updateMarkerPosition,
-                }}
-              >
-                <Popup>
-                  <strong>{marker.name}</strong> <br />
-                  Latitude: {marker.lat.toFixed(5)} <br />
-                  Longitude: {marker.lng.toFixed(5)}
-                </Popup>
-              </Marker>
-            )}
-          </MapContainer>
-        </div>
-
-
-      </div>
-
-    </div>
-  );
-};
-
-export default MapComponent;
+}

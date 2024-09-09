@@ -61,7 +61,7 @@ export default function UserAccountsPage() {
         return <div>Check console</div>;
     }
     return (
-        <div className="container mx-auto py-10">
+        <div className="container mx-auto">
             <DataTable columns={columns} data={users} />
         </div>
     );

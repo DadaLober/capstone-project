@@ -8,15 +8,25 @@ interface Location {
 
 interface PropertyInfo {
     id: number;
-    location: Location;
-    address: string;
+    location?: Location;
+    address?: string;
     status?: string;
-    sqm: number;
+    sqm?: number;
     priceHistory?: { date: string; price: number }[];
     createdAt: string;
     otherAttributes?: {
         [key: string]: string;
     };
+}
+
+interface Reservations {
+    id: number;
+    propertyId: number;
+    userId: number;
+    expiresAt: string;
+    createdAt: string;
+    fee: number;
+    status: string;
 }
 
 interface GeocodeResult {
@@ -37,4 +47,4 @@ const customIcon = L.icon({
 
 export { customIcon };
 
-export type { Location, PropertyInfo, GeocodeResult };
+export type { Location, PropertyInfo, GeocodeResult, Reservations };

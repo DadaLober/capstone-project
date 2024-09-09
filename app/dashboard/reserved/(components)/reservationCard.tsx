@@ -3,12 +3,13 @@
 import { FaMapMarkerAlt, FaAddressBook } from 'react-icons/fa';
 import { SlOptions } from "react-icons/sl";
 import { Card, CardContent } from '@/components/ui/card';
-import { PropertyInfo } from '@/app/test/(hooks)/types';
-import { Button } from '@/components/ui/button';
+import { PropertyInfo, Reservations } from '@/app/dashboard/(hooks)/types';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 interface PropertyCardProps {
-    property: PropertyInfo;
+    property: PropertyInfo & Reservations & {
+        propertyInfo: PropertyInfo[]
+    };
     isSelected: boolean;
     onClick: () => void;
     onDelete: () => void;
@@ -23,13 +24,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
             <CardContent className="p-4">
                 <div className="flex items-center mb-2">
                     <FaAddressBook className="mr-2 text-green-500" size={18} />
-                    <h2 className="text-base font-semibold">{property.address}</h2>
+                    <h2 className="text-base font-semibold">{property.propertyInfo[0].address}</h2>
                     <div className="ml-auto">
                         <DropdownMenu>
                             <DropdownMenuTrigger >
-                                <Button variant="ghost">
-                                    <SlOptions className="h-4 w-4 mr-1" />
-                                </Button>
+                                <SlOptions className="h-4 w-4 mr-1" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="bg-white shadow-md rounded-lg">
                                 <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none">
@@ -49,12 +48,12 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                     <div className="flex items-center">
                         <FaMapMarkerAlt className="mr-2 text-red-500" size={14} />
                         <p className="text-xs text-gray-600">
-                            {property.location ? `${property.location.lng}, ${property.location.lat}` : 'Location not available'}
+                            {property.propertyInfo[0].location ? `${property.propertyInfo[0].location.lng}, ${property.propertyInfo[0].location.lat}` : 'Location not available'}
                         </p>
                     </div>
                 </div>
                 <div className="flex justify-between items-end mb-2">
-                    <p className="text-base font-medium">${property.priceHistory?.[0]?.price || 'Price not available'}</p>
+                    <p>Fee:{property.fee}</p>
                     <p className="text-xs text-gray-500">{property.sqm} m²</p>
                 </div>
             </CardContent>

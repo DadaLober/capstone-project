@@ -1,62 +1,15 @@
 'use client'
 
-import React from 'react'
-import { Marker, Popup, useMapEvents } from 'react-leaflet'
-import { customIcon, PropertyInfo } from '@/app/test/(hooks)/types'
-import { Button } from "@/components/ui/button"
-import { Location } from '@/app/test/(hooks)/types'
-
-interface FormMarkerProps {
-    location: Location
-    handleOpenForm: () => void
-}
+import { Marker, Popup } from 'react-leaflet';
+import { Button } from "@/components/ui/button";
+import { PropertyInfo, customIcon } from '@/app/dashboard/(hooks)/types';
 
 interface LocationMarkerProps {
-    addMarker: (position: Location) => void;
-}
-
-interface PropertyMarkerProps {
     propertyInfo: PropertyInfo | null;
     handleViewAdditionalProperties: () => void;
 }
 
-const FormMarker: React.FC<FormMarkerProps> = ({ location, handleOpenForm }) => {
-    return (
-        <Marker
-            position={location}
-            icon={customIcon}
-        >
-            <Popup className="bg-white rounded-lg shadow-md p-4 w-64 flex flex-col items-center justify-center text-center">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">{location.name || 'Unnamed Location'}</h3>
-                <div className="space-y-2">
-                    <p className="text-sm text-gray-500">Latitude: {location.lat}</p>
-                    <p className="text-sm text-gray-500">Longitude: {location.lng}</p>
-                </div>
-                <div className="text-center">
-                    <Button
-                        variant="default"
-                        className="mt-4 w-full"
-                        onClick={handleOpenForm}
-                    >
-                        Add Property
-                    </Button>
-                </div>
-            </Popup>
-        </Marker>
-    )
-}
-
-const LocationMarker: React.FC<LocationMarkerProps> = ({ addMarker }) => {
-    useMapEvents({
-        click(e) {
-            const newPosition = e.latlng;
-            addMarker(newPosition);
-        },
-    });
-    return null;
-};
-
-const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleViewAdditionalProperties }) => {
+const PropertyMarker: React.FC<LocationMarkerProps> = ({ propertyInfo, handleViewAdditionalProperties }) => {
     if (!propertyInfo) return null;
 
     return (
@@ -92,4 +45,5 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
         </Marker>
     );
 };
-export { FormMarker, LocationMarker, PropertyMarker };
+
+export default PropertyMarker

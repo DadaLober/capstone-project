@@ -14,7 +14,8 @@ const getPropertyInfo = (property: PropertyInfo): PropertyInfo => ({
 
 export const useProperties = () => {
     const fetchProperties = async (): Promise<PropertyInfo[]> => {
-        const response = await axios.get<PropertyInfo[]>('api/getProperties');
+        const response = await axios.get<PropertyInfo[]>('http://localhost:3000/api/getProperties');
+        console.log(response.data);
         return response.data.map(getPropertyInfo);
     };
 

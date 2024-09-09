@@ -5,6 +5,7 @@ import { useForm, type FieldValues } from "react-hook-form";
 import Link from 'next/link';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '@/app/register/register.css';
+import { Button } from '@/components/ui/button';
 
 
 interface FormData {
@@ -103,13 +104,13 @@ export default function RegisterPage() {
                 {errors.password && (
                     <p className="text-red-500 text-sm">Password must be at least 8 characters</p>
                 )}
-                <button
+                <Button
                     disabled={isSubmitting}
                     type="submit"
                     className="bg-green-500 text-white py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
                 >
                     {isSubmitting ? 'Submitting...' : 'Register'}
-                </button>
+                </Button>
 
                 <div className='mt-4 text-center'>
                     <p className="text-sm">Already have an account? <Link href='/login' className='text-blue-500 hover:underline'>Login</Link></p>
