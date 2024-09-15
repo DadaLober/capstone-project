@@ -23,8 +23,9 @@ export const useReservations = () => {
         return result;
     };
 
-    const deleteProperty = async (id: number): Promise<void> => {
-        await axios.delete(`api/deleteProperty`, {
+    const createReservation = async (id: number): Promise<void> => {
+        console.log(id);
+        await axios.post(`api/addToReserved`, {
             params: {
                 id: id,
             }
@@ -39,7 +40,7 @@ export const useReservations = () => {
     });
 
     const mutation = useMutation({
-        mutationFn: (id: number) => deleteProperty(id),
+        mutationFn: (id: number) => createReservation(id),
     });
 
     return { properties, isLoading, isError, mutation };
