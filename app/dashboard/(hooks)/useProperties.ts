@@ -4,22 +4,15 @@ import axios from 'axios';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { PropertyInfo } from './types';
 
-const getPropertyInfo = (property: PropertyInfo): PropertyInfo => ({
-    ...property,
-    priceHistory: property.priceHistory?.map(priceHistoryItem => ({
-        date: new Date().toISOString(),
-        price: priceHistoryItem.price,
-    })),
-});
-
 export const useProperties = () => {
     const fetchProperties = async (): Promise<PropertyInfo[]> => {
-        const response = await axios.get<PropertyInfo[]>('http://localhost:3000/api/getProperties');
+        const response = await axios.get('http://localhost:3000/api/getProperties');
         console.log(response.data);
-        return response.data.map(getPropertyInfo);
+        return response.data;
     };
 
     const deleteProperty = async (id: number): Promise<void> => {
+        console.log(id);
         await axios.delete(`api/deleteProperty`, {
             params: {
                 id: id,

@@ -3,13 +3,11 @@
 import { FaMapMarkerAlt, FaAddressBook } from 'react-icons/fa';
 import { SlOptions } from "react-icons/sl";
 import { Card, CardContent } from '@/components/ui/card';
-import { PropertyInfo, Reservations } from '@/app/dashboard/(hooks)/types';
+import { Reservations } from '@/app/dashboard/(hooks)/types';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 interface PropertyCardProps {
-    property: PropertyInfo & Reservations & {
-        propertyInfo: PropertyInfo[]
-    };
+    property: Reservations;
     isSelected: boolean;
     onClick: () => void;
     onDelete: () => void;
@@ -54,7 +52,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                 </div>
                 <div className="flex justify-between items-end mb-2">
                     <p>Fee:{property.fee}</p>
-                    <p className="text-xs text-gray-500">{property.sqm} m²</p>
+                    <p className="text-xs text-gray-500">{property.propertyInfo[0].sqm} m²</p>
                 </div>
             </CardContent>
         </Card>

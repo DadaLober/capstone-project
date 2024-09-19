@@ -12,11 +12,11 @@ const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapCompo
     ssr: false,
 });
 
-function TestPage() {
+function Dashboard() {
     const queryClient = useQueryClient();
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
-    const { properties: data, isLoading, isError, mutation: properties } = useProperties();
-    const { mutation: reservations } = useReservations();
+    const { properties, isLoading, isError, mutation: deleteProperty } = useProperties();
+    const { mutation: addReserved } = useReservations();
 
     const handleAction = (propertyId: number, action: 'select' | 'delete' | 'reserve') => {
         switch (action) {
@@ -33,12 +33,12 @@ function TestPage() {
     };
 
     const handleDeleteProperty = async (propertyId: number) => {
-        await properties.mutateAsync(propertyId);
+        await deleteProperty.mutateAsync(propertyId);
         queryClient.invalidateQueries({ queryKey: ['properties'] });
     };
 
     const handleAddToReserved = async (id: number) => {
-        await reservations.mutateAsync(id);
+        await addReserved.mutateAsync(id);
         queryClient.invalidateQueries({ queryKey: ['reservations', 'properties'] });
     };
 
@@ -56,7 +56,7 @@ function TestPage() {
             <div className="flex flex-col md:flex-row mt-3 gap-4 cool-scrollbar ">
                 <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
                     <div className="flex flex-col ">
-                        {data?.map((property) => (
+                        {properties?.map((property) => (
                             <PropertyCard
                                 key={property.id}
                                 property={property}
@@ -69,12 +69,12 @@ function TestPage() {
                     </div>
                 </div>
                 <MapComponent
-                    location={data?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
-                    propertyInfo={data?.find(p => p.id === selectedPropertyId) ?? null}
+                    location={properties?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
+                    propertyInfo={properties?.find(p => p.id === selectedPropertyId) ?? null}
                 />
             </div>
         </>
     );
 }
 
-export default TestPage;
+export default Dashboard;

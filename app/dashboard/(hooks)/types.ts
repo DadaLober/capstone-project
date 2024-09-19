@@ -8,10 +8,10 @@ interface Location {
 
 interface PropertyInfo {
     id: number;
-    location?: Location;
-    address?: string;
+    location: Location;
+    address: string;
     status?: string;
-    sqm?: number;
+    sqm: number;
     priceHistory?: { date: string; price: number }[];
     createdAt: string;
     otherAttributes?: {
@@ -27,6 +27,7 @@ interface Reservations {
     createdAt: string;
     fee: number;
     status: string;
+    propertyInfo: PropertyInfo[];
 }
 
 interface GeocodeResult {

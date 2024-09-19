@@ -4,28 +4,23 @@ import axios from 'axios';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { PropertyInfo, Reservations } from './types';
 
-interface reservationType extends PropertyInfo {
-    reservations?: Reservations[];
-}
-
 export const useReservations = () => {
-    const fetchPropertiesAndReservations = async (): Promise<(reservationType)[]> => {
+    const fetchPropertiesAndReservations = async () => {
         const propertiesResponse = await axios.get<PropertyInfo[]>('http://localhost:3000/api/getProperties');
         const reservationsResponse = await axios.get<Reservations[]>('http://localhost:3000/api/getReservations');
 
         //Append reservations to properties
         const result = reservationsResponse.data.map((reservations) => ({
             ...reservations,
-            propertyInfo: propertiesResponse.data.filter((property) => property.id === reservations.propertyId) as Reservations[],
+            propertyInfo: propertiesResponse.data.filter((property) => property.id === reservations.propertyId),
         }));
 
-        console.log(result);
         return result;
     };
 
-    const createReservation = async (id: number): Promise<void> => {
+    const createReservation = async (id: number) => {
         console.log(id);
-        await axios.post(`api/addToReserved`, {
+        await axios.post('api/addToReserved', {
             params: {
                 id: id,
             }

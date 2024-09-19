@@ -13,7 +13,7 @@ const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapCompo
 function ReservedPage() {
     const queryClient = useQueryClient();
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
-    const { properties: data, isLoading, isError, mutation } = useReservations();
+    const { properties, isLoading, isError, mutation } = useReservations();
 
     const handleCardClick = (propertyId: number) => {
         setSelectedPropertyId(propertyId);
@@ -30,12 +30,13 @@ function ReservedPage() {
     if (isError) {
         return <div>Error</div>;
     }
+    console.log(properties);
 
     return (
         <div className="flex flex-col md:flex-row mt-3 gap-4 cool-scrollbar ">
             <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
                 <div className="flex flex-col ">
-                    {data?.map((property) => (
+                    {properties?.map((property) => (
                         <PropertyCard
                             key={property.id}
                             property={property}
@@ -47,8 +48,8 @@ function ReservedPage() {
                 </div>
             </div>
             <MapComponent
-                location={data?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
-                propertyInfo={data?.find(p => p.id === selectedPropertyId) ?? null}
+                location={properties?.find(p => p.id === selectedPropertyId)?.propertyInfo[0]?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
+                propertyInfo={properties?.find(p => p.id === selectedPropertyId)?.propertyInfo[0] ?? null}
             />
         </div>
     );
