@@ -30,13 +30,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="bg-white shadow-md rounded-lg">
                                 <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none">
-                                    Edit Property
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none">
-                                    Add to Reserved
+                                    Edit Reservation
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onDelete}>
-                                    Delete Property
+                                    Delete Reservation
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

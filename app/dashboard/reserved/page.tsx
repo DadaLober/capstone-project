@@ -13,13 +13,13 @@ const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapCompo
 function ReservedPage() {
     const queryClient = useQueryClient();
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
-    const { properties, isLoading, isError, mutation } = useReservations();
+    const { properties, isLoading, isError, deleteMutation } = useReservations();
 
     const handleCardClick = (propertyId: number) => {
         setSelectedPropertyId(propertyId);
     };
     const handleDeleteProperty = async (propertyId: number) => {
-        await mutation.mutateAsync(propertyId);
+        await deleteMutation.mutateAsync(propertyId);
         queryClient.invalidateQueries({ queryKey: ['properties'] });
     };
 
@@ -33,7 +33,7 @@ function ReservedPage() {
     console.log(properties);
 
     return (
-        <div className="flex flex-col md:flex-row mt-3 gap-4 cool-scrollbar ">
+        <div className="flex flex-col md:flex-row mt-3 gap-6 cool-scrollbar ">
             <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
                 <div className="flex flex-col ">
                     {properties?.map((property) => (

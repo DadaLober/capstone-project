@@ -20,7 +20,16 @@ export const useReservations = () => {
 
     const createReservation = async (id: number) => {
         console.log(id);
-        await axios.post('api/addToReserved', {
+        await axios.post('http://localhost:3000/api/addToReserved', {
+            params: {
+                id: id,
+            }
+        });
+    };
+
+    const deleteReservation = async (id: number) => {
+        console.log(id);
+        await axios.delete('http://localhost:3000/api/deleteReservation', {
             params: {
                 id: id,
             }
@@ -38,5 +47,9 @@ export const useReservations = () => {
         mutationFn: (id: number) => createReservation(id),
     });
 
-    return { properties, isLoading, isError, mutation };
+    const deleteMutation = useMutation({
+        mutationFn: (id: number) => deleteReservation(id),
+    });
+
+    return { properties, isLoading, isError, mutation, deleteMutation };
 };
