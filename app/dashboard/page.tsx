@@ -7,6 +7,7 @@ import { useReservations } from './(hooks)/useReservations';
 import { PropertyCard } from '@/app/dashboard/(components)/propertyCard';
 import { useQueryClient } from '@tanstack/react-query';
 import Header from './(components)/Header';
+import { PropertyInfo } from './(hooks)/types';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapComponent'), {
     ssr: false,
@@ -15,31 +16,39 @@ const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapCompo
 function Dashboard() {
     const queryClient = useQueryClient();
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
-    const { properties, isLoading, isError, mutation: deleteProperty } = useProperties();
+    const { properties, isLoading, isError, mutation: deleteProperty, editMutation: updateProperty } = useProperties();
     const { mutation: addReserved } = useReservations();
 
-    const handleAction = (propertyId: number, action: 'select' | 'delete' | 'reserve') => {
+    const handleAction = (property: PropertyInfo, action: 'select' | 'delete' | 'reserve' | 'update') => {
         switch (action) {
             case 'select':
-                setSelectedPropertyId(propertyId);
+                setSelectedPropertyId(property.id);
                 break;
             case 'delete':
-                handleDeleteProperty(propertyId);
+                handleDeleteProperty(property);
                 break;
             case 'reserve':
-                handleAddToReserved(propertyId);
+                handleAddToReserved(property);
+                break;
+            case 'update':
+                handleUpdateProperty(property);
                 break;
         }
     };
 
-    const handleDeleteProperty = async (propertyId: number) => {
-        await deleteProperty.mutateAsync(propertyId);
+    const handleDeleteProperty = async (property: PropertyInfo) => {
+        await deleteProperty.mutateAsync(property.id);
         queryClient.invalidateQueries({ queryKey: ['properties'] });
     };
 
-    const handleAddToReserved = async (id: number) => {
-        await addReserved.mutateAsync(id);
+    const handleAddToReserved = async (property: PropertyInfo) => {
+        await addReserved.mutateAsync(property.id);
         queryClient.invalidateQueries({ queryKey: ['reservations', 'properties'] });
+    };
+
+    const handleUpdateProperty = async (property: PropertyInfo) => {
+        await updateProperty.mutateAsync(property);
+        queryClient.invalidateQueries({ queryKey: ['properties'] });
     };
 
     if (isLoading) {
@@ -61,9 +70,10 @@ function Dashboard() {
                                 key={property.id}
                                 property={property}
                                 isSelected={selectedPropertyId === property.id}
-                                onClick={() => handleAction(property.id, 'select')}
-                                onDelete={() => handleAction(property.id, 'delete')}
-                                onAddToReserved={() => handleAction(property.id, 'reserve')}
+                                onClick={() => handleAction(property, 'select')}
+                                onDelete={() => handleAction(property, 'delete')}
+                                onAddToReserved={() => handleAction(property, 'reserve')}
+                                onUpdate={() => handleAction(property, 'update')}
                             />
                         ))}
                     </div>

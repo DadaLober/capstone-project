@@ -12,9 +12,10 @@ interface PropertyCardProps {
     onClick: () => void;
     onDelete: () => void;
     onAddToReserved: () => void;
+    onUpdate: () => void;
 }
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected, onClick, onDelete, onAddToReserved }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected, onClick, onDelete, onAddToReserved, onUpdate }) => {
     return (
         <Card
             className={`mb-4 ${isSelected ? 'border border-blue-500' : ''} hover:shadow-md transition-all duration-300 hover:cursor-pointer`}
@@ -30,7 +31,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                                 <SlOptions className="h-4 w-4 mr-1" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="bg-white shadow-md rounded-lg">
-                                <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none">
+                                <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onUpdate}>
                                     Edit Property
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onAddToReserved}>

@@ -7,17 +7,16 @@ import { PropertyInfo } from './types';
 export const useProperties = () => {
     const fetchProperties = async (): Promise<PropertyInfo[]> => {
         const response = await axios.get('http://localhost:3000/api/getProperties');
-        console.log(response.data);
         return response.data;
     };
 
     const deleteProperty = async (id: number): Promise<void> => {
-        console.log(id);
-        await axios.delete(`api/deleteProperty`, {
-            params: {
-                id: id,
-            }
-        });
+        await axios.delete(`http://localhost:3000/api/deleteProperty`, { params: { id: id, } });
+    };
+
+    const editProperty = async (property: PropertyInfo): Promise<void> => {
+        console.log(property);
+        await axios.patch(`http://localhost:3000/api/editProperty`, property);
     };
     const queryKey = ['properties'];
 
@@ -30,5 +29,9 @@ export const useProperties = () => {
         mutationFn: (id: number) => deleteProperty(id),
     });
 
-    return { properties, isLoading, isError, mutation };
+    const editMutation = useMutation({
+        mutationFn: (property: PropertyInfo) => editProperty(property),
+    });
+
+    return { properties, isLoading, isError, mutation, editMutation };
 };
