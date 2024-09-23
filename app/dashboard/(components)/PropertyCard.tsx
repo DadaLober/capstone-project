@@ -4,6 +4,7 @@ import { FaMapMarkerAlt, FaAddressBook } from 'react-icons/fa';
 import { SlOptions } from "react-icons/sl";
 import { Card, CardContent } from '@/components/ui/card';
 import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
+import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 interface PropertyCardProps {
@@ -17,6 +18,7 @@ interface PropertyCardProps {
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected, onClick, onDelete, onAddToReserved, onUpdate }) => {
     return (
+        console.log(property),
         <Card
             className={`mb-4 ${isSelected ? 'border border-blue-500' : ''} hover:shadow-md transition-all duration-300 hover:cursor-pointer`}
             onClick={onClick}
@@ -24,7 +26,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
             <CardContent className="p-4">
                 <div className="flex items-center mb-2">
                     <FaAddressBook className="mr-2 text-green-500" size={18} />
-                    <h2 className="text-base font-semibold">{property.address}</h2>
+                    <div className="flex flex-row">
+                        <h2 className="text-l font-semibold leading-tight">
+                            {property.address}
+                        </h2>
+                    </div>
                     <div className="ml-auto">
                         <DropdownMenu>
                             <DropdownMenuTrigger >
@@ -52,9 +58,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                         </p>
                     </div>
                 </div>
-                <div className="flex justify-between items-end mb-2">
-                    <p className="text-base font-medium">${property.priceHistory?.[0]?.price || 'Price not available'}</p>
-                    <p className="text-xs text-gray-500">{property.sqm} m²</p>
+                <div className="flex justify-end items-end">
+                    <Badge variant="secondary">
+                        {property.sqm} m²
+                    </Badge>
                 </div>
             </CardContent>
         </Card>

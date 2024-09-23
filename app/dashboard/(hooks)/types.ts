@@ -12,13 +12,15 @@ interface PropertyInfo {
     address: string;
     status?: string;
     sqm: number;
-    priceHistory?: { date: string; price: number }[];
+    priceHistory?: Array<{
+        price: number;
+        time: string;
+    }>;
     createdAt: string;
     otherAttributes?: {
         [key: string]: string;
     };
 }
-
 interface Reservations {
     id: number;
     propertyId: number;

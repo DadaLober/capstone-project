@@ -5,6 +5,7 @@ import { SlOptions } from "react-icons/sl";
 import { Card, CardContent } from '@/components/ui/card';
 import { Reservations } from '@/app/dashboard/(hooks)/types';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
 
 interface PropertyCardProps {
     property: Reservations;
@@ -22,7 +23,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
             <CardContent className="p-4">
                 <div className="flex items-center mb-2">
                     <FaAddressBook className="mr-2 text-green-500" size={18} />
-                    <h2 className="text-base font-semibold">{property.propertyInfo[0].address}</h2>
+                    <h2 className="text-l font-semibold">{property.propertyInfo[0].address}</h2>
                     <div className="ml-auto">
                         <DropdownMenu>
                             <DropdownMenuTrigger >
@@ -47,9 +48,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                         </p>
                     </div>
                 </div>
-                <div className="flex justify-between items-end mb-2">
-                    <p>Fee:{property.fee}</p>
-                    <p className="text-xs text-gray-500">{property.propertyInfo[0].sqm} m²</p>
+                <div className="flex justify-end items-end mb-2 space-x-2">
+                    <Badge variant="default">
+                        {property.status}
+                    </Badge>
+                    <Badge variant="secondary">
+                        {property.propertyInfo[0].sqm} m²
+                    </Badge>
                 </div>
             </CardContent>
         </Card>

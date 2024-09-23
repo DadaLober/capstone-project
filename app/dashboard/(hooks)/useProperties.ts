@@ -15,7 +15,6 @@ export const useProperties = () => {
     };
 
     const editProperty = async (property: PropertyInfo): Promise<void> => {
-        console.log(property);
         await axios.patch(`http://localhost:3000/api/editProperty`, property);
     };
     const queryKey = ['properties'];

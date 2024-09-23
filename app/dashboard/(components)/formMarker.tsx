@@ -20,13 +20,29 @@ interface PropertyMarkerProps {
     handleViewAdditionalProperties: () => void;
 }
 
+
+interface CustomPopupProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+const CustomPopup: React.FC<CustomPopupProps> = ({ children }) => {
+    return (
+        <Popup>
+            <div style={{ backgroundColor: 'transparent', color: '#fff', border: 'none', borderRadius: '0', padding: '0' }}>
+                {children}
+            </div>
+        </Popup>
+    );
+};
+
 const FormMarker: React.FC<FormMarkerProps> = ({ location, handleOpenForm }) => {
     return (
         <Marker
             position={location}
             icon={customIcon}
         >
-            <Popup className="bg-white rounded-lg shadow-md p-4 w-64 flex flex-col items-center justify-center text-center">
+            <CustomPopup className="bg-white rounded-lg shadow-md p-4 w-64 flex flex-col items-center justify-center text-center">
                 <h3 className="text-xl font-semibold mb-2 text-gray-800">{location.name || 'Unnamed Location'}</h3>
                 <div className="space-y-2">
                     <p className="text-sm text-gray-500">Latitude: {location.lat}</p>
@@ -41,7 +57,7 @@ const FormMarker: React.FC<FormMarkerProps> = ({ location, handleOpenForm }) => 
                         Add Property
                     </Button>
                 </div>
-            </Popup>
+            </CustomPopup>
         </Marker>
     )
 }
