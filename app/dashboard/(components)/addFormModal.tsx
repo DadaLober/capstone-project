@@ -8,7 +8,9 @@ import { Input } from '@/components/ui/input';
 import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { PiMagicWand } from "react-icons/pi";
 import '@/app/dashboard/(components)/modal.css';
+import { useNominatimGeocode } from '../(hooks)/useGeocode';
 
 interface AddFormModalProps {
     isOpen: boolean;
@@ -29,7 +31,7 @@ const useLocation = (location: { lng: number; lat: number; }) => {
 function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
     const queryClient = useQueryClient();
     const currentLocation = useLocation(location);
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<PropertyInfo>(
+    const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<PropertyInfo>(
         {
             defaultValues: {
                 createdAt: new Date().toISOString(),
@@ -74,6 +76,25 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
         }
     };
 
+    const handleClose = () => {
+        reset();
+        onClose();
+    };
+
+    const generateAddress = async () => {
+        if (currentLocation.lat && currentLocation.lng) {
+            try {
+                const result = await useNominatimGeocode(currentLocation.lat, currentLocation.lng);
+                console.log(result);
+                if (result) {
+                    setValue('address', result.display_name);
+                }
+            } catch (error) {
+                console.error('Error generating address:', error);
+            }
+        }
+    };
+
     return (
         <div className={`modal ${isOpen ? 'is-open' : ''}`}>
             <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -92,13 +113,18 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
                             value={`Longitude: ${currentLocation.lng}`}
                             disabled
                         />
-                        <Input
-                            type="text"
-                            placeholder="Address"
-                            {...register('address', {
-                                required: "Address is required",
-                            })}
-                        />
+                        <div className="flex justify-between mb-4">
+                            <Input
+                                type="text"
+                                placeholder="Address"
+                                {...register('address', {
+                                    required: "Address is required",
+                                })}
+                            />
+                            <Button type="button" onClick={generateAddress} className="ml-3" variant="secondary">
+                                <PiMagicWand />
+                            </Button>
+                        </div>
                         {errors.address && (<p className="text-red-500 text-sm">{errors.address.message}</p>)}
                         <Input
                             type="number"
@@ -168,11 +194,11 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
                         </Button>
                     </form>
                 </div>
-                <Button className="modal-close-button flex-shrink-0" aria-label="close" onClick={onClose}>
+                <Button className="modal-close-button flex-shrink-0" aria-label="close" onClick={handleClose}>
                     Close
                 </Button>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }
 export default AddFormModal;

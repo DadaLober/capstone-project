@@ -43,7 +43,6 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
         }
     }, [isFormOpen]);
 
-
     return (
         <div className="relative w-full h-[100vh] mr-4">
             <MapContainer
@@ -52,13 +51,10 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                 style={{ height: '100%', width: '100%' }}
                 zoomControl={false}
                 doubleClickZoom={false}
-
             >
                 <TileLayer
-                    url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
-                    subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
-                    maxZoom={20}
-                    attribution='&copy; <a href="https://www.google.com/maps/">Google Maps</a>'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 />
                 <LocationMarker addMarker={addMarker} />
                 {marker && (
