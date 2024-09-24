@@ -2,7 +2,7 @@
 
 import axios, { isAxiosError } from 'axios';
 import { useForm, useFieldArray } from 'react-hook-form';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PropertyInfo, Location } from '@/app/dashboard/(hooks)/types';
@@ -21,9 +21,11 @@ interface AddFormModalProps {
 const useLocation = (location: Location) => {
     const [currentLocation, setCurrentLocation] = useState(location);
 
+    const memoizedLocation = useMemo(() => ({ ...location }), [location.lat, location.lng]);
+
     useEffect(() => {
-        setCurrentLocation({ ...location });
-    }, [location]);
+        setCurrentLocation(memoizedLocation);
+    }, [memoizedLocation]);
 
     return currentLocation;
 };

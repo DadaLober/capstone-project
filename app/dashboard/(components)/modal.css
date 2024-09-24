@@ -6,7 +6,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .modal.is-open {
@@ -33,8 +33,4 @@
 .text-emphasized {
     font-weight: bold;
     color: #333;
-}
-
-.prio {
-    z-index: 1000;
 }

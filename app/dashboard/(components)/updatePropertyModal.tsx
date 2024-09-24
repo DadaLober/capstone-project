@@ -54,7 +54,6 @@ function AddFormModal({ isOpen, onClose, property }: AddFormModalProps) {
             return;
         }
         const newData = { ...data, location: currentLocation, sqm: Number(data.sqm), id: property.id };
-
         // Convert price to number and remove empty items
         if (newData.priceHistory) {
             newData.priceHistory = newData.priceHistory.filter(item => {
@@ -82,29 +81,25 @@ function AddFormModal({ isOpen, onClose, property }: AddFormModalProps) {
         }
     };
 
-    useEffect(() => {
-        setPropertyValues();
-    }, [property]);
-
     const setPropertyValues = () => {
         if (!property) {
             return;
         }
-
         setValue('address', property.address);
         setValue('sqm', property.sqm);
-
         property.priceHistory?.forEach((priceItem, index) => {
             const isoString = priceItem.time;
             const [date, time] = isoString.split('T');
             const [year, month, day] = date.split('-');
             const [hours, minutes] = time.split(':');
-
             setValue(`priceHistory.${index}.price`, priceItem.price);
             setValue(`priceHistory.${index}.time`, `${year}-${month}-${day}T${hours}:${minutes}`);
         });
     };
 
+    useEffect(() => {
+        setPropertyValues();
+    }, [property]);
 
     const handleClose = () => {
         reset();
