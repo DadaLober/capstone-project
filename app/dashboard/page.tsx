@@ -4,10 +4,11 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { useProperties } from '@/app/dashboard/(hooks)/useProperties';
 import { useReservations } from './(hooks)/useReservations';
-import { PropertyCard } from '@/app/dashboard/(components)/propertyCard';
+import { PropertyCard } from '@/app/dashboard/(components)/PropertyCard';
 import { useQueryClient } from '@tanstack/react-query';
 import Header from './(components)/Header';
 import { PropertyInfo } from './(hooks)/types';
+import AddFormModal from './(components)/updatePropertyModal';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapComponent'), {
     ssr: false,
@@ -16,7 +17,8 @@ const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapCompo
 function Dashboard() {
     const queryClient = useQueryClient();
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
-    const { properties, isLoading, isError, mutation: deleteProperty, editMutation: updateProperty } = useProperties();
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const { properties, isLoading, isError, mutation: deleteProperty } = useProperties();
     const { mutation: addReserved } = useReservations();
 
     const handleAction = (property: PropertyInfo, action: 'select' | 'delete' | 'reserve' | 'update') => {
@@ -31,7 +33,7 @@ function Dashboard() {
                 handleAddToReserved(property);
                 break;
             case 'update':
-                handleUpdateProperty(property);
+                handleUpdateProperty();
                 break;
         }
     };
@@ -46,8 +48,8 @@ function Dashboard() {
         queryClient.invalidateQueries({ queryKey: ['reservations', 'properties'] });
     };
 
-    const handleUpdateProperty = async (property: PropertyInfo) => {
-        await updateProperty.mutateAsync(property);
+    const handleUpdateProperty = async () => {
+        setIsFormOpen(true);
         queryClient.invalidateQueries({ queryKey: ['properties'] });
     };
 
@@ -66,15 +68,18 @@ function Dashboard() {
                 <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
                     <div className="flex flex-col ">
                         {properties?.map((property) => (
-                            <PropertyCard
-                                key={property.id}
-                                property={property}
-                                isSelected={selectedPropertyId === property.id}
-                                onClick={() => handleAction(property, 'select')}
-                                onDelete={() => handleAction(property, 'delete')}
-                                onAddToReserved={() => handleAction(property, 'reserve')}
-                                onUpdate={() => handleAction(property, 'update')}
-                            />
+                            <>
+                                <PropertyCard
+                                    key={property.id}
+                                    property={property}
+                                    isSelected={selectedPropertyId === property.id}
+                                    onClick={() => handleAction(property, 'select')}
+                                    onDelete={() => handleAction(property, 'delete')}
+                                    onAddToReserved={() => handleAction(property, 'reserve')}
+                                    onUpdate={() => handleAction(property, 'update')}
+                                />
+                                <AddFormModal isOpen={isFormOpen} onClose={() => { setIsFormOpen(false) }} property={properties.find(p => p.id === selectedPropertyId) ?? null} />
+                            </>
                         ))}
                     </div>
                 </div>

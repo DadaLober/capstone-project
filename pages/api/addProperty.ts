@@ -5,6 +5,7 @@ import { extractCookies } from '@/pages/api/utils';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
         try {
+            console.log('Request body:', req.body);
             const { token, refreshToken } = extractCookies(req);
 
             if (token && refreshToken) {

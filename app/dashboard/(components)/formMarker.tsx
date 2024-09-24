@@ -81,10 +81,6 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                 <h3 className="text-xl font-bold mb-4 text-blue-600">{propertyInfo.address}</h3>
                 <div className="flex flex-col space-y-4">
                     <div className="flex items-center space-x-2">
-                        <span className="font-bold">Status:</span>
-                        <span>{propertyInfo.status || 'Not Available'}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
                         <span className="font-bold">Sqm:</span>
                         <span>{propertyInfo.sqm} m²</span>
                     </div>

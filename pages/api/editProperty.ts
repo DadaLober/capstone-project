@@ -13,10 +13,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         'Authorization': `Bearer ${token}`,
                     },
                 });
-                const temp = {
-                    address: '123 Example St',
-                }
-                const response = await axiosInstance.patch(`http://localhost:8080/api/v1/properties/${req.body.id}`, temp);
+                console.log(req.body);
+                const response = await axiosInstance.patch(`http://localhost:8080/api/v1/properties/${req.body.id}`, req.body);
                 console.log("Server response:", response.data);
                 res.status(200).json(response.data);
             } else {

@@ -5,7 +5,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo, Location } from '@/app/dashboard/(hooks)/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { PiMagicWand } from "react-icons/pi";
@@ -14,11 +14,11 @@ import { useNominatimGeocode } from '../(hooks)/useGeocode';
 
 interface AddFormModalProps {
     isOpen: boolean;
-    location: { lng: number; lat: number; };
+    location: Location;
     onClose: () => void;
 }
 
-const useLocation = (location: { lng: number; lat: number; }) => {
+const useLocation = (location: Location) => {
     const [currentLocation, setCurrentLocation] = useState(location);
 
     useEffect(() => {
@@ -64,7 +64,7 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
         }
         console.log(newData);
         try {
-            const response = await axios.post('/api/addProperty', newData);
+            const response = await axios.post('/api/addProperty', newData,);
             queryClient.invalidateQueries({ queryKey: ['properties'] });
             console.log(response.data);
             reset();
@@ -138,52 +138,91 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
                             })}
                         />
                         {errors.sqm && (<p className="text-red-500 text-sm">{errors.sqm.message}</p>)}
-                        <div className="flex items-center mb-4">
-                            <div>
+                        <div className="flex flex-col space-y-4">
+                            <div className="flex items-center mb-4">
                                 <h3 className="text-lg font-bold">Price History</h3>
+                                <button type="button" onClick={() => append({ price: 0, time: '' })} className="ml-auto">
+                                    <MdOutlineAddCircleOutline />
+                                </button>
                             </div>
-                            <button type="button" onClick={() => append({ price: 0, time: '' })} className="ml-auto">
-                                <MdOutlineAddCircleOutline />
-                            </button>
-                        </div>
 
-                        <div className="space-y-2">
-                            {fields.map((item, index) => (
-                                <div key={item.id} className="flex flex-col">
-                                    <div className="flex space-x-2">
-                                        <Input
-                                            type="number"
-                                            placeholder="Price"
-                                            {...register(`priceHistory.${index}.price`, {
-                                                required: "Price is required",
-                                                pattern: {
-                                                    value: /^[1-9]\d*$/,
-                                                    message: "Price must be a positive number greater than 0"
-                                                }
-                                            })}
-                                        />
-                                        <Input
-                                            type="datetime-local"
-                                            placeholder="Time"
-                                            {...register(`priceHistory.${index}.time`, {
-                                                required: "Time is required",
-                                                validate: value => {
-                                                    const selectedTime = new Date(value);
-                                                    const currentTime = new Date();
-                                                    return selectedTime <= currentTime || "Time cannot be in the future";
-                                                }
-                                            })}
-                                        />
-                                        <Button type="button" onClick={() => remove(index)}>Remove</Button>
-                                    </div>
-                                    {errors.priceHistory?.[index]?.price && (
-                                        <p className="text-red-500 text-sm ml-2">Price: {errors.priceHistory[index].price.message}</p>
+                            <div className="space-y-4">
+                                <div>
+                                    {fields.length === 0 && (
+                                        <div className="flex flex-col">
+                                            <div className="flex space-x-2">
+                                                <Input
+                                                    type="number"
+                                                    placeholder="Price"
+                                                    {...register(`priceHistory.0.price`, {
+                                                        required: "Price is required",
+                                                        min: {
+                                                            value: 0,
+                                                            message: "Price must be a positive number"
+                                                        }
+                                                    })}
+                                                />
+                                                <Input
+                                                    type="datetime-local"
+                                                    placeholder="Time"
+                                                    {...register(`priceHistory.0.time`, {
+                                                        required: "Time is required",
+                                                        validate: value => {
+                                                            const selectedTime = new Date(value);
+                                                            const currentTime = new Date();
+                                                            return selectedTime <= currentTime || "Time cannot be in the future";
+                                                        }
+                                                    })}
+                                                />
+                                            </div>
+                                            {errors.priceHistory?.[0]?.price && (
+                                                <p className="text-red-500 text-sm">{errors.priceHistory[0].price.message}</p>
+                                            )}
+                                            {errors.priceHistory?.[0]?.time && (
+                                                <p className="text-red-500 text-sm">{errors.priceHistory[0].time.message}</p>
+                                            )}
+                                        </div>
                                     )}
-                                    {errors.priceHistory?.[index]?.time && (
-                                        <p className="text-red-500 text-sm ml-2">Time: {errors.priceHistory[index].time.message}</p>
-                                    )}
+                                    {fields.map((item, index) => (
+                                        <div key={item.id} className="flex flex-col">
+                                            <div className="flex space-x-2">
+                                                <Input
+                                                    type="number"
+                                                    placeholder="Price"
+                                                    {...register(`priceHistory.${index}.price`, {
+                                                        required: "Price is required",
+                                                        pattern: {
+                                                            value: /^[1-9]\d*$/,
+                                                            message: "Price must be a positive number greater than 0"
+                                                        }
+                                                    })}
+                                                />
+                                                <Input
+                                                    type="datetime-local"
+                                                    placeholder="Time"
+                                                    {...register(`priceHistory.${index}.time`, {
+                                                        required: "Time is required",
+                                                        validate: value => {
+                                                            const selectedTime = new Date(value);
+                                                            const currentTime = new Date();
+                                                            return selectedTime <= currentTime || "Time cannot be in the future";
+                                                        }
+                                                    })}
+                                                />
+                                                <Button type="button" onClick={() => remove(index)} className="ml-auto">
+                                                    Remove
+                                                </Button>
+                                            </div>
+                                            {errors.priceHistory?.[index]?.price && (
+                                                <p className="text-red-500 text-sm ml-2">Price: {errors.priceHistory[index].price.message}</p>
+                                            )}
+                                            {errors.priceHistory?.[index]?.time && (
+                                                <p className="text-red-500 text-sm ml-2">Time: {errors.priceHistory[index].time.message}</p>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
                         </div>
 
                         <Button
