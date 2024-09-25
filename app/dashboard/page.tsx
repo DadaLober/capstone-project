@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import Header from './(components)/Header';
 import { PropertyInfo } from './(hooks)/types';
 import AddFormModal from './(components)/updatePropertyModal';
+import React from 'react';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapComponent'), {
     ssr: false,
@@ -66,11 +67,10 @@ function Dashboard() {
             <Header />
             <div className="flex flex-col md:flex-row mt-3 gap-4 cool-scrollbar ">
                 <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
-                    <div className="flex flex-col ">
+                    <div className="flex flex-col">
                         {properties?.map((property) => (
-                            <>
+                            <React.Fragment key={property.id}>
                                 <PropertyCard
-                                    key={property.id}
                                     property={property}
                                     isSelected={selectedPropertyId === property.id}
                                     onClick={() => handleAction(property, 'select')}
@@ -78,10 +78,18 @@ function Dashboard() {
                                     onAddToReserved={() => handleAction(property, 'reserve')}
                                     onUpdate={() => handleAction(property, 'update')}
                                 />
-                                <AddFormModal isOpen={isFormOpen} onClose={() => { setIsFormOpen(false) }} property={properties.find(p => p.id === selectedPropertyId) ?? null} />
-                            </>
+
+                                {isFormOpen && (
+                                    <AddFormModal
+                                        isOpen={true}
+                                        onClose={() => setIsFormOpen(false)}
+                                        property={properties.find(p => p.id === selectedPropertyId) ?? null}
+                                    />
+                                )}
+                            </React.Fragment>
                         ))}
                     </div>
+
                 </div>
                 <MapComponent
                     location={properties?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}

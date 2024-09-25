@@ -2,34 +2,23 @@
 
 import { isAxiosError } from 'axios';
 import { useForm, useFieldArray } from 'react-hook-form';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { PropertyInfo, Location } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { PiMagicWand } from "react-icons/pi";
 import { useNominatimGeocode } from '../(hooks)/useGeocode';
 import { useProperties } from '../(hooks)/useProperties';
 import '@/app/dashboard/(components)/modal.css';
+import useLocation from '../(hooks)/useLocation';
 
 interface AddFormModalProps {
     isOpen: boolean;
     property: PropertyInfo | null;
     onClose: () => void;
 }
-
-const useLocation = (location: Location) => {
-    const [currentLocation, setCurrentLocation] = useState(location);
-
-    const memoizedLocation = useMemo(() => ({ ...location }), [location.lat, location.lng]);
-
-    useEffect(() => {
-        setCurrentLocation(memoizedLocation);
-    }, [memoizedLocation]);
-
-    return currentLocation;
-};
 
 function AddFormModal({ isOpen, onClose, property }: AddFormModalProps) {
     const queryClient = useQueryClient();
@@ -72,7 +61,6 @@ function AddFormModal({ isOpen, onClose, property }: AddFormModalProps) {
         try {
             await editProperty.mutateAsync(newData);
             queryClient.invalidateQueries({ queryKey: ['properties'] });
-            reset();
             return;
         } catch (error: any) {
             if (isAxiosError(error)) {
@@ -96,16 +84,6 @@ function AddFormModal({ isOpen, onClose, property }: AddFormModalProps) {
             setValue(`priceHistory.${index}.time`, `${year}-${month}-${day}T${hours}:${minutes}`);
         });
     };
-
-    useEffect(() => {
-        setPropertyValues();
-    }, [property]);
-
-    const handleClose = () => {
-        reset();
-        onClose();
-    };
-
     const generateAddress = async () => {
         if (currentLocation.lat && currentLocation.lng) {
             try {
@@ -118,6 +96,68 @@ function AddFormModal({ isOpen, onClose, property }: AddFormModalProps) {
                 console.error('Error generating address:', error);
             }
         }
+    };
+
+    const renderPriceHistoryFields = () => {
+        return fields.map((field, index) => (
+            <div key={field.id} className="flex flex-col">
+                <div className="flex space-x-2">
+                    <Input
+                        type="number"
+                        placeholder="Price"
+                        {...register(`priceHistory.${index}.price`, {
+                            required: "Price is required",
+                            pattern: {
+                                value: /^[1-9]\d*$/,
+                                message: "Price must be a positive number greater than 0"
+                            }
+                        })}
+                    />
+                    <Input
+                        type="datetime-local"
+                        placeholder="Time"
+                        {...register(`priceHistory.${index}.time`, {
+                            required: "Time is required",
+                            validate: value => {
+                                const selectedTime = new Date(value);
+                                const currentTime = new Date();
+                                return selectedTime <= currentTime || "Time cannot be in the future";
+                            }
+                        })}
+                    />
+                    <Button type="button" onClick={() => remove(index)}>Remove</Button>
+                </div>
+                {errors.priceHistory?.[index]?.price && (
+                    <p className="text-red-500 text-sm ml-2">Price: {errors.priceHistory[index].price.message}</p>
+                )}
+                {errors.priceHistory?.[index]?.time && (
+                    <p className="text-red-500 text-sm ml-2">Time: {errors.priceHistory[index].time.message}</p>
+                )}
+            </div>
+        ));
+    };
+
+    useEffect(() => {
+        setPropertyValues();
+    }, [property]);
+
+    // useEffect(() => {
+    //     if (property?.priceHistory && property.priceHistory.length > 0) {
+    //         property.priceHistory.forEach(priceItem => {
+    //             append({ price: priceItem.price, time: new Date(priceItem.time).toISOString().slice(0, 16) });
+    //         });
+    //     }
+    // }, [setValue]);
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return (): void => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
+    const handleClose = () => {
+        onClose();
     };
 
     return (
@@ -138,6 +178,7 @@ function AddFormModal({ isOpen, onClose, property }: AddFormModalProps) {
                             value={`Longitude: ${currentLocation.lng}`}
                             disabled
                         />
+
                         <div className="flex justify-between mb-4">
                             <Input
                                 type="text"
@@ -151,6 +192,7 @@ function AddFormModal({ isOpen, onClose, property }: AddFormModalProps) {
                             </Button>
                         </div>
                         {errors.address && (<p className="text-red-500 text-sm">{errors.address.message}</p>)}
+
                         <Input
                             type="number"
                             placeholder="Square meters"
@@ -173,42 +215,7 @@ function AddFormModal({ isOpen, onClose, property }: AddFormModalProps) {
                         </div>
 
                         <div className="space-y-2">
-                            {fields.map((item, index) => (
-                                <div key={item.id} className="flex flex-col">
-                                    <div className="flex space-x-2">
-                                        <Input
-                                            type="number"
-                                            placeholder="Price"
-                                            {...register(`priceHistory.${index}.price`, {
-                                                required: "Price is required",
-                                                pattern: {
-                                                    value: /^[1-9]\d*$/,
-                                                    message: "Price must be a positive number greater than 0"
-                                                }
-                                            })}
-                                        />
-                                        <Input
-                                            type="datetime-local"
-                                            placeholder="Time"
-                                            {...register(`priceHistory.${index}.time`, {
-                                                required: "Time is required",
-                                                validate: value => {
-                                                    const selectedTime = new Date(value);
-                                                    const currentTime = new Date();
-                                                    return selectedTime <= currentTime || "Time cannot be in the future";
-                                                }
-                                            })}
-                                        />
-                                        <Button type="button" onClick={() => remove(index)}>Remove</Button>
-                                    </div>
-                                    {errors.priceHistory?.[index]?.price && (
-                                        <p className="text-red-500 text-sm ml-2">Price: {errors.priceHistory[index].price.message}</p>
-                                    )}
-                                    {errors.priceHistory?.[index]?.time && (
-                                        <p className="text-red-500 text-sm ml-2">Time: {errors.priceHistory[index].time.message}</p>
-                                    )}
-                                </div>
-                            ))}
+                            {property?.priceHistory && property.priceHistory.length > 0 && renderPriceHistoryFields()}
                         </div>
 
                         <Button
