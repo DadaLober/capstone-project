@@ -6,7 +6,7 @@ import { useProperties } from '@/app/dashboard/(hooks)/useProperties';
 import { useReservations } from './(hooks)/useReservations';
 import { PropertyCard } from '@/app/dashboard/(components)/PropertyCard';
 import { useQueryClient } from '@tanstack/react-query';
-import Header from './(components)/Header';
+import Header from './(components)/header';
 import { PropertyInfo } from './(hooks)/types';
 import AddFormModal from './(components)/updatePropertyModal';
 import React from 'react';

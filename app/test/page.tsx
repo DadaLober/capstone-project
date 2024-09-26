@@ -1,6 +1,6 @@
 import React from 'react';
 import MapComponent from './olddashboard/(components)/MapWrapper';
-import Header from '../dashboard/(components)/Header';
+import Header from '../dashboard/(components)/header';
 
 const Page = () => {
     return (
