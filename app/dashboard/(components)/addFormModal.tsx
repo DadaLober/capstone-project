@@ -54,8 +54,10 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
         try {
             console.log(newData);
             const response = await axios.post('/api/addProperty', newData);
+            const newPropertyId = response.data.id;
+
+            await uploadFiles(newPropertyId, uploadedFiles);
             queryClient.invalidateQueries({ queryKey: ['properties'] });
-            console.log(response.data);
             reset();
         } catch (error) {
             if (isAxiosError(error)) {
@@ -63,6 +65,29 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
             }
         }
     };
+
+    const uploadFiles = async (propertyId: number, files: File[]) => {
+        for (const file of files) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await axios.post(`/api/uploadPropertyFile?id=${propertyId}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                console.log(`File ${file.name} uploaded successfully`);
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    console.error(`Error uploading file ${file.name}:`, error.response?.data);
+                } else {
+                    console.error(`Unexpected error uploading file ${file.name}:`, error);
+                }
+            }
+        }
+    };
+
 
     const generateAddress = async () => {
         if (currentLocation.lat && currentLocation.lng) {
