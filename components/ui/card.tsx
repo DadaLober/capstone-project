@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules"; 
+import { Navigation, Pagination } from "swiper/modules";
 import { cn } from "@/lib/utils";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -25,7 +25,7 @@ Card.displayName = "Card";
 // Image Carousel
 const CardCarousel = React.forwardRef<
   HTMLDivElement,
-  { images: string[]; className?: string }
+  { images: string[] | undefined; className?: string }
 >(({ images, className }, ref) => (
   <div ref={ref} className={cn("rounded-t-lg overflow-hidden w-full ", className)}>
     <Swiper
@@ -34,18 +34,25 @@ const CardCarousel = React.forwardRef<
       pagination={{ clickable: true }}
       className="h-64 custom-swiper"
     >
-      {images.map((image, index) => (
+      {Array.isArray(images) ? images.map((image, index) => (
         <SwiperSlide key={index}>
-          <img 
+          <img
             src={image}
             alt={`Slide ${index + 1}`}
             className="w-full rounded-lg object-cover m-auto "
           />
         </SwiperSlide>
-      ))}
+      )) : (
+        <SwiperSlide>
+          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+            No images available
+          </div>
+        </SwiperSlide>
+      )}
     </Swiper>
   </div>
 ));
+
 CardCarousel.displayName = "CardCarousel";
 
 const CardHeader = React.forwardRef<

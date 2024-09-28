@@ -24,7 +24,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
         <div className={`modal ${isOpen ? 'is-open' : ''}`}>
             <div className="modal-content">
                 <Button className="modal-close-button" onClick={onClose}>
-                    &times;
                     Close
                 </Button>
                 {children}
