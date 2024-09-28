@@ -11,17 +11,6 @@ interface AdditionalPropertiesModalProps {
     propertyInfo: PropertyInfo | null;
 }
 
-// // kaw na bahala dine mag fetch :> dko alam yan boss
-// const images = [
-//     "https://picsum.photos/400/300?random=1",
-//     "https://picsum.photos/400/300?random=2",
-//     "https://picsum.photos/400/300?random=3",
-//     "https://picsum.photos/400/300?random=4",
-//     "https://picsum.photos/400/300?random=5",
-//     "https://picsum.photos/400/300?random=6",
-// ];
-
-
 export default function AdditionalPropertiesModal({ isOpen, onClose, propertyInfo }: AdditionalPropertiesModalProps) {
     return (
         <Modal isOpen={isOpen} onClose={onClose}>

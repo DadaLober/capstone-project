@@ -2,11 +2,14 @@
 
 import React from 'react'
 import { Marker, Popup, useMapEvents } from 'react-leaflet'
+import { FaFilePdf } from 'react-icons/fa';
+
 import { customIcon, PropertyInfo } from '@/app/dashboard/(hooks)/types'
 import { Button } from "@/components/ui/button"
 import { Location } from '@/app/dashboard/(hooks)/types'
 import { useState, useEffect } from 'react';
 import { Card, CardCarousel } from "@/components/ui/card";
+import Modal from '@/app/dashboard/(components)/Modal';
 import "@/app/dashboard/(components)/modal.css"
 
 interface FormMarkerProps {
@@ -52,8 +55,6 @@ const CustomPopup: React.FC<CustomPopupProps> = ({ children }) => {
     );
 };
 
-
-
 const FormMarker: React.FC<FormMarkerProps> = ({ location, handleOpenForm }) => {
     return (
         <Marker
@@ -91,58 +92,98 @@ const LocationMarker: React.FC<LocationMarkerProps> = ({ addMarker }) => {
 };
 
 const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleViewAdditionalProperties }) => {
-    const [images, setImages] = useState<string[]>([]);
+    const [files, setFiles] = useState<Array<{ url: string; type: string }>>([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<{ url: string; type: string } | null>(null);
+
 
     useEffect(() => {
         if (propertyInfo) {
-            fetchPropertyImages(propertyInfo.id);
+            fetchPropertyFiles(propertyInfo.id);
         }
     }, [propertyInfo]);
 
-    const fetchPropertyImages = async (propertyId: number) => {
+    const fetchPropertyFiles = async (propertyId: number) => {
         try {
             const response = await fetch(`/api/getImages?id=${propertyId}`);
-            const imageUrls = await response.json();
-            setImages(imageUrls);
+            const fileUrls = await response.json();
+            setFiles(fileUrls.map((url: string) => ({
+                url,
+                type: url.toLowerCase().endsWith('.pdf') ? 'pdf' : 'image'
+            })));
         } catch (error) {
-            console.error('Error fetching property images:', error);
+            console.error('Error fetching property files:', error);
         }
     };
 
     if (!propertyInfo) return null;
 
+    const handleFileClick = (file: { url: string; type: string }) => {
+        setSelectedFile(file);
+        setModalOpen(true);
+    };
+
+
     return (
-        <Marker position={[propertyInfo.location.lat, propertyInfo.location.lng]} icon={customIcon}>
-            <CustomPopup>
-                <Card className="w-96">
-                    <CardCarousel images={images} className='h-48' />
-                    <div className="p-4">
-                        <h3 className="text-xl font-bold mb-4 text-blue-600">{propertyInfo.address}</h3>
-                        <div className="flex flex-col space-y-4">
-                            <div className="flex items-center space-x-2">
-                                <span className="font-bold">Sqm:</span>
-                                <span>{propertyInfo.sqm} m²</span>
+        <>
+            <Marker position={[propertyInfo.location.lat, propertyInfo.location.lng]} icon={customIcon}>
+                <CustomPopup>
+                    <Card className="w-96">
+                        <CardCarousel
+                            images={files}
+                            className='h-48'
+                            renderItem={(file) => (
+                                <div onClick={() => handleFileClick(file)} className="w-full h-full">
+                                    {file.type === 'pdf' ? (
+                                        <div className="flex flex-col items-center justify-center h-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200">
+                                            <FaFilePdf className="text-5xl text-red-500 mb-2" />
+                                            <span className="text-sm font-medium text-gray-700">Click to view PDF</span>
+                                        </div>
+                                    ) : (
+                                        <img src={file.url} alt="Property" className="object-cover w-full h-full" />
+                                    )}
+                                </div>
+                            )}
+                        />
+                        <div className="p-4">
+                            <h3 className="text-xl font-bold mb-4 text-blue-600">{propertyInfo.address}</h3>
+                            <div className="flex flex-col space-y-4">
+                                <div className="flex items-center space-x-2">
+                                    <span className="font-bold">Sqm:</span>
+                                    <span>{propertyInfo.sqm} m²</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <span className="font-bold">Price:</span>
+                                    <span>{propertyInfo.priceHistory?.[0]?.price || 'Price not available'}</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <span className="font-bold">Created At:</span>
+                                    <span>{new Date(propertyInfo.createdAt).toLocaleString()}</span>
+                                </div>
+                                <Button
+                                    variant="default"
+                                    className="mt-4"
+                                    onClick={handleViewAdditionalProperties}
+                                >
+                                    View More
+                                </Button>
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <span className="font-bold">Price:</span>
-                                <span>{propertyInfo.priceHistory?.[0]?.price || 'Price not available'}</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span className="font-bold">Created At:</span>
-                                <span>{new Date(propertyInfo.createdAt).toLocaleString()}</span>
-                            </div>
-                            <Button
-                                variant="default"
-                                className="mt-4"
-                                onClick={handleViewAdditionalProperties}
-                            >
-                                View More
-                            </Button>
                         </div>
+                    </Card>
+                </CustomPopup>
+            </Marker>
+            <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+                {selectedFile && (
+                    <div className="max-w-3xl max-h-[90vh] overflow-auto">
+                        {selectedFile.type === 'pdf' ? (
+                            <embed src={selectedFile.url} type="application/pdf" width="100%" height="600px" />
+                        ) : (
+                            <img src={selectedFile.url} alt="Property" className="max-w-full max-h-[80vh] object-contain" />
+                        )}
                     </div>
-                </Card>
-            </CustomPopup>
-        </Marker>
+                )}
+            </Modal>
+
+        </>
     );
-};
-export { FormMarker, LocationMarker, PropertyMarker };
+}; export { FormMarker, LocationMarker, PropertyMarker };
