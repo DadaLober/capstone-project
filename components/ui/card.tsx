@@ -41,11 +41,19 @@ const CardCarousel = React.forwardRef<
       {Array.isArray(images) && images.length > 0 ? images.map((file, index) => (
         <SwiperSlide key={index}>
           {renderItem ? renderItem(file) : (
-            <img
-              src={file.url}
-              alt={`Slide ${index + 1}`}
-              className="w-full rounded-lg object-cover m-auto "
-            />
+            file.type === 'video' ? (
+              <video
+                src={file.url}
+                className="w-full h-full object-cover"
+                controls
+              />
+            ) : (
+              <img
+                src={file.url}
+                alt={`Slide ${index + 1}`}
+                className="w-full rounded-lg object-cover m-auto"
+              />
+            )
           )}
         </SwiperSlide>
       )) : (

@@ -79,7 +79,6 @@ function FileUpload({ uploadedFiles, setUploadedFiles }: FileUploadProps) {
                                         ? `${file.name.slice(0, 12)}...${file.name.slice(-5)}`
                                         : file.name}
                                 </span>
-
                             </div>
                             <button
                                 onClick={(e) => removeFile(index, e)}
@@ -87,11 +86,11 @@ function FileUpload({ uploadedFiles, setUploadedFiles }: FileUploadProps) {
                             >
                                 <FiX className="h-5 w-5" />
                             </button>
-
                         </li>
                     ))}
                 </ul>
             )}
+
         </div>
     );
 }

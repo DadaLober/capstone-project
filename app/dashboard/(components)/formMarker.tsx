@@ -3,6 +3,7 @@
 import React from 'react'
 import { Marker, Popup, useMapEvents } from 'react-leaflet'
 import { FaFilePdf } from 'react-icons/fa';
+import { CiVideoOn } from "react-icons/ci";
 
 import { customIcon, PropertyInfo } from '@/app/dashboard/(hooks)/types'
 import { Button } from "@/components/ui/button"
@@ -109,12 +110,14 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
             const fileUrls = await response.json();
             setFiles(fileUrls.map((url: string) => ({
                 url,
-                type: url.toLowerCase().endsWith('.pdf') ? 'pdf' : 'image'
+                type: url.toLowerCase().endsWith('.pdf') ? 'pdf' :
+                    url.toLowerCase().endsWith('.mp4') ? 'video' : 'image'
             })));
         } catch (error) {
             console.error('Error fetching property files:', error);
         }
     };
+
 
     if (!propertyInfo) return null;
 
@@ -139,11 +142,17 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                                             <FaFilePdf className="text-5xl text-red-500 mb-2" />
                                             <span className="text-sm font-medium text-gray-700">Click to view PDF</span>
                                         </div>
+                                    ) : file.type === 'video' ? (
+                                        <div className="flex flex-col items-center justify-center h-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200">
+                                            <CiVideoOn className="text-5xl text-blue-500 mb-2" />
+                                            <span className="text-sm font-medium text-gray-700">Click to play video</span>
+                                        </div>
                                     ) : (
                                         <img src={file.url} alt="Property" className="object-cover w-full h-full" />
                                     )}
                                 </div>
                             )}
+
                         />
                         <div className="p-4">
                             <h3 className="text-xl font-bold mb-4 text-blue-600">{propertyInfo.address}</h3>
@@ -172,11 +181,17 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                     </Card>
                 </CustomPopup>
             </Marker>
+
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
                 {selectedFile && (
                     <div className="max-w-3xl max-h-[90vh] overflow-auto">
                         {selectedFile.type === 'pdf' ? (
                             <embed src={selectedFile.url} type="application/pdf" width="100%" height="600px" />
+                        ) : selectedFile.type === 'video' ? (
+                            <video controls className="max-w-full max-h-[80vh]">
+                                <source src={selectedFile.url} type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
                         ) : (
                             <img src={selectedFile.url} alt="Property" className="max-w-full max-h-[80vh] object-contain" />
                         )}
