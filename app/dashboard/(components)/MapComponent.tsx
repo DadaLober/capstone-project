@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import AdditionalPropertiesModal from '@/app/dashboard/(components)/AdditionalPropertiesModal';
-import AddFormModal from './addFormModal';
+import AdditionalPropertiesModal from '@/app/dashboard/(components)/additionalPropForm';
+import AddFormModal from './addForm';
 import { Location, PropertyInfo, customIcon } from '@/app/dashboard/(hooks)/types';
 import { FormMarker, LocationMarker, PropertyMarker } from '@/app/dashboard/(components)/formMarker';
 import '@/app/dashboard/(components)/modal.css';

@@ -11,9 +11,8 @@ import LocationInputs from './locationInputs';
 import AddressInput from './addressInput';
 import SquareMetersInput from './squareMetersInput';
 import PriceHistoryInputs from './priceHistoryInputs';
-import { SubmitButton, CloseButton } from './customButtons';
-
-import '@/app/dashboard/(components)/modal.css';
+import { SubmitButton } from './customButtons';
+import Modal from './Modal';
 
 interface AddFormModalProps {
     isOpen: boolean;
@@ -88,7 +87,6 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
         }
     };
 
-
     const generateAddress = async () => {
         if (currentLocation.lat && currentLocation.lng) {
             try {
@@ -119,22 +117,17 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
     };
 
     return (
-        <div className={`modal ${isOpen ? 'is-open' : ''}`}>
-            <div className="flex flex-col items-center justify-center min-h-screen p-4">
-                <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-lg">
-                    <h2 className="text-lg font-bold mb-4">Add Property</h2>
-                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
-                        <LocationInputs currentLocation={currentLocation} />
-                        <AddressInput register={register} errors={errors} generateAddress={generateAddress} />
-                        <SquareMetersInput register={register} errors={errors} />
-                        <PriceHistoryInputs fields={fields} register={register} errors={errors} append={append} remove={remove} />
-                        <FileUpload uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} />
-                        <SubmitButton isSubmitting={isSubmitting} />
-                    </form>
-                </div>
-                <CloseButton handleClose={handleClose} />
-            </div>
-        </div>
+        <Modal isOpen={isOpen} onClose={handleClose}>
+            <h2 className="text-lg font-bold mb-4">Add Property</h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
+                <LocationInputs currentLocation={currentLocation} />
+                <AddressInput register={register} errors={errors} generateAddress={generateAddress} />
+                <SquareMetersInput register={register} errors={errors} />
+                <PriceHistoryInputs fields={fields} register={register} errors={errors} append={append} remove={remove} />
+                <FileUpload uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} />
+                <SubmitButton isSubmitting={isSubmitting} />
+            </form>
+        </Modal>
     );
 }
 

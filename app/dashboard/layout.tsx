@@ -9,6 +9,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     {children}
                 </div>
             </div>
+            <div id="modal-root"></div>
         </div>
     );
 }

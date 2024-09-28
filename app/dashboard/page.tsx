@@ -8,7 +8,7 @@ import { PropertyCard } from '@/app/dashboard/(components)/PropertyCard';
 import { useQueryClient } from '@tanstack/react-query';
 import Header from './(components)/header';
 import { PropertyInfo } from './(hooks)/types';
-import AddFormModal from './(components)/updatePropertyModal';
+import AddFormModal from './(components)/updateForm';
 import React from 'react';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapComponent'), {
