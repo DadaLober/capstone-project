@@ -34,8 +34,8 @@ function PriceHistoryInputs({ fields, register, errors, append, remove }: {
                             {...register(`priceHistory.${index}.price` as const, {
                                 required: "Price is required",
                                 min: {
-                                    value: 0,
-                                    message: "Price must be a positive number"
+                                    value: 0.01,
+                                    message: "Price must be greater than 0"
                                 },
                                 valueAsNumber: true
                             })}

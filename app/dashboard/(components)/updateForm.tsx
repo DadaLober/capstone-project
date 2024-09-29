@@ -106,24 +106,21 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
         setPropertyValues();
     }, [setPropertyValues]);
 
-    useEffect(() => {
-        document.body.style.overflow = isOpen ? 'hidden' : 'unset';
-        return () => { document.body.style.overflow = 'unset'; };
-    }, [isOpen]);
-
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
-            <h2 className="text-lg font-bold mb-4">Update Property</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
-                <LocationInputs currentLocation={currentLocation} />
-                <AddressInput register={register} errors={errors} generateAddress={generateAddress} />
-                <SquareMetersInput register={register} errors={errors} />
-                <PriceHistoryInputs fields={fields} register={register} errors={errors} append={append} remove={remove} />
-                <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? 'Submitting...' : 'Submit'}
-                </Button>
-            </form>
-        </Modal>
+            <div className="bg-white p-4 w-auto rounded-lg shadow-lg max-w-2xl mx-auto">
+                <h2 className="text-lg font-bold mb-4">Update Property</h2>
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
+                    <LocationInputs currentLocation={currentLocation} />
+                    <AddressInput register={register} errors={errors} generateAddress={generateAddress} />
+                    <SquareMetersInput register={register} errors={errors} />
+                    <PriceHistoryInputs fields={fields} register={register} errors={errors} append={append} remove={remove} />
+                    <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? 'Submitting...' : 'Submit'}
+                    </Button>
+                </form>
+            </div>
+        </Modal >
     );
 }
 

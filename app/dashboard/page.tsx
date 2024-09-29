@@ -68,7 +68,7 @@ function Dashboard() {
             <div className="flex flex-col md:flex-row mt-3 gap-4 cool-scrollbar ">
                 <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
                     <div className="flex flex-col">
-                        {properties?.map((property) => (
+                        {properties && properties.map((property) => (
                             <React.Fragment key={property.id}>
                                 <PropertyCard
                                     property={property}
@@ -78,18 +78,16 @@ function Dashboard() {
                                     onAddToReserved={() => handleAction(property, 'reserve')}
                                     onUpdate={() => handleAction(property, 'update')}
                                 />
-
-                                {isFormOpen && (
-                                    <AddFormModal
-                                        isOpen={true}
-                                        onClose={() => setIsFormOpen(false)}
-                                        property={properties.find(p => p.id === selectedPropertyId) ?? null}
-                                    />
-                                )}
                             </React.Fragment>
                         ))}
+                        {isFormOpen && properties && (
+                            <AddFormModal
+                                isOpen={true}
+                                onClose={() => setIsFormOpen(false)}
+                                property={properties.find(p => p.id === selectedPropertyId) ?? null}
+                            />
+                        )}
                     </div>
-
                 </div>
                 <MapComponent
                     location={properties?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
@@ -99,5 +97,4 @@ function Dashboard() {
         </>
     );
 }
-
 export default Dashboard;

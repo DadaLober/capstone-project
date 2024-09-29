@@ -15,13 +15,11 @@
 }
 
 .modal-content {
-    background-color: #fff;
     margin: 20px auto;
     padding: 20px;
     border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     max-width: 90%;
-    width: 400px;
+    width: 700px;
     overflow-y: auto;
 }
 
@@ -37,6 +35,18 @@
     color: #333;
 }
 
-.leaflet-popup-content {
+.custom-popup .leaflet-popup-content-wrapper {
+    background-color: #fff;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+}
+
+.custom-popup .leaflet-popup-content {
+    margin: 0;
     width: auto !important;
+}
+
+.custom-popup .leaflet-popup-tip-container {
+    display: none;
 }

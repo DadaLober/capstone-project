@@ -67,10 +67,11 @@ function FileUpload({ uploadedFiles, setUploadedFiles }: FileUploadProps) {
                                     <Image
                                         src={URL.createObjectURL(file)}
                                         alt={file.name}
-                                        width={40}
-                                        height={40}
-                                        className="object-cover mr-2"
+                                        width={20}
+                                        height={20}
+                                        className="object-cover mr-2 w-6 h-6"
                                     />
+
                                 )}
                                 {file.type === 'application/pdf' && (
                                     <FaFilePdf className="h-8 w-8 text-red-500" />

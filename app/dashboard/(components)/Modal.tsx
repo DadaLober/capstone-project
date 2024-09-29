@@ -16,6 +16,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
         setIsBrowser(true);
     }, []);
 
+    useEffect(() => {
+        document.body.style.overflow = isOpen ? 'hidden' : 'unset';
+        return () => { document.body.style.overflow = 'unset'; };
+    }, [isOpen]);
+
     if (!isBrowser) {
         return null;
     }

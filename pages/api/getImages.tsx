@@ -15,7 +15,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     },
                 });
                 const response = await axiosInstance.get(`http://localhost:8080/api/v1/properties/${id}/files`);
-                const imageUrls = response.data.map((file: any) => `http://localhost:8080/assets/${file.uri}`);
+                const imageUrls = Array.isArray(response.data)
+                    ? response.data.map((file: any) => `http://localhost:8080/assets/${file.uri}`)
+                    : [];
+                res.status(200).json(imageUrls);
+
                 res.status(200).json(imageUrls);
             } else {
                 res.status(401).json({ message: 'Invalid cookie format' });
@@ -23,6 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 switch (error.response?.status) {
+                    case 400:
+                        res.status(400).json({ message: 'Property does not exist' });
                     case 403:
                         res.status(403).json({ message: 'User not authorized' });
                         console.error(error.response?.data);
