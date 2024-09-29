@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useForm, type FieldValues } from "react-hook-form";
 import Link from 'next/link';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Image from 'next/image';
+
 import '@/app/register/register.css';
 import { Button } from '@/components/ui/button';
 
@@ -37,7 +39,13 @@ export default function RegisterPage() {
     return (
         <div className='svg-register-background relative w-full min-h-screen flex flex-col justify-center items-center p-4'>
             <div className='absolute top-0  '>
-                <img src="./map2.svg" alt="" className='w-32 h-32 ' />
+                <Image
+                    src="/register.png"
+                    alt="Logo"
+                    width={64}
+                    height={64}
+                    className='w-16 h-16'
+                />
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 w-full max-w-md bg-white p-10 rounded-lg border shadow-lg">
                 <div className="flex gap-x-4">

@@ -4,6 +4,7 @@ import React from 'react'
 import { Marker, Popup, useMapEvents } from 'react-leaflet'
 import { FaFilePdf } from 'react-icons/fa';
 import { CiVideoOn } from "react-icons/ci";
+import Image from 'next/image';
 
 import { customIcon, PropertyInfo } from '@/app/dashboard/(hooks)/types'
 import { Button } from "@/components/ui/button"
@@ -148,7 +149,15 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                                             <span className="text-sm font-medium text-gray-700">Click to play video</span>
                                         </div>
                                     ) : (
-                                        <img src={file.url} alt="Property" className="object-cover w-full h-full" />
+                                        <div className="flex flex-col items-center justify-center h-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200 relative">
+                                            <Image
+                                                src={file.url}
+                                                alt="Property"
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                style={{ objectFit: 'cover' }}
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             )}
@@ -193,7 +202,13 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                                 Your browser does not support the video tag.
                             </video>
                         ) : (
-                            <img src={selectedFile.url} alt="Property" className="max-w-full max-h-[80vh] object-contain" />
+                            <Image
+                                src={selectedFile.url}
+                                alt="Property"
+                                width={800}
+                                height={600}
+                                style={{ objectFit: 'contain', maxWidth: '100%', height: 'auto' }}
+                            />
                         )}
                     </div>
                 )}

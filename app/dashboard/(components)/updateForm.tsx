@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
 import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
-import { useNominatimGeocode } from '../(hooks)/useGeocode';
+import { useGeocode } from '../(hooks)/useGeocode';
 import { useProperties } from '../(hooks)/useProperties';
 import useLocation from '../(hooks)/useLocation';
 import LocationInputs from './locationInputs';
@@ -24,6 +24,7 @@ interface UpdatePropertyModalProps {
 
 function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalProps) {
     const queryClient = useQueryClient();
+    const geocode = useGeocode;
     const { editMutation: editProperty } = useProperties();
     const currentLocation = useLocation(property?.location || { lat: 0, lng: 0 });
     const { register, handleSubmit, reset, setValue, control, formState: { errors, isSubmitting } } = useForm<PropertyInfo>({
@@ -69,7 +70,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
         }
     };
 
-    const setPropertyValues = () => {
+    const setPropertyValues = useCallback(() => {
         if (!property) {
             return;
         }
@@ -83,12 +84,14 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
             setValue(`priceHistory.${index}.price`, priceItem.price);
             setValue(`priceHistory.${index}.time`, `${year}-${month}-${day}T${hours}:${minutes}`);
         });
-    };
+    }, [property, setValue]);
+
+
 
     const generateAddress = async () => {
         if (currentLocation.lat && currentLocation.lng) {
             try {
-                const result = await useNominatimGeocode(currentLocation.lat, currentLocation.lng);
+                const result = await geocode(currentLocation.lat, currentLocation.lng);
                 console.log(result);
                 if (result) {
                     setValue('address', result.display_name);
@@ -101,7 +104,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
 
     useEffect(() => {
         setPropertyValues();
-    }, [property]);
+    }, [setPropertyValues]);
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : 'unset';

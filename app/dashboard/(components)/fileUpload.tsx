@@ -2,6 +2,8 @@ import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FiUploadCloud, FiFile, FiX } from 'react-icons/fi';
 import { FaFilePdf } from 'react-icons/fa';
+import Image from 'next/image';
+
 
 interface FileUploadProps {
     uploadedFiles: File[];
@@ -62,10 +64,12 @@ function FileUpload({ uploadedFiles, setUploadedFiles }: FileUploadProps) {
                                     />
                                 )}
                                 {file.type.startsWith('image/') && (
-                                    <img
+                                    <Image
                                         src={URL.createObjectURL(file)}
                                         alt={file.name}
-                                        className="h-10 w-10 object-cover mr-2"
+                                        width={40}
+                                        height={40}
+                                        className="object-cover mr-2"
                                     />
                                 )}
                                 {file.type === 'application/pdf' && (

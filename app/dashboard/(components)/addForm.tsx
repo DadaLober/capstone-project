@@ -4,7 +4,7 @@ import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { PropertyInfo, Location } from '@/app/dashboard/(hooks)/types';
-import { useNominatimGeocode } from '../(hooks)/useGeocode';
+import { useGeocode } from '../(hooks)/useGeocode';
 import useLocation from '../(hooks)/useLocation';
 import FileUpload from './fileUpload';
 import LocationInputs from './locationInputs';
@@ -24,6 +24,7 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
     const queryClient = useQueryClient();
     const currentLocation = useLocation(location);
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+    const geocode = useGeocode;
 
     const { register, handleSubmit, reset, setValue, control, formState: { errors, isSubmitting } } = useForm<PropertyInfo>({
         defaultValues: {
@@ -90,7 +91,7 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
     const generateAddress = async () => {
         if (currentLocation.lat && currentLocation.lng) {
             try {
-                const result = await useNominatimGeocode(currentLocation.lat, currentLocation.lng);
+                const result = await geocode(currentLocation.lat, currentLocation.lng);
                 if (result) {
                     setValue('address', result.display_name);
                 }

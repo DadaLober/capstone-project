@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import Image from 'next/image';
 
 // Card
 const Card = React.forwardRef<
@@ -48,10 +49,12 @@ const CardCarousel = React.forwardRef<
                 controls
               />
             ) : (
-              <img
+              <Image
                 src={file.url}
                 alt={`Slide ${index + 1}`}
-                className="w-full rounded-lg object-cover m-auto"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-lg"
               />
             )
           )}

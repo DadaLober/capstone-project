@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+
 import "@/app/login/login.css";
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
@@ -48,7 +50,13 @@ export default function Login() {
         <div className='svg-login-background w-full min-h-screen flex flex-col justify-center items-center p-4'>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 w-full max-w-md bg-white p-6 rounded-lg shadow-lg border">
                 <div className='flex justify-center mb-4'>
-                    <img src="/login.png" alt="Logo" className='w-16 h-16' />
+                    <Image
+                        src="/login.png"
+                        alt="Logo"
+                        width={64}
+                        height={64}
+                        className='w-16 h-16'
+                    />
                 </div>
                 <input
                     {...register("email", {

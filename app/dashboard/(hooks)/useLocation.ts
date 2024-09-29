@@ -3,7 +3,7 @@ import { Location } from '@/app/dashboard/(hooks)/types';
 
 const useLocation = (location: Location) => {
     const [currentLocation, setCurrentLocation] = useState(location);
-    const memoizedLocation = useMemo(() => ({ ...location }), [location.lat, location.lng]);
+    const memoizedLocation = useMemo(() => ({ ...location }), [location]);
 
     useEffect(() => {
         setCurrentLocation(memoizedLocation);

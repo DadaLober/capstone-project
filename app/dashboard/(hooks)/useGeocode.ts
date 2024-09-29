@@ -5,7 +5,7 @@ import { GeocodeResult } from './types';
 
 export interface NominatimResponse extends GeocodeResult { }
 
-export const useNominatimGeocode = (lat: number, lng: number): Promise<NominatimResponse | null> => {
+export const useGeocode = (lat: number, lng: number): Promise<NominatimResponse | null> => {
     return new Promise((resolve, reject) => {
         const fetchGeocode = async () => {
             try {
