@@ -41,6 +41,16 @@ interface GeocodeResult {
     };
 }
 
+interface FileData {
+    id: number;
+    propertyId: number;
+    uri: string;
+    fileName: string;
+    mime: string;
+    size: number;
+    imageUrl: string;
+}
+
 const customIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
     iconSize: [25, 41],
@@ -50,4 +60,4 @@ const customIcon = L.icon({
 
 export { customIcon };
 
-export type { Location, PropertyInfo, GeocodeResult, Reservations };
+export type { Location, PropertyInfo, GeocodeResult, Reservations, FileData };

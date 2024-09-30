@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
-import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo, FileData } from '@/app/dashboard/(hooks)/types';
 import { useGeocode } from '../(hooks)/useGeocode';
 import { useProperties } from '../(hooks)/useProperties';
 import useLocation from '../(hooks)/useLocation';
@@ -13,6 +13,7 @@ import LocationInputs from './locationInputs';
 import AddressInput from './addressInput';
 import SquareMetersInput from './squareMetersInput';
 import PriceInput from './priceInput';
+import FileUpload from './fileUpload';
 import { isAxiosError } from 'axios';
 import Modal from './Modal';
 
@@ -27,6 +28,9 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
     const geocode = useGeocode;
     const { editMutation: editProperty } = useProperties();
     const currentLocation = useLocation(property?.location || { lat: 0, lng: 0 });
+    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+    const [existingImages, setExistingImages] = useState<FileData[]>([]);
+    const [isDeletingFile, setIsDeletingFile] = useState(false);
     const { register, handleSubmit, reset, setValue, control, formState: { errors, isSubmitting } } = useForm<PropertyInfo>({
         defaultValues: {
             createdAt: new Date().toISOString(),
@@ -57,11 +61,38 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
         const serializedData = JSON.stringify(newData);
         try {
             await editProperty.mutateAsync(JSON.parse(serializedData));
+
+            // Upload new files
+            if (uploadedFiles.length > 0) {
+                const formData = new FormData();
+                uploadedFiles.forEach((file) => {
+                    formData.append('file', file);
+                });
+                await fetch(`/api/uploadPropertyFile?id=${property.id}`, {
+                    method: 'POST',
+                    body: formData,
+                });
+            }
             queryClient.invalidateQueries({ queryKey: ['properties'] });
             onClose();
         } catch (error: any) {
             if (isAxiosError(error)) {
                 console.error(error.response?.data);
+            }
+        }
+    };
+
+    const handleImageDeletion = async (fileId: number) => {
+        if (property) {
+            setIsDeletingFile(true);
+            try {
+                await fetch(`/api/deleteFile?propertyId=${property.id}&fileId=${fileId}`, {
+                    method: 'DELETE',
+                });
+            } catch (error) {
+                console.error('Error removing file:', error);
+            } finally {
+                setIsDeletingFile(false);
             }
         }
     };
@@ -92,15 +123,39 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
     const handleClose = () => {
         reset();
         remove();
+        setUploadedFiles([]);
+        setExistingImages([]);
         onClose();
     };
 
     useEffect(() => {
+        let isMounted = true;
+
         if (isOpen && property) {
-            reset();
             setPropertyValues();
+            const fetchImages = async () => {
+                try {
+                    const response = await fetch(`/api/getImages?id=${property.id}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch images');
+                    }
+                    const imageData: FileData[] = await response.json();
+                    if (isMounted) {
+                        setExistingImages(imageData);
+                    }
+                } catch (error) {
+                    console.error('Error fetching images:', error);
+                }
+            };
+            fetchImages();
         }
-    }, [isOpen, property, reset, setPropertyValues]);
+
+        return () => {
+            isMounted = false;
+            setUploadedFiles([]);
+            setExistingImages([]);
+        };
+    }, [isOpen, property?.id]);
 
     return (
         <Modal isOpen={isOpen} onClose={handleClose}>
@@ -111,6 +166,14 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
                     <AddressInput register={register} errors={errors} generateAddress={generateAddress} />
                     <SquareMetersInput register={register} errors={errors} />
                     <PriceInput register={register} errors={errors} />
+                    <FileUpload
+                        uploadedFiles={uploadedFiles}
+                        setUploadedFiles={setUploadedFiles}
+                        existingImages={existingImages}
+                        setExistingImages={setExistingImages}
+                        property={property}
+                        onImageDelete={handleImageDeletion}
+                    />
                     <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? 'Submitting...' : 'Submit'}
                     </Button>

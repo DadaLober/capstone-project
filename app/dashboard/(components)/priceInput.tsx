@@ -16,7 +16,6 @@ function PriceInput({ register, errors }: {
                     placeholder="Price"
                     className="flex-grow"
                     {...register(`priceHistory.0.price`, {
-                        required: "Price is required",
                         min: {
                             value: 0.01,
                             message: "Price must be greater than 0"

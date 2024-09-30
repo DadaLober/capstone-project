@@ -103,10 +103,10 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
         try {
             const response = await axios.get(`/api/getImages?id=${propertyId}`)
             const fileUrls = Array.isArray(response.data) ? response.data : []
-            setFiles(fileUrls.map((url: string) => ({
-                url,
-                type: url.toLowerCase().endsWith('.pdf') ? 'pdf' :
-                    url.toLowerCase().endsWith('.mp4') ? 'video' : 'image'
+            setFiles(fileUrls.map((file: any) => ({
+                url: file.imageUrl,
+                type: file.imageUrl.toLowerCase().endsWith('.pdf') ? 'pdf' :
+                    file.imageUrl.toLowerCase().endsWith('.mp4') ? 'video' : 'image'
             })))
         } catch (error) {
             console.error('Error fetching property files:', error)
@@ -114,6 +114,7 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
             setIsLoading(false)
         }
     }
+
 
     if (!propertyInfo) return null
 
