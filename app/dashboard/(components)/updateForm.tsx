@@ -12,7 +12,7 @@ import useLocation from '../(hooks)/useLocation';
 import LocationInputs from './locationInputs';
 import AddressInput from './addressInput';
 import SquareMetersInput from './squareMetersInput';
-import PriceHistoryInputs from './priceHistoryInputs';
+import PriceInput from './priceInput';
 import { isAxiosError } from 'axios';
 import Modal from './Modal';
 
@@ -33,36 +33,32 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
             otherAttributes: { "hello": "world" },
         }
     });
-    const { fields, append, remove } = useFieldArray({
+    const { remove } = useFieldArray({
         control,
         name: 'priceHistory'
     });
 
     const onSubmit = async (data: PropertyInfo) => {
-        console.log(`Data:`, data);
         if (!property) {
             return;
         }
-        const newData = { ...data, location: currentLocation, sqm: Number(data.sqm), id: property.id };
-        // Convert price to number and remove empty items
-        if (newData.priceHistory) {
-            newData.priceHistory = newData.priceHistory.filter(item => {
-                if (item.price && typeof item.price === 'string') {
-                    const priceNum = Number(item.price);
-                    if (!isNaN(priceNum)) {
-                        item.price = priceNum;
-                    }
-                    item.time = new Date(item.time).toISOString();
-                    return true;
-                }
-                return false;
-            }).filter(Boolean);
-        }
+
+        const newData = {
+            createdAt: property.createdAt || new Date().toISOString(),
+            otherAttributes: { "hello": "world" },
+            address: data.address,
+            sqm: Number(data.sqm),
+            price: Number(data.priceHistory?.[0]?.price) || 0,
+            location: currentLocation,
+            id: property.id
+        };
+
         console.log(newData);
+        const serializedData = JSON.stringify(newData);
         try {
-            await editProperty.mutateAsync(newData);
+            await editProperty.mutateAsync(JSON.parse(serializedData));
             queryClient.invalidateQueries({ queryKey: ['properties'] });
-            return;
+            onClose();
         } catch (error: any) {
             if (isAxiosError(error)) {
                 console.error(error.response?.data);
@@ -76,16 +72,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
         }
         setValue('address', property.address);
         setValue('sqm', property.sqm);
-        property.priceHistory?.forEach((priceItem, index) => {
-            const isoString = priceItem.time;
-            const [date, time] = isoString.split('T');
-            const [year, month, day] = date.split('-');
-            const [hours, minutes] = time.split(':');
-            setValue(`priceHistory.${index}.price`, priceItem.price);
-            setValue(`priceHistory.${index}.time`, `${year}-${month}-${day}T${hours}:${minutes}`);
-        });
     }, [property, setValue]);
-
 
 
     const generateAddress = async () => {
@@ -102,19 +89,28 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
         }
     };
 
+    const handleClose = () => {
+        reset();
+        remove();
+        onClose();
+    };
+
     useEffect(() => {
-        setPropertyValues();
-    }, [setPropertyValues]);
+        if (isOpen && property) {
+            reset();
+            setPropertyValues();
+        }
+    }, [isOpen, property, reset, setPropertyValues]);
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={handleClose}>
             <div className="bg-white p-4 w-auto rounded-lg shadow-lg max-w-2xl mx-auto">
                 <h2 className="text-lg font-bold mb-4">Update Property</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
                     <LocationInputs currentLocation={currentLocation} />
                     <AddressInput register={register} errors={errors} generateAddress={generateAddress} />
                     <SquareMetersInput register={register} errors={errors} />
-                    <PriceHistoryInputs fields={fields} register={register} errors={errors} append={append} remove={remove} />
+                    <PriceInput register={register} errors={errors} />
                     <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? 'Submitting...' : 'Submit'}
                     </Button>

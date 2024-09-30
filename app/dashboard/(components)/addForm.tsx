@@ -85,12 +85,6 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
         };
     }, [uploadedFiles]);
 
-    useEffect(() => {
-        if (fields.length === 0) {
-            append({ price: 0, time: '' });
-        }
-    }, [fields, append]);
-
     const handleClose = () => {
         reset();
         setUploadedFiles([]);
@@ -107,7 +101,7 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
                     <SquareMetersInput register={register} errors={errors} />
                     <PriceHistoryInputs fields={fields} register={register} errors={errors} append={append} remove={remove} />
                     <FileUpload uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} />
-                    <SubmitButton isSubmitting={isSubmitting} />
+                    <SubmitButton isSubmitting={isPending} />
                 </form>
             </div>
         </Modal>

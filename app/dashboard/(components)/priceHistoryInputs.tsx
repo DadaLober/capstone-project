@@ -13,6 +13,7 @@ function PriceHistoryInputs({ fields, register, errors, append, remove }: {
     append: (value: any) => void,
     remove: (index: number) => void
 }) {
+    const renderInputs = fields.length > 0 ? fields : [{ id: 'default', price: 0, time: new Date().toISOString() }];
     return (
         <div className="flex flex-col space-y-4">
             <div className="flex items-center mb-4">
@@ -25,12 +26,13 @@ function PriceHistoryInputs({ fields, register, errors, append, remove }: {
                     <MdOutlineAddCircleOutline />
                 </button>
             </div>
-            {fields.map((item, index) => (
+            {renderInputs.map((item, index) => (
                 <div key={item.id} className="flex flex-col space-y-2">
                     <div className="flex space-x-2">
                         <Input
                             type="number"
                             placeholder="Price"
+                            className="flex-grow"
                             {...register(`priceHistory.${index}.price` as const, {
                                 required: "Price is required",
                                 min: {
@@ -43,6 +45,7 @@ function PriceHistoryInputs({ fields, register, errors, append, remove }: {
                         <Input
                             type="datetime-local"
                             placeholder="Time"
+                            className="w-auto"
                             {...register(`priceHistory.${index}.time` as const, {
                                 required: "Time is required",
                                 validate: value => {
