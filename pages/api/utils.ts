@@ -26,3 +26,19 @@ export function extractCookies(req: NextApiRequest): { token?: string; refreshTo
         refreshToken: refreshTokenCookie ? refreshTokenCookie.split('=')[1] : undefined,
     };
 }
+
+export function extractRoleFromToken(token: string): string | null {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = Buffer.from(base64, 'base64').toString('binary');
+
+    try {
+        const payload = JSON.parse(jsonPayload);
+        return payload.user && payload.user.roles && payload.user.roles.length > 0
+            ? payload.user.roles[0]
+            : null;
+    } catch (error) {
+        console.error('Error parsing JWT payload:', error);
+        return null;
+    }
+}
