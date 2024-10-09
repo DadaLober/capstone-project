@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
+import React, { useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
 import { useProperties } from '@/app/dashboard/(hooks)/useProperties';
 import { useReservations } from './(hooks)/useReservations';
 import { PropertyCard } from '@/app/dashboard/(components)/PropertyCard';
@@ -9,10 +9,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import Header from './(components)/header';
 import { PropertyInfo } from './(hooks)/types';
 import AddFormModal from './(components)/updateForm';
-import React from 'react';
+import SkeletonCard from './(components)/SkeletonCard';
+import SkeletonMap from './(components)/SkeletonMap';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapComponent'), {
     ssr: false,
+    loading: () => <SkeletonMap />
 });
 
 function Dashboard() {
@@ -54,32 +56,41 @@ function Dashboard() {
         queryClient.invalidateQueries({ queryKey: ['properties'] });
     };
 
-    if (isLoading) {
-        return <div>Loading...</div>;
+    if (isError) {
+        return <div>Error loading properties. Please try again later.</div>;
     }
 
-    if (isError) {
-        return <div>Error</div>;
-    }
+    const renderPropertyList = () => (
+        isLoading ? (
+            Array.from({ length: 6 }).map((_, index) => (
+                <React.Fragment key={index}>
+                    <SkeletonCard />
+                </React.Fragment>
+            ))
+        ) : (
+            properties && properties.map((property) => (
+                <React.Fragment key={property.id}>
+                    <PropertyCard
+                        property={property}
+                        isSelected={selectedPropertyId === property.id}
+                        onClick={() => handleAction(property, 'select')}
+                        onDelete={() => handleAction(property, 'delete')}
+                        onAddToReserved={() => handleAction(property, 'reserve')}
+                        onUpdate={() => handleAction(property, 'update')}
+                    />
+                </React.Fragment>
+            ))
+        )
+    );
+
 
     return (
         <>
             <Header />
-            <div className="flex flex-col md:flex-row mt-3 gap-4 cool-scrollbar ">
-                <div className="flex-grow overflow-y-auto pr-4 max-h-screen">
+            <div className="flex flex-col md:flex-row mt-3 gap-4 cool-scrollbar px-4">
+                <div className="flex-grow overflow-y-auto pr-4 max-h-screen md:w-[45%]">
                     <div className="flex flex-col">
-                        {properties && properties.map((property) => (
-                            <React.Fragment key={property.id}>
-                                <PropertyCard
-                                    property={property}
-                                    isSelected={selectedPropertyId === property.id}
-                                    onClick={() => handleAction(property, 'select')}
-                                    onDelete={() => handleAction(property, 'delete')}
-                                    onAddToReserved={() => handleAction(property, 'reserve')}
-                                    onUpdate={() => handleAction(property, 'update')}
-                                />
-                            </React.Fragment>
-                        ))}
+                        {renderPropertyList()}
                         {isFormOpen && properties && (
                             <AddFormModal
                                 isOpen={true}
@@ -89,12 +100,18 @@ function Dashboard() {
                         )}
                     </div>
                 </div>
-                <MapComponent
-                    location={properties?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
-                    propertyInfo={properties?.find(p => p.id === selectedPropertyId) ?? null}
-                />
+                <div className="md:w-[55%] pr-4">
+                    <div className="rounded-lg overflow-hidden max-h-[85vh]">
+                        <MapComponent
+                            location={properties?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
+                            propertyInfo={properties?.find(p => p.id === selectedPropertyId) ?? null}
+                        />
+                    </div>
+                </div>
+
             </div>
         </>
     );
 }
+
 export default Dashboard;
