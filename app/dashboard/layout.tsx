@@ -1,15 +1,20 @@
-import SideNav from '@/app/dashboard/(components)/sidenav';
+'use client';
+
+import React from 'react';
+import SideNav from './(components)/sidenav';
+import Header from './(components)/header';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     return (
-        <div className="flex h-screen flex-col">
-            <div className="flex-grow flex flex-row">
-                <SideNav />
-                <div className="flex-1 ml-3">
+        <div className="flex h-screen">
+            <SideNav />
+            <div className="flex-1 flex flex-col">
+                <Header />
+                <main className="flex-1 p-4 overflow-y-auto custom-scrollbar">
                     {children}
-                </div>
+                </main>
+                <div id="modal-root"></div>
             </div>
-            <div id="modal-root"></div>
         </div>
     );
 }

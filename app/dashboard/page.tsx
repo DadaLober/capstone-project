@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import React, { useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
@@ -6,7 +6,6 @@ import { useProperties } from '@/app/dashboard/(hooks)/useProperties';
 import { useReservations } from './(hooks)/useReservations';
 import { PropertyCard } from '@/app/dashboard/(components)/PropertyCard';
 import { useQueryClient } from '@tanstack/react-query';
-import Header from './(components)/header';
 import { PropertyInfo } from './(hooks)/types';
 import AddFormModal from './(components)/updateForm';
 import SkeletonCard from './(components)/SkeletonCard';
@@ -57,7 +56,7 @@ function Dashboard() {
     };
 
     if (isError) {
-        return <div>Error loading properties. Please try again later.</div>;
+        return <div className="p-4 rounded-md bg-destructive text-destructive-foreground">Error loading properties. Please try again later.</div>;
     }
 
     const renderPropertyList = () => (
@@ -83,34 +82,35 @@ function Dashboard() {
         )
     );
 
-
     return (
-        <>
-            <Header />
-            <div className="flex flex-col md:flex-row mt-3 gap-4 cool-scrollbar px-4">
-                <div className="flex-grow overflow-y-auto pr-4 max-h-screen md:w-[45%]">
-                    <div className="flex flex-col">
-                        {renderPropertyList()}
-                        {isFormOpen && properties && (
-                            <AddFormModal
-                                isOpen={true}
-                                onClose={() => setIsFormOpen(false)}
-                                property={properties.find(p => p.id === selectedPropertyId) ?? null}
+        <div className="flex flex-col h-screen bg-background text-foreground">
+            <div className="flex flex-grow overflow-hidden">
+                <Suspense fallback={<div className="w-1/2 p-4"><SkeletonCard /></div>}>
+                    <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar">
+                        <div className="space-y-4">
+                            {renderPropertyList()}
+                        </div>
+                    </div>
+                </Suspense>
+                <Suspense fallback={<div className="w-1/2 p-4"><SkeletonMap /></div>}>
+                    <div className="w-1/2 p-4">
+                        <div className="rounded-lg overflow-hidden h-full">
+                            <MapComponent
+                                location={properties?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
+                                propertyInfo={properties?.find(p => p.id === selectedPropertyId) ?? null}
                             />
-                        )}
+                        </div>
                     </div>
-                </div>
-                <div className="md:w-[55%] pr-4">
-                    <div className="rounded-lg overflow-hidden max-h-[85vh]">
-                        <MapComponent
-                            location={properties?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
-                            propertyInfo={properties?.find(p => p.id === selectedPropertyId) ?? null}
-                        />
-                    </div>
-                </div>
-
+                </Suspense>
             </div>
-        </>
+            {isFormOpen && properties && (
+                <AddFormModal
+                    isOpen={true}
+                    onClose={() => setIsFormOpen(false)}
+                    property={properties.find(p => p.id === selectedPropertyId) ?? null}
+                />
+            )}
+        </div>
     );
 }
 
