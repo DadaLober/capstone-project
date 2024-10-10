@@ -27,25 +27,25 @@
   }
 
   .dark {
-    --background: 20 14.3% 4.1%;
-    --foreground: 0 0% 95%;
-    --card: 24 9.8% 10%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 142.1 70.6% 45.3%;
-    --primary-foreground: 144.9 80.4% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 12 6.5% 15.1%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 85.7% 97.3%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 142.4 71.8% 29.2%;
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 15%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 142 72% 50%;
+    --primary-foreground: 144 80% 10%;
+    --secondary: 217 32% 25%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 32% 20%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 32% 25%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 40.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 32% 25%;
+    --input: 217 32% 25%;
+    --ring: 142 72% 50%;
   }
 }
 
@@ -60,7 +60,7 @@
 }
 
 .dark .gradient-green-bg {
-  background: linear-gradient(to bottom right, #0f2922, #1a4731, #2d6a4f);
+  background: linear-gradient(to bottom right, #0a3d31, #1e5842, #34805f);
 }
 
 .active-link {
@@ -69,8 +69,8 @@
 
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -78,30 +78,30 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--primary) / 0.5);
-  border-radius: 3px;
+  background-color: hsl(var(--primary) / 0.6);
+  border-radius: 4px;
   transition: background-color 0.2s ease-in-out;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--primary) / 0.7);
+  background-color: hsl(var(--primary) / 0.8);
 }
 
 /* For Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--primary) / 0.5) hsl(var(--background));
+  scrollbar-color: hsl(var(--primary) / 0.6) hsl(var(--background));
 }
 
 /* Custom class for elements that should have the custom scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--primary) / 0.5) hsl(var(--background));
+  scrollbar-color: hsl(var(--primary) / 0.6) hsl(var(--background));
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -109,53 +109,53 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--primary) / 0.5);
-  border-radius: 3px;
+  background-color: hsl(var(--primary) / 0.6);
+  border-radius: 4px;
   transition: background-color 0.2s ease-in-out;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--primary) / 0.7);
+  background-color: hsl(var(--primary) / 0.8);
 }
 
 .leaflet-control-geosearch {
   position: absolute;
   top: 10px;
   left: 10px;
-  z-index: 1000;
+  z-index: 700;
   width: 300px;
 }
 
 .search-input-container {
-  @apply bg-white shadow-lg rounded-full overflow-hidden flex items-center;
+  @apply bg-card shadow-lg rounded-full overflow-hidden flex items-center;
 }
 
 .search-input {
-  @apply p-3 w-full border-none outline-none text-gray-700;
+  @apply p-3 w-full border-none outline-none text-foreground bg-transparent;
 }
 
 .suggestions-list {
-  @apply mt-2 bg-white rounded-md shadow-lg max-h-60 overflow-y-auto;
+  @apply mt-2 bg-card rounded-md shadow-lg max-h-60 overflow-y-auto;
   position: absolute;
   width: 100%;
-  z-index: 1001;
+  z-index: 701;
 }
 
 .suggestions-list li {
-  @apply p-2 hover:bg-gray-100 cursor-pointer;
+  @apply p-2 hover:bg-accent cursor-pointer text-foreground;
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.5);
   }
 
   70% {
-    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    box-shadow: 0 0 0 10px hsl(var(--primary) / 0);
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0);
   }
 }
 
@@ -173,5 +173,3 @@
 .h-full {
   height: 100vh;
 }
-
-/* Your existing styles */

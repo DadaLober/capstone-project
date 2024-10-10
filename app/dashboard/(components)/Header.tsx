@@ -60,7 +60,7 @@ const Header: React.FC = () => {
                             <ChevronDown size={16} className="text-muted-foreground" />
                         </button>
                         {isProfileOpen && (
-                            <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-[500] bg-popover text-popover-foreground">
+                            <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-[900] bg-popover text-popover-foreground">
                                 <a href="#" className="block px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground">Profile</a>
                                 <a href="#" className="block px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground">Logout</a>
                             </div>

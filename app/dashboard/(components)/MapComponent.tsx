@@ -87,10 +87,10 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                 {mapCenter && <RecenterAutomatically lat={mapCenter[0]} lng={mapCenter[1]} />}
                 {isSearchVisible && <SearchControl onSearchResult={handleSearchResult} />}
             </MapContainer>
-            <div className="absolute top-4 right-4 z-[1000] flex items-center">
+            <div className="absolute top-4 right-4 z-[600] flex items-center">
                 <button
                     onClick={toggleSearch}
-                    className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors"
+                    className="bg-gray-400 p-2 rounded-full shadow-md hover:bg-gray-500 transition-colors"
                 >
                     {isSearchVisible ? <X size={24} /> : <Search size={24} />}
                 </button>

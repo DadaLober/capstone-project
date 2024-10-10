@@ -14,8 +14,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardCarousel } from "@/components/ui/card"
 import Modal from '@/app/dashboard/(components)/Modal'
 import "@/app/dashboard/(components)/modal.css"
+import { ImageOff } from 'lucide-react'
 
-// Interfaces
 interface FormMarkerProps {
     location: Location
     handleOpenForm: () => void
@@ -39,7 +39,7 @@ interface FileType {
 const CloseButton: React.FC<{ onClose: () => void }> = ({ onClose }) => (
     <button
         onClick={onClose}
-        className="absolute top-2 right-2 z-10 p-1 bg-transparent rounded-full hover:bg-gray-100 transition-colors duration-200"
+        className="absolute top-2 right-2 z-10 p-1 bg-transparent rounded-full hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
     >
         <IoMdClose size={20} />
     </button>
@@ -53,11 +53,11 @@ const FormMarker: React.FC<FormMarkerProps> = ({ location, handleOpenForm }) => 
         <Marker position={location} icon={customIcon}>
             <Popup className="custom-popup" closeButton={false}>
                 <CloseButton onClose={handleClosePopup} />
-                <div className="form-marker-popup w-64 p-4">
-                    <h3 className="text-xl font-semibold mb-2 text-gray-800">{location.name || 'Unnamed Location'}</h3>
+                <div className="form-marker-popup w-64 p-4 bg-card text-card-foreground rounded-lg shadow-lg">
+                    <h3 className="text-xl font-semibold mb-2">{location.name || 'Unnamed Location'}</h3>
                     <div className="space-y-2">
-                        <p className="text-sm text-gray-500">Latitude: {location.lat}</p>
-                        <p className="text-sm text-gray-500">Longitude: {location.lng}</p>
+                        <p className="text-sm text-muted-foreground">Latitude: {location.lat}</p>
+                        <p className="text-sm text-muted-foreground">Longitude: {location.lng}</p>
                     </div>
                     <div className="text-center">
                         <Button
@@ -115,7 +115,6 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
         }
     }
 
-
     if (!propertyInfo) return null
 
     const handleFileClick = (file: FileType) => {
@@ -133,27 +132,27 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                         transition={{ duration: 0.3 }}
                     >
                         <CloseButton onClose={handleClosePopup} />
-                        <Card className="w-96 bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                        <Card className="w-96 bg-card text-card-foreground shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                             {isLoading ? (
-                                <div className="h-48 bg-gray-200 animate-pulse" />
-                            ) : (
+                                <div className="h-48 bg-muted animate-pulse" />
+                            ) : files.length > 0 ? (
                                 <CardCarousel
                                     images={files}
                                     className='h-48'
                                     renderItem={(file) => (
                                         <div onClick={() => handleFileClick(file)} className="w-full h-full">
                                             {file.type === 'pdf' ? (
-                                                <div className="flex flex-col items-center justify-center h-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200">
-                                                    <FaFilePdf className="text-5xl text-red-500 mb-2" />
-                                                    <span className="text-sm font-medium text-gray-700">Click to view PDF</span>
+                                                <div className="flex flex-col items-center justify-center h-full bg-muted hover:bg-accent transition-colors duration-200">
+                                                    <FaFilePdf className="text-5xl text-destructive mb-2" />
+                                                    <span className="text-sm font-medium">Click to view PDF</span>
                                                 </div>
                                             ) : file.type === 'video' ? (
-                                                <div className="flex flex-col items-center justify-center h-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200">
-                                                    <CiVideoOn className="text-5xl text-blue-500 mb-2" />
-                                                    <span className="text-sm font-medium text-gray-700">Click to play video</span>
+                                                <div className="flex flex-col items-center justify-center h-full bg-muted hover:bg-accent transition-colors duration-200">
+                                                    <CiVideoOn className="text-5xl text-primary mb-2" />
+                                                    <span className="text-sm font-medium">Click to play video</span>
                                                 </div>
                                             ) : (
-                                                <div className="flex flex-col items-center justify-center h-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200 relative">
+                                                <div className="flex flex-col items-center justify-center h-full bg-muted hover:bg-accent transition-colors duration-200 relative">
                                                     <Image
                                                         src={file.url}
                                                         alt="Property"
@@ -166,29 +165,34 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                                         </div>
                                     )}
                                 />
+                            ) : (
+                                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center text-gray-400">
+                                    <ImageOff size={48} strokeWidth={1.5} />
+                                    <p className="mt-2 text-sm font-medium">No images available</p>
+                                </div>
                             )}
                             <div className="p-4">
-                                <h3 className="text-xl font-bold mb-4 text-blue-600">{propertyInfo.address}</h3>
+                                <h3 className="text-xl font-bold mb-4 text-primary">{propertyInfo.address}</h3>
                                 <div className="flex flex-col space-y-4">
                                     <div className="flex items-center space-x-4">
                                         <div className="flex items-center">
-                                            <FaRulerCombined className="text-gray-500 mr-2" />
+                                            <FaRulerCombined className="text-muted-foreground mr-2" />
                                             <span>{propertyInfo.sqm} m²</span>
                                         </div>
                                     </div>
                                     <div className="flex items-center space-x-2">
                                         <span className="font-bold">Price:</span>
-                                        <span className="text-green-600 font-semibold">
+                                        <span className="text-primary font-semibold">
                                             ${propertyInfo.priceHistory?.[0]?.price.toLocaleString() || 'N/A'}
                                         </span>
                                     </div>
-                                    <div className="flex items-center space-x-2 text-sm text-gray-500">
+                                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                                         <span>Listed on:</span>
                                         <span>{new Date(propertyInfo.createdAt).toLocaleDateString()}</span>
                                     </div>
                                     <Button
                                         variant="default"
-                                        className="mt-4 w-full hover:bg-gray-700 transition-colors duration-300"
+                                        className="mt-4 w-full hover:bg-primary/90 transition-colors duration-300"
                                         onClick={handleViewAdditionalProperties}
                                     >
                                         View More Details

@@ -35,7 +35,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                             <DropdownMenuTrigger >
                                 <SlOptions className="h-4 w-4 mr-1" />
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="bg-white shadow-md rounded-lg">
+                            <DropdownMenuContent className=" shadow-md rounded-lg">
                                 <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onUpdate}>
                                     Edit Property
                                 </DropdownMenuItem>

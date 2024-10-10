@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
+import axios from 'axios';
 
 const links = [
     { name: 'Home', href: '/dashboard', icon: Home },
@@ -20,9 +21,14 @@ const SideNav = () => {
     const [isOpen, setIsOpen] = useState(true);
     const { theme } = useTheme();
 
-    const handleLogout = () => {
-        // Implement logout logic here
-        console.log('Logout clicked');
+    const handleLogout = async () => {
+        try {
+            const response = await axios.get('/api/logout');
+            console.log(response.data);
+            window.location.href = '/login';
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (

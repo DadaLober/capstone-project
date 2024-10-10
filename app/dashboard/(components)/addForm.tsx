@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useEffect, useState } from 'react';
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form';
 
@@ -93,8 +91,8 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
 
     return (
         <Modal isOpen={isOpen} onClose={handleClose}>
-            <div className="bg-white p-4 w-auto rounded-lg shadow-lg max-w-2xl mx-auto">
-                <h2 className="text-lg font-bold mb-4">Add Property</h2>
+            <div className="w-auto max-w-2xl mx-auto rounded-lg">
+                <h2 className="text-lg font-bold mb-4 text-foreground">Add Property</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
                     <LocationInputs currentLocation={currentLocation} />
                     <AddressInput register={register} errors={errors} generateAddress={generateAddress} />

@@ -94,7 +94,7 @@ function Dashboard() {
                 </Suspense>
                 <Suspense fallback={<div className="w-1/2 p-4"><SkeletonMap /></div>}>
                     <div className="w-1/2 p-4">
-                        <div className="rounded-lg overflow-hidden h-full">
+                        <div className="rounded-lg overflow-hidden h-[85vh]">
                             <MapComponent
                                 location={properties?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
                                 propertyInfo={properties?.find(p => p.id === selectedPropertyId) ?? null}
