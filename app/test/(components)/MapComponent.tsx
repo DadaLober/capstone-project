@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
-import { Reservations } from '@/app/dashboard/(hooks)/types';
+import { Reservations, customIcon } from '@/app/dashboard/(hooks)/types';
 
 interface MapComponentProps {
     properties: Reservations[];
@@ -71,14 +71,14 @@ const MapComponent: React.FC<MapComponentProps> = ({ properties, selectedPropert
 
             properties.forEach(property => {
                 const { lat, lng } = property.propertyInfo[0].location;
-                const marker = L.marker([lat, lng]).addTo(markersLayerRef.current!);
+                const marker = L.marker([lat, lng], { icon: customIcon }).addTo(markersLayerRef.current!);
                 marker.bindPopup(`
-          <b>Property ID:</b> ${property.propertyId}<br>
-          <b>Address:</b> ${property.propertyInfo[0].address}<br>
-          <b>Status:</b> ${property.status}<br>
-          <b>Fee:</b> $${property.fee}<br>
-          <b>Area:</b> ${property.propertyInfo[0].sqm} sqm
-        `);
+                    <b>Property ID:</b> ${property.propertyId}<br>
+                    <b>Address:</b> ${property.propertyInfo[0].address}<br>
+                    <b>Status:</b> ${property.status}<br>
+                    <b>Fee:</b> ${property.fee}<br>
+                    <b>Area:</b> ${property.propertyInfo[0].sqm} sqm
+                `);
             });
         }
     }, [properties]);

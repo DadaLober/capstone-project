@@ -8,6 +8,8 @@ import { PropertyCard } from './(components)/PropertyCard';
 import { useProperties } from './(components)/useProperties';
 import { Reservations } from '../dashboard/(hooks)/types';
 import FilterComponent from './(components)/FilterComponent';
+import PriceTrendsComponent from './(components)/PriceTrendsComponent';
+import PriceComparisonComponent from './(components)/PriceComparisonComponent';
 
 const MapComponent = dynamic(() => import('@/app/test/(components)/MapComponent'), {
     ssr: false,
@@ -60,6 +62,8 @@ export default function DashboardPage() {
                 <TabsList>
                     <TabsTrigger value="map">Map View</TabsTrigger>
                     <TabsTrigger value="stats">Statistics</TabsTrigger>
+                    <TabsTrigger value="pricetrends">Price Trends</TabsTrigger>
+                    <TabsTrigger value="pricecomparison">Price Comparison</TabsTrigger>
                 </TabsList>
                 <TabsContent value="map" className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -92,6 +96,20 @@ export default function DashboardPage() {
                     <Card>
                         <CardContent>
                             <StatsComponent properties={filteredProperties} />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="pricetrends">
+                    <Card>
+                        <CardContent>
+                            <PriceTrendsComponent properties={filteredProperties} />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="pricecomparison">
+                    <Card>
+                        <CardContent>
+                            <PriceComparisonComponent properties={filteredProperties} />
                         </CardContent>
                     </Card>
                 </TabsContent>
