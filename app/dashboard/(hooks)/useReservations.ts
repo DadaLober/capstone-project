@@ -14,6 +14,7 @@ export const useReservations = () => {
             ...reservations,
             propertyInfo: propertiesResponse.data.filter((property) => property.id === reservations.propertyId),
         }));
+        console.log(result)
 
         return result;
     };

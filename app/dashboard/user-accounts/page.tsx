@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { columns } from "../(components)/columns";
 import { DataTable } from "../(components)/data-table";
+import TableSkeleton from '../(components)/TableSkeleton';
 import { useState, useEffect } from 'react';
 
 interface UserData {
@@ -54,12 +55,17 @@ export default function UserAccountsPage() {
     }, []);
 
     if (isLoading) {
-        return <div>Loading... (fallback skeleton here)</div>;
+        return (
+            <div className="container mx-auto">
+                <TableSkeleton />
+            </div>
+        );
     }
 
     if (users.length === 0) {
-        return <div>Check console</div>;
+        return <div className="container mx-auto mt-8 text-center">No users found. Please check the console for any errors.</div>;
     }
+
     return (
         <div className="container mx-auto">
             <DataTable columns={columns} data={users} />
