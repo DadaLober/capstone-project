@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { LogOut, Home, Users, Archive, BookMarked, Menu } from 'lucide-react';
+import { LogOut, Home, Users, Waypoints, BookMarked, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -13,7 +13,7 @@ const links = [
     { name: 'Home', href: '/dashboard', icon: Home },
     { name: 'User Accounts', href: '/dashboard/user-accounts', icon: Users },
     { name: 'Reserved', href: '/dashboard/reserved', icon: BookMarked },
-    { name: 'Archived', href: '/dashboard/archived', icon: Archive },
+    { name: 'Statistics', href: '/dashboard/statistics', icon: Waypoints },
 ];
 
 const SideNav = () => {

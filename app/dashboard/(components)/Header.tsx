@@ -28,14 +28,14 @@ const Header: React.FC = () => {
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                     <h1 className="text-2xl font-bold text-primary">PortMan</h1>
-                    <div className="relative">
+                    {/* <div className="relative">
                         <input
                             type="text"
                             placeholder="Search..."
                             className="w-64 pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground border-input"
                         />
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="flex items-center space-x-4">
                     <Toggle

@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             // Only add the role cookie if the role is "broker"
             if (role === 'broker') {
-                cookies.push(`role=${role}; ${cookieOptions} Max-Age=${Math.floor((tokenExpiry - Date.now()) / 1000)}`);
+                cookies.push(`role=${role}; ${cookieOptions} Max-Age=${Math.floor((refreshTokenExpiry - Date.now()) / 1000)}`);
             }
 
             res.setHeader('Set-Cookie', cookies);
