@@ -3,9 +3,10 @@
 import { FaMapMarkerAlt, FaAddressBook } from 'react-icons/fa';
 import { SlOptions } from "react-icons/sl";
 import { Card, CardContent } from '@/components/ui/card';
-import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo } from '@/hooks/types';
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { useUserInfo } from '@/hooks/useUserInfo';
 
 interface PropertyCardProps {
     property: PropertyInfo;
@@ -17,6 +18,7 @@ interface PropertyCardProps {
 }
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected, onClick, onDelete, onAddToReserved, onUpdate }) => {
+    const { userInfo } = useUserInfo();
     return (
         <Card
             className={`mb-4 ${isSelected ? 'border border-blue-500' : ''} hover:shadow-md transition-all duration-300 hover:cursor-pointer`}
@@ -30,24 +32,26 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                             {property.address}
                         </h2>
                     </div>
-                    <div className="ml-auto">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger >
-                                <SlOptions className="h-4 w-4 mr-1" />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className=" shadow-md rounded-lg">
-                                <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onUpdate}>
-                                    Edit Property
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onAddToReserved}>
-                                    Add to Reserved
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onDelete}>
-                                    Delete Property
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+                    {userInfo?.role === 'broker' &&
+                        <div className="ml-auto">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger >
+                                    <SlOptions className="h-4 w-4 mr-1" />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className=" shadow-md rounded-lg">
+                                    <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onUpdate}>
+                                        Edit Property
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onAddToReserved}>
+                                        Add to Reserved
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onDelete}>
+                                        Delete Property
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                    }
                 </div>
                 <div className="flex justify-between items-start mb-2">
                     <div className="flex items-center">

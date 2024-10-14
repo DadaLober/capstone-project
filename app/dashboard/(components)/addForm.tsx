@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form';
 
-import { PropertyInfo, Location } from '@/app/dashboard/(hooks)/types';
-import { useGeocode } from '../(hooks)/useGeocode';
-import { usePropertySubmission } from '../(hooks)/usePropertySubmission';
-import useLocation from '../(hooks)/useLocation';
+import { PropertyInfo, Location } from '@/hooks/types';
+import { useGeocode } from '../../../hooks/useGeocode';
+import { usePropertySubmission } from '../../../hooks/usePropertySubmission';
+import useLocation from '../../../hooks/useLocation';
 import FileUpload from './fileUpload';
 import LocationInputs from './locationInputs';
 import AddressInput from './addressInput';

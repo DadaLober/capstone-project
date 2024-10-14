@@ -2,7 +2,7 @@
 
 import { Marker, Popup } from 'react-leaflet';
 import { Button } from "@/components/ui/button";
-import { PropertyInfo, customIcon } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo, customIcon } from '@/hooks/types';
 
 interface LocationMarkerProps {
     propertyInfo: PropertyInfo | null;

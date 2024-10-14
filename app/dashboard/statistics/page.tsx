@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PropertyCard } from './(components)/PropertyCard';
 import { useProperties } from './(components)/useProperties';
-import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo } from '@/hooks/types';
 import FilterComponent from './(components)/FilterComponent';
 import PriceTrendsComponent from './(components)/PriceTrendsComponent';
 import PriceComparisonComponent from './(components)/PriceComparisonComponent';
@@ -18,6 +18,9 @@ const MapComponent = dynamic(() => import('@/app/dashboard/statistics/(component
 const StatsComponent = dynamic(() => import('@/app/dashboard/statistics/(components)/StatsComponent'), {
     ssr: false,
 });
+
+// const MAX_PRICE = 1000000000; // 1 billion
+// const MAX_AREA = 1000000; // 1 million sqm
 
 export default function DashboardPage() {
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);

@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { PropertyCard } from '@/app/dashboard/reserved/(components)/reservationCard';
 import { useQueryClient } from '@tanstack/react-query';
-import { useReservations } from '../(hooks)/useReservations';
+import { useReservations } from '../../../hooks/useReservations';
 import { FaCalendarTimes } from 'react-icons/fa';
 import SkeletonCard from '../(components)/SkeletonCard';
 import SkeletonMap from '../(components)/SkeletonMap';

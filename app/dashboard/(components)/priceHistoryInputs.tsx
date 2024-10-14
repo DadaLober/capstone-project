@@ -3,7 +3,7 @@ import { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import { Input } from '@/components/ui/input';
-import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo } from '@/hooks/types';
 
 
 function PriceHistoryInputs({ fields, register, errors, append, remove }: {

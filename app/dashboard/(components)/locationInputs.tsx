@@ -1,5 +1,5 @@
 import React from 'react';
-import { Location } from '@/app/dashboard/(hooks)/types';
+import { Location } from '@/hooks/types';
 import { Input } from '@/components/ui/input';
 
 interface LocationInputsProps {

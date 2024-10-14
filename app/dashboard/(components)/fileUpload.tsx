@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { FiUploadCloud, FiFile, FiX } from 'react-icons/fi';
 import { FaFilePdf } from 'react-icons/fa';
 import Image from 'next/image';
-import { PropertyInfo, FileData } from '../(hooks)/types';
+import { PropertyInfo, FileData } from '../../../hooks/types';
 
 
 interface FileUploadProps {

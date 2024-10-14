@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import type { PropertyInfo } from '@/app/dashboard/(hooks)/types';
+import type { PropertyInfo } from '@/hooks/types';
 import { Button } from '@/components/ui/button';
 import Modal from './Modal';
 

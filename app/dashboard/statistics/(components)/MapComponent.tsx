@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { PropertyInfo, customIcon } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo, customIcon } from '@/hooks/types';
 
 // Import the heat plugin
 import 'leaflet.heat';

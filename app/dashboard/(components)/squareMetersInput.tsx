@@ -1,7 +1,7 @@
 import React from 'react';
 import { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
-import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo } from '@/hooks/types';
 
 interface SquareMetersInputProps {
     register: UseFormRegister<PropertyInfo>;

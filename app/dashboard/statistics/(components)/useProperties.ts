@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { PropertyInfo, Reservations } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo, Reservations } from '@/hooks/types';
 import axios from 'axios';
 
 export const useProperties = () => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { LogOut, Home, Users, Waypoints, BookMarked, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,18 +8,25 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import axios from 'axios';
-
-const links = [
-    { name: 'Home', href: '/dashboard', icon: Home },
-    { name: 'User Accounts', href: '/dashboard/user-accounts', icon: Users },
-    { name: 'Reserved', href: '/dashboard/reserved', icon: BookMarked },
-    { name: 'Statistics', href: '/dashboard/statistics', icon: Waypoints },
-];
+import { useUserInfo } from '@/hooks/useUserInfo';
 
 const SideNav = () => {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(true);
     const { theme } = useTheme();
+    const { userInfo, isLoading } = useUserInfo();
+
+    const links = useMemo(() => [
+        { name: 'Home', href: '/dashboard', icon: Home },
+        { name: 'User Accounts', href: '/dashboard/user-accounts', icon: Users, roleRequired: 'broker' },
+        { name: 'Reserved', href: '/dashboard/reserved', icon: BookMarked },
+        { name: 'Statistics', href: '/dashboard/statistics', icon: Waypoints },
+    ], []);
+
+    const filteredLinks = useMemo(() => {
+        if (isLoading) return [];
+        return links.filter(link => !link.roleRequired || link.roleRequired === userInfo?.role);
+    }, [links, userInfo, isLoading]);
 
     const handleLogout = async () => {
         try {
@@ -46,7 +53,7 @@ const SideNav = () => {
                         </Button>
                     </div>
                     <div className="space-y-2">
-                        {links.map((link) => {
+                        {filteredLinks.map((link) => {
                             const IconComponent = link.icon;
                             return (
                                 <Link

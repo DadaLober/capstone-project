@@ -9,7 +9,7 @@ import { IoMdClose } from 'react-icons/io'
 import { CiVideoOn } from "react-icons/ci"
 import Image from 'next/image'
 
-import { customIcon, PropertyInfo, Location } from '@/app/dashboard/(hooks)/types'
+import { customIcon, PropertyInfo, Location } from '@/hooks/types'
 import { Button } from "@/components/ui/button"
 import { Card, CardCarousel } from "@/components/ui/card"
 import Modal from '@/app/dashboard/(components)/Modal'
@@ -142,9 +142,16 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                                     renderItem={(file) => (
                                         <div onClick={() => handleFileClick(file)} className="w-full h-full">
                                             {file.type === 'pdf' ? (
-                                                <div className="flex flex-col items-center justify-center h-full bg-muted hover:bg-accent transition-colors duration-200">
-                                                    <FaFilePdf className="text-5xl text-destructive mb-2" />
-                                                    <span className="text-sm font-medium">Click to view PDF</span>
+                                                <div className="relative w-full h-full bg-muted hover:bg-accent transition-colors duration-200">
+                                                    <iframe
+                                                        src={`${file.url}#toolbar=0&view=FitH`}
+                                                        className="w-full h-full"
+                                                        style={{ pointerEvents: 'none' }}
+                                                    />
+                                                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white">
+                                                        <FaFilePdf className="text-4xl mb-2" />
+                                                        <span className="text-sm font-medium">Click to view PDF</span>
+                                                    </div>
                                                 </div>
                                             ) : file.type === 'video' ? (
                                                 <div className="flex flex-col items-center justify-center h-full bg-muted hover:bg-accent transition-colors duration-200">

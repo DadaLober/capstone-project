@@ -5,11 +5,12 @@ import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import AdditionalPropertiesModal from '@/app/dashboard/(components)/additionalPropForm';
 import AddFormModal from './addForm';
-import { Location, PropertyInfo, customIcon } from '@/app/dashboard/(hooks)/types';
+import { Location, PropertyInfo, customIcon } from '@/hooks/types';
 import { FormMarker, LocationMarker, PropertyMarker } from '@/app/dashboard/(components)/formMarker';
 import { SearchControl } from './SearchControl';
 import { Search, X } from 'lucide-react';
 import '@/app/dashboard/(components)/modal.css';
+import { useUserInfo } from '@/hooks/useUserInfo';
 
 interface MapProps {
     location: Location | null;
@@ -30,6 +31,7 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
     const [marker, setMarker] = useState<Location | null>(null);
     const [isSearchVisible, setIsSearchVisible] = useState(true);
     const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
+    const { userInfo } = useUserInfo();
 
     const handleOpenView = () => {
         setIsModalOpen(true);
@@ -38,15 +40,19 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
         setIsFormOpen(true);
     };
     const addMarker = (position: Location) => {
-        setMarker(position);
+        if (userInfo?.role === 'broker') {
+            setMarker(position);
+        }
     };
 
     const handleSearchResult = useCallback((result: any) => {
         const { x, y, label } = result;
         const newLocation: Location = { lng: x, lat: y, name: label };
-        setMarker(newLocation);
+        if (userInfo?.role === 'broker') {
+            setMarker(newLocation);
+        }
         setMapCenter([y, x]);
-    }, []);
+    }, [userInfo]);
 
     const toggleSearch = () => {
         setIsSearchVisible(!isSearchVisible);
@@ -71,8 +77,8 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 />
-                <LocationMarker addMarker={addMarker} />
-                {marker && (
+                {userInfo?.role === 'broker' && <LocationMarker addMarker={addMarker} />}
+                {marker && userInfo?.role === 'broker' && (
                     <>
                         <Marker position={[marker.lat, marker.lng]} icon={customIcon} />
                         <FormMarker location={marker} handleOpenForm={handleOpenForm} />

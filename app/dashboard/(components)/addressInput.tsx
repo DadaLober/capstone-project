@@ -3,7 +3,7 @@ import { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { PiMagicWand } from "react-icons/pi";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo } from '@/hooks/types';
 
 interface AddressInputProps {
     register: UseFormRegister<PropertyInfo>;

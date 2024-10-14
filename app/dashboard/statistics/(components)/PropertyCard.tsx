@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropertyInfo } from '@/app/dashboard/(hooks)/types';
+import { PropertyInfo } from '@/hooks/types';
 
 interface PropertyCardProps {
     property: PropertyInfo;

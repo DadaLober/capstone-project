@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useCallback } from 'react';
-import { PropertyInfo, Reservations } from '../dashboard/(hooks)/types';
+import { PropertyInfo, Reservations } from '../../hooks/types';
 import axios from 'axios';
 
 const PropertyListing: React.FC = () => {

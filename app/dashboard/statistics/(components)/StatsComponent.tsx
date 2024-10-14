@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter } from 'recharts';
-import { PropertyInfo } from "@/app/dashboard/(hooks)/types";
+import { PropertyInfo } from "@/hooks/types";
 import ExportButton from './ExportButton';
 
 interface StatsComponentProps {

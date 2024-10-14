@@ -2,11 +2,11 @@
 
 import React, { useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
-import { useProperties } from '@/app/dashboard/(hooks)/useProperties';
-import { useReservations } from './(hooks)/useReservations';
+import { useProperties } from '@/hooks/useProperties';
+import { useReservations } from '../../hooks/useReservations';
 import { PropertyCard } from '@/app/dashboard/(components)/PropertyCard';
 import { useQueryClient } from '@tanstack/react-query';
-import { PropertyInfo } from './(hooks)/types';
+import { PropertyInfo } from '../../hooks/types';
 import AddFormModal from './(components)/updateForm';
 import SkeletonCard from './(components)/SkeletonCard';
 import SkeletonMap from './(components)/SkeletonMap';
@@ -20,7 +20,7 @@ function Dashboard() {
     const queryClient = useQueryClient();
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const { properties, isLoading, isError, mutation: deleteProperty } = useProperties();
+    const { properties, isLoading, isError, deleteMutation: deleteProperty } = useProperties();
     const { mutation: addReserved } = useReservations();
 
     const handleAction = (property: PropertyInfo, action: 'select' | 'delete' | 'reserve' | 'update') => {

@@ -2,19 +2,18 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
-import { PropertyInfo, FileData } from '@/app/dashboard/(hooks)/types';
-import { useGeocode } from '../(hooks)/useGeocode';
-import { useProperties } from '../(hooks)/useProperties';
-import useLocation from '../(hooks)/useLocation';
+import { PropertyInfo, FileData } from '@/hooks/types';
+import { useGeocode } from '../../../hooks/useGeocode';
+import { useProperties } from '../../../hooks/useProperties';
+import useLocation from '../../../hooks/useLocation';
 import LocationInputs from './locationInputs';
 import AddressInput from './addressInput';
 import SquareMetersInput from './squareMetersInput';
 import PriceInput from './priceInput';
 import FileUpload from './fileUpload';
-import { isAxiosError } from 'axios';
+import axios from 'axios';
 import Modal from './Modal';
 
 interface UpdatePropertyModalProps {
@@ -24,9 +23,8 @@ interface UpdatePropertyModalProps {
 }
 
 function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalProps) {
-    const queryClient = useQueryClient();
     const geocode = useGeocode;
-    const { editMutation: editProperty } = useProperties();
+    const { editMutation } = useProperties();
     const currentLocation = useLocation(property?.location || { lat: 0, lng: 0 });
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const [existingImages, setExistingImages] = useState<FileData[]>([]);
@@ -48,18 +46,16 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
         }
 
         const newData = {
+            ...property,
             createdAt: property.createdAt || new Date().toISOString(),
             otherAttributes: { "hello": "world" },
             address: data.address,
             sqm: Number(data.sqm),
             location: currentLocation,
-            id: property.id
         };
 
-        console.log(newData);
-        const serializedData = JSON.stringify(newData);
         try {
-            await editProperty.mutateAsync(JSON.parse(serializedData));
+            await editMutation.mutateAsync(newData);
 
             // Upload new files
             if (uploadedFiles.length > 0) {
@@ -67,15 +63,15 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
                 uploadedFiles.forEach((file) => {
                     formData.append('file', file);
                 });
-                await fetch(`/api/uploadPropertyFile?id=${property.id}`, {
-                    method: 'POST',
-                    body: formData,
+                await axios.post(`/api/uploadFile?id=${property.id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
                 });
             }
-            queryClient.invalidateQueries({ queryKey: ['properties'] });
             onClose();
-        } catch (error: any) {
-            if (isAxiosError(error)) {
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
                 console.error(error.response?.data);
             }
         }
@@ -85,9 +81,8 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
         if (property) {
             setIsDeletingFile(true);
             try {
-                await fetch(`/api/deleteFile?propertyId=${property.id}&fileId=${fileId}`, {
-                    method: 'DELETE',
-                });
+                await axios.delete(`/api/properties/${property.id}/files/${fileId}`);
+                setExistingImages(prevImages => prevImages.filter(img => img.id !== fileId));
             } catch (error) {
                 console.error('Error removing file:', error);
             } finally {
@@ -103,7 +98,6 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
         setValue('address', property.address);
         setValue('sqm', property.sqm);
     }, [property, setValue]);
-
 
     const generateAddress = async () => {
         if (currentLocation.lat && currentLocation.lng) {
@@ -173,12 +167,12 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
                         property={property}
                         onImageDelete={handleImageDeletion}
                     />
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? 'Submitting...' : 'Submit'}
+                    <Button type="submit" disabled={isSubmitting || editMutation.isPending}>
+                        {isSubmitting || editMutation.isPending ? 'Updating...' : 'Update'}
                     </Button>
                 </form>
             </div>
-        </Modal >
+        </Modal>
     );
 }
 

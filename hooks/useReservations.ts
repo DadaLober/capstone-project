@@ -6,7 +6,7 @@ import { PropertyInfo, Reservations } from './types';
 
 export const useReservations = () => {
     const fetchPropertiesAndReservations = async () => {
-        const propertiesResponse = await axios.get<PropertyInfo[]>('http://localhost:3000/api/getProperties');
+        const propertiesResponse = await axios.get<PropertyInfo[]>('http://localhost:3000/api/properties');
         const reservationsResponse = await axios.get<Reservations[]>('http://localhost:3000/api/getReservations');
 
         //Append reservations to properties
