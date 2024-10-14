@@ -52,7 +52,6 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
             otherAttributes: { "hello": "world" },
             address: data.address,
             sqm: Number(data.sqm),
-            price: Number(data.priceHistory?.[0]?.price) || 0,
             location: currentLocation,
             id: property.id
         };
