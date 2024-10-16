@@ -26,8 +26,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
     }
 
     const modalContent = (
-        <div className={`modal ${isOpen ? 'is-open' : ''}`}>
-            <div className="modal-content bg-background text-foreground">
+        <div className={`modal ${isOpen ? 'is-open' : ''}`} onClick={onClose}>
+            <div className="modal-content bg-background text-foreground" onClick={(e) => e.stopPropagation()}>
                 <Button className="modal-close-button" onClick={onClose}>
                     Close
                 </Button>

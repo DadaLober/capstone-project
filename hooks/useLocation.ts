@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Location } from '@/app/dashboard/(hooks)/types';
+import { Location } from './types';
 
 const useLocation = (location: Location) => {
     const [currentLocation, setCurrentLocation] = useState(location);

@@ -78,7 +78,7 @@ export default function DashboardPage() {
                 </TabsList>
                 <TabsContent value="map" className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Card className="md:col-span-1 h-[700px] overflow-y-auto">
+                        <Card className="md:col-span-1 h-[500px] overflow-y-auto">
                             <CardHeader>
                                 <CardTitle>Properties</CardTitle>
                             </CardHeader>
@@ -97,8 +97,8 @@ export default function DashboardPage() {
                                 )}
                             </CardContent>
                         </Card>
-                        <Card className="md:col-span-2 h-[calc(100vh-300px)]">
-                            <CardContent className="p-0 h-full">
+                        <Card className="md:col-span-2">
+                            <CardContent className="p-0 h-[500px]">
                                 <MapComponent
                                     properties={filteredProperties}
                                     selectedPropertyId={selectedPropertyId}

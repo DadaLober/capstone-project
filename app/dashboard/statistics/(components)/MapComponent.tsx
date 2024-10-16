@@ -82,17 +82,17 @@ const MapComponent: React.FC<MapComponentProps> = ({ properties, selectedPropert
                 // Normalize the intensity values with a more aggressive scaling
                 const normalizedHeatData = heatData.map(([lat, lng, price]) => {
                     const normalizedIntensity = Math.pow((price - minPrice) / (maxPrice - minPrice), 0.5); // Use square root for more aggressive scaling
-                    return [lat, lng, normalizedIntensity * 2000]; // Increase multiplier for higher intensity
+                    return [lat, lng, normalizedIntensity * 2000];
                 });
 
-                // Create and add the heat layer with adjusted settings
+                // Heat Layer Settings
                 heatLayerRef.current = (L as any).heatLayer(normalizedHeatData, {
-                    radius: 25, // Slightly reduced for more precise heat areas
+                    radius: 20,
                     blur: 15,
                     maxZoom: 18,
-                    max: 2000, // Adjusted to match our new normalization
-                    minOpacity: 0.2, // Lower minimum opacity to show more subtle differences
-                    gradient: { 0.2: 'blue', 0.4: 'cyan', 0.6: 'lime', 0.8: 'yellow', 1: 'red' } // More color steps for better differentiation
+                    max: 1000,
+                    minOpacity: 0.2,
+                    gradient: { 0.2: 'blue', 0.4: 'cyan', 0.6: 'lime', 0.8: 'yellow', 1: 'red' }
                 }).addTo(mapRef.current);
 
                 properties.forEach(property => {
@@ -111,11 +111,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ properties, selectedPropert
                     markersRef.current[property.id] = marker;
                 });
 
-                // Fit the map to the bounds of the properties
                 const bounds = L.latLngBounds(properties.map(p => [p.location.lat, p.location.lng]));
                 mapRef.current.fitBounds(bounds);
             } else {
-                // If no properties, reset the map view
                 mapRef.current.setView([15.45, 120.93], 13);
             }
         }
