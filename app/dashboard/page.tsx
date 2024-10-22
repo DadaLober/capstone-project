@@ -3,13 +3,13 @@
 import React, { useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useProperties } from '@/hooks/useProperties';
-import { useReservations } from '../../hooks/useReservations';
 import { PropertyCard } from '@/app/dashboard/(components)/PropertyCard';
 import { useQueryClient } from '@tanstack/react-query';
 import { PropertyInfo } from '../../hooks/types';
 import AddFormModal from './(components)/updateForm';
 import SkeletonCard from './(components)/SkeletonCard';
 import SkeletonMap from './(components)/SkeletonMap';
+import { ReservePropertyModal } from './(components)/addReservationForm';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapComponent'), {
     ssr: false,
@@ -20,8 +20,8 @@ function Dashboard() {
     const queryClient = useQueryClient();
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
+    const [isReserveModalOpen, setIsReserveModalOpen] = useState(false);
     const { properties, isLoading, isError, deleteMutation: deleteProperty } = useProperties();
-    const { mutation: addReserved } = useReservations();
 
     const handleAction = (property: PropertyInfo, action: 'select' | 'delete' | 'reserve' | 'update') => {
         switch (action) {
@@ -32,7 +32,8 @@ function Dashboard() {
                 handleDeleteProperty(property);
                 break;
             case 'reserve':
-                handleAddToReserved(property);
+                setSelectedPropertyId(property.id);
+                setIsReserveModalOpen(true);
                 break;
             case 'update':
                 handleUpdateProperty();
@@ -43,11 +44,6 @@ function Dashboard() {
     const handleDeleteProperty = async (property: PropertyInfo) => {
         await deleteProperty.mutateAsync(property.id);
         queryClient.invalidateQueries({ queryKey: ['properties'] });
-    };
-
-    const handleAddToReserved = async (property: PropertyInfo) => {
-        await addReserved.mutateAsync(property.id);
-        queryClient.invalidateQueries({ queryKey: ['reservations', 'properties'] });
     };
 
     const handleUpdateProperty = async () => {
@@ -108,6 +104,16 @@ function Dashboard() {
                     isOpen={true}
                     onClose={() => setIsFormOpen(false)}
                     property={properties.find(p => p.id === selectedPropertyId) ?? null}
+                />
+            )}
+            {isReserveModalOpen && selectedPropertyId && (
+                <ReservePropertyModal
+                    isOpen={isReserveModalOpen}
+                    onClose={() => {
+                        setIsReserveModalOpen(false);
+                        queryClient.invalidateQueries({ queryKey: ['reservations', 'properties'] });
+                    }}
+                    propertyId={selectedPropertyId}
                 />
             )}
         </div>

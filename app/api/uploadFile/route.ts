@@ -2,11 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import { cookies } from 'next/headers';
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
 
 export async function POST(request: NextRequest) {
     const id = request.nextUrl.searchParams.get('id');

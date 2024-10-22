@@ -6,40 +6,20 @@ import { PropertyInfo } from '@/hooks/types';
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useUserInfo } from '@/hooks/useUserInfo';
-import { Button } from "@/components/ui/button"
-import { DatePicker } from './DatePicker';
-import { UserList } from './UserList';
-import Modal from './Modal';
+import { ReservePropertyModal } from './addReservationForm';
 
 interface PropertyCardProps {
     property: PropertyInfo;
     isSelected: boolean;
     onClick: () => void;
     onDelete: () => void;
-    onAddToReserved: (userId: string, date: Date) => void;
+    onAddToReserved: (userId: number, date: Date) => void;
     onUpdate: () => void;
 }
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected, onClick, onDelete, onAddToReserved, onUpdate }) => {
     const { userInfo } = useUserInfo();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<string | null>(null);
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-
-    // Mock user data (replace with actual data in a real application)
-    const users = [
-        { id: '1', name: 'John Doe' },
-        { id: '2', name: 'Jane Smith' },
-        { id: '3', name: 'Bob Johnson' },
-    ];
-
-    const handleAddToReserved = () => {
-        if (selectedUser && selectedDate) {
-            onAddToReserved(selectedUser, selectedDate);
-            setIsModalOpen(false);
-        }
-    };
-
     return (
         <>
             <Card
@@ -90,25 +70,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                     </div>
                 </CardContent>
             </Card>
-
-            <Modal
+            <ReservePropertyModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-            >
-                <div className="space-y-4">
-                    <div>
-                        <h3 className="mb-2 font-semibold">Select User</h3>
-                        <UserList users={users} onSelectUser={setSelectedUser} />
-                    </div>
-                    <div>
-                        <h3 className="mb-2 font-semibold">Select Date</h3>
-                        <DatePicker date={selectedDate} setDate={setSelectedDate} />
-                    </div>
-                    <Button onClick={handleAddToReserved} disabled={!selectedUser || !selectedDate}>
-                        Add to Reserved
-                    </Button>
-                </div>
-            </Modal>
+                propertyId={property.id}
+            />
         </>
     );
 };

@@ -8,16 +8,21 @@ interface UserInfo {
     [key: string]: any;
 }
 
+let cachedUserInfo: UserInfo | null = null;
+
 export function useUserInfo() {
-    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [userInfo, setUserInfo] = useState<UserInfo | null>(cachedUserInfo);
+    const [isLoading, setIsLoading] = useState(!cachedUserInfo);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
+        if (cachedUserInfo) return;
+
         const fetchUserInfo = async () => {
             try {
                 const response = await axios.get('/api/user');
-                setUserInfo(response.data);
+                cachedUserInfo = response.data;
+                setUserInfo(cachedUserInfo);
             } catch (err) {
                 setError(err instanceof Error ? err : new Error('An error occurred'));
             } finally {
