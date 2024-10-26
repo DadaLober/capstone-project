@@ -1,23 +1,41 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-
-import "@/app/login/login.css";
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
-import { Button } from '@/components/ui/button';
+import "@/components/auth.css";
+import { motion } from 'framer-motion';
 
 type TypeForm = {
     email: string;
     password: string;
 };
 
-export default function Login() {
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            duration: 0.5,
+            when: "beforeChildren",
+            staggerChildren: 0.1
+        }
+    }
+};
 
+const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1,
+        transition: { duration: 0.5 }
+    }
+};
+
+export default function Login() {
     const { register, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<TypeForm>();
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
@@ -25,89 +43,157 @@ export default function Login() {
     const onSubmit = async (data: TypeForm) => {
         try {
             const response = await axios.post('/api/login', data);
-            const responseData = response.data;
-            console.log('Server response:', responseData);
-
             if (response.status === 200) {
                 router.push('/dashboard');
             }
         } catch (errors: any) {
             if (errors.response.status === 400 || errors.response.status === 401) {
                 setError('password', { message: 'Invalid email or password' });
-            }
-            else {
+            } else {
                 console.error('Error submitting form:', errors);
             }
         }
     };
-
 
     const togglePasswordVisibility = () => {
         setShowPassword((prevState) => !prevState);
     };
 
     return (
-        <div className='svg-login-background w-full min-h-screen flex flex-col justify-center items-center p-4'>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 w-full max-w-md bg-white p-6 rounded-lg shadow-lg border">
-                <div className='flex justify-center mb-4'>
-                    <Image
-                        src="/login.png"
-                        alt="Logo"
-                        width={64}
-                        height={64}
-                        className='w-16 h-16'
-                    />
-                </div>
-                <input
-                    {...register("email", {
-                        required: "Email is required",
-                    })}
-                    type="email"
-                    placeholder="Email"
-                    className="px-4 py-2 my-4 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                {errors.email && <div className="text-red-500">{errors.email.message}</div>}
-                <div className="relative">
-                    <input
-                        {...register("password", {
-                            required: "Password is required",
-                            minLength: {
-                                value: 8,
-                                message: "Password must be at least 8 characters",
-                            },
-                        })}
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password"
-
-                        className="px-4 py-2 rounded border w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                    <span
-                        onClick={togglePasswordVisibility}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
-                    >
-                        {showPassword ? <FaEye /> : <FaEyeSlash />}
-                    </span>
-                </div>
-                {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-                <Button
-                    disabled={isSubmitting}
-                    type="submit"
-                    className="bg-green-500 text-slate-100 disabled:bg-gray-500 py-2 rounded hover:bg-green-700"
+        <motion.div
+            className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col items-center justify-center p-4"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+        >
+            <motion.div
+                className="w-full max-w-md"
+                variants={itemVariants}
+            >
+                <motion.div
+                    className="mb-8 text-center"
+                    variants={itemVariants}
                 >
-                    {isSubmitting ? (
-                        <span>
-                            Submitting...
-                        </span>
-                    ) : (
-                        'Submit'
-                    )}
-                </Button>
-            </form>
-            <div className='text-center mt-4'>
-                <p className='text-slate-100'>New here? <Link href="/register" className='text-blue-600 hover:underline'>Create an Account</Link></p>
-            </div>
-        </div>
+                    <motion.div
+                        className="inline-block p-2 bg-white rounded-full shadow-lg mb-4"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <Image
+                            src="/login.png"
+                            alt="Logo"
+                            width={64}
+                            height={64}
+                            className="w-16 h-16"
+                        />
+                    </motion.div>
+                    <motion.h1
+                        className="text-3xl font-bold text-green-800 mb-2"
+                        variants={itemVariants}
+                    >
+                        Welcome Back
+                    </motion.h1>
+                    <motion.p
+                        className="text-green-600"
+                        variants={itemVariants}
+                    >
+                        Sign in to your account
+                    </motion.p>
+                </motion.div>
+
+                <motion.form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-green-100"
+                    variants={itemVariants}
+                >
+                    <motion.div
+                        className="mb-6"
+                        variants={itemVariants}
+                    >
+                        <label className="block text-sm font-medium text-green-700 mb-1">Email</label>
+                        <motion.input
+                            {...register("email", {
+                                required: "Email is required",
+                            })}
+                            type="email"
+                            className="w-full px-4 py-2 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="john@example.com"
+                            whileFocus={{ scale: 1.01 }}
+                        />
+                        {errors.email && (
+                            <motion.p
+                                className="mt-1 text-red-500 text-sm"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                {errors.email.message}
+                            </motion.p>
+                        )}
+                    </motion.div>
+
+                    <motion.div
+                        className="mb-6"
+                        variants={itemVariants}
+                    >
+                        <label className="block text-sm font-medium text-green-700 mb-1">Password</label>
+                        <div className="relative">
+                            <motion.input
+                                {...register("password", {
+                                    required: "Password is required",
+                                    minLength: {
+                                        value: 8,
+                                        message: "Password must be at least 8 characters",
+                                    },
+                                })}
+                                type={showPassword ? "text" : "password"}
+                                className="w-full px-4 py-2 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="••••••••"
+                                whileFocus={{ scale: 1.01 }}
+                            />
+                            <motion.button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-600 hover:text-green-800"
+                            >
+                                {showPassword ? <FaEye /> : <FaEyeSlash />}
+                            </motion.button>
+                        </div>
+                        {errors.password && (
+                            <motion.p
+                                className="mt-1 text-red-500 text-sm"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                {errors.password.message}
+                            </motion.p>
+                        )}
+                    </motion.div>
+
+                    <motion.button
+                        disabled={isSubmitting}
+                        type="submit"
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition-colors"
+                        whileTap={{ scale: 0.98 }}
+                        variants={itemVariants}
+                    >
+                        {isSubmitting ? 'Signing In...' : 'Sign In'}
+                    </motion.button>
+
+                    <motion.div
+                        className="mt-6 text-center"
+                        variants={itemVariants}
+                    >
+                        <p className="text-green-800">
+                            Don't have an account?{' '}
+                            <motion.span whileHover={{ scale: 1.05 }}>
+                                <Link href="/register" className="text-green-600 hover:text-green-800 font-semibold">
+                                    Create Account
+                                </Link>
+                            </motion.span>
+                        </p>
+                    </motion.div>
+                </motion.form>
+            </motion.div>
+        </motion.div>
     );
-
-
 }

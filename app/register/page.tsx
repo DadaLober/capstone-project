@@ -1,14 +1,12 @@
 'use client';
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useForm, type FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Link from 'next/link';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Image from 'next/image';
-
-import '@/app/register/register.css';
-import { Button } from '@/components/ui/button';
-
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import "@/components/auth.css";
+import { motion } from 'framer-motion';
 
 interface FormData {
     firstName: string;
@@ -17,18 +15,64 @@ interface FormData {
     email: string;
     password: string;
 }
+
+interface ApiResponse {
+    code: number;
+    message: string;
+}
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            duration: 0.5,
+            when: "beforeChildren",
+            staggerChildren: 0.1
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1,
+        transition: { duration: 0.5 }
+    }
+};
+
 export default function RegisterPage() {
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormData>();
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setError } = useForm<FormData>();
     const [showPassword, setShowPassword] = useState(false);
 
-    const onSubmit = async (data: FieldValues) => {
+    const onSubmit = async (data: FormData) => {
         try {
-            const response = await axios.post('/api/register', data);
-            const responseData = response.data;
-            console.log('Server response:', responseData);
+            const response = await axios.post<ApiResponse>('/api/register', data);
+
+            if (response.data.code === 400) {
+                if (response.data.message === "Email already taken") {
+                    setError("email", {
+                        type: "manual",
+                        message: "This email is already registered. Please use a different email."
+                    });
+                } else {
+                    setError("root", {
+                        type: "manual",
+                        message: response.data.message || "An error occurred during registration. Please try again."
+                    });
+                }
+                return;
+            }
+
+            console.log('Registration successful:', response.data);
             reset();
         } catch (error) {
             console.error('Error submitting form:', error);
+            setError("root", {
+                type: "manual",
+                message: "An unexpected error occurred. Please try again."
+            });
         }
     };
 
@@ -37,93 +81,228 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className='svg-register-background relative w-full min-h-screen flex flex-col justify-center items-center p-4'>
-            <div className='absolute top-0  '>
-                <Image
-                    src="/register.png"
-                    alt="Logo"
-                    width={64}
-                    height={64}
-                    className='w-16 h-16'
-                />
-            </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 w-full max-w-md bg-white p-10 rounded-lg border shadow-lg">
-                <div className="flex gap-x-4">
-                    <input
-                        {...register("firstName", { required: "First Name is required" })}
-                        type="text"
-                        placeholder="First Name"
-                        className="px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                    {errors.firstName && (
-                        <p className="text-red-500 text-sm">{errors.firstName.message}</p>
-                    )}
-                    <input
-                        {...register("lastName", { required: "Last Name is required" })}
-                        type="text"
-                        placeholder="Last Name"
-                        className="px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                    {errors.lastName && (
-                        <p className="text-red-500 text-sm">{errors.lastName.message}</p>
-                    )}
-                </div>
-                <input
-                    {...register("contactNumber", {
-                        pattern: /^\d{11}$/,
-                        required: "Contact Number must be 11 digits",
-                    })}
-                    type="text"
-                    placeholder="Contact Number"
-                    className="px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                {errors.contactNumber && (
-                    <p className="text-red-500 text-sm">{errors.contactNumber.message}</p>
-                )}
-                <input
-                    {...register("email", {
-                        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                        required: "Email is required"
-                    })}
-                    type="email"
-                    placeholder="Email"
-                    className="px-4 py-2 rounded border focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                {errors.email && (
-                    <p className="text-red-500 text-sm">{errors.email.message}</p>
-                )}
-                <div className="relative">
-                    <input
-                        {...register("password", {
-                            minLength: 8,
-                            required: "Password must be at least 8 characters",
-                        })}
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password"
-                        className="px-4 py-2 rounded border w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                    <span
-                        onClick={togglePasswordVisibility}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
-                    >
-                        {showPassword ? <FaEye /> : <FaEyeSlash />}
-                    </span>
-                </div>
-                {errors.password && (
-                    <p className="text-red-500 text-sm">Password must be at least 8 characters</p>
-                )}
-                <Button
-                    disabled={isSubmitting}
-                    type="submit"
-                    className="bg-green-500 text-white py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
+        <motion.div
+            className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col items-center justify-center p-4"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+        >
+            <motion.div
+                className="w-full max-w-md"
+                variants={itemVariants}
+            >
+                <motion.div
+                    className="mb-8 text-center"
+                    variants={itemVariants}
                 >
-                    {isSubmitting ? 'Submitting...' : 'Register'}
-                </Button>
+                    <motion.div
+                        className="inline-block p-2 bg-white rounded-full shadow-lg mb-4"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <Image
+                            src="/logo.png"
+                            alt="Logo"
+                            width={64}
+                            height={64}
+                            className="w-16 h-16"
+                        />
+                    </motion.div>
+                    <motion.h1
+                        className="text-3xl font-bold text-green-800 mb-2"
+                        variants={itemVariants}
+                    >
+                        Create Account
+                    </motion.h1>
+                    <motion.p
+                        className="text-green-600"
+                        variants={itemVariants}
+                    >
+                        Join our property community
+                    </motion.p>
+                </motion.div>
 
-                <div className='mt-4 text-center'>
-                    <p className="text-sm">Already have an account? <Link href='/login' className='text-blue-500 hover:underline'>Login</Link></p>
-                </div>
-            </form>
-        </div>
+                <motion.form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-green-100"
+                    variants={itemVariants}
+                >
+                    {errors.root && (
+                        <motion.div
+                            className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                        >
+                            {errors.root.message}
+                        </motion.div>
+                    )}
+
+                    <motion.div
+                        className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"
+                        variants={itemVariants}
+                    >
+                        <div>
+                            <label className="block text-sm font-medium text-green-700 mb-1">First Name</label>
+                            <motion.input
+                                {...register("firstName", { required: "First Name is required" })}
+                                type="text"
+                                className="w-full px-4 py-2 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="John"
+                                whileFocus={{ scale: 1.01 }}
+                            />
+                            {errors.firstName && (
+                                <motion.p
+                                    className="mt-1 text-red-500 text-sm"
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                >
+                                    {errors.firstName.message}
+                                </motion.p>
+                            )}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-green-700 mb-1">Last Name</label>
+                            <motion.input
+                                {...register("lastName", { required: "Last Name is required" })}
+                                type="text"
+                                className="w-full px-4 py-2 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="Doe"
+                                whileFocus={{ scale: 1.01 }}
+                            />
+                            {errors.lastName && (
+                                <motion.p
+                                    className="mt-1 text-red-500 text-sm"
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                >
+                                    {errors.lastName.message}
+                                </motion.p>
+                            )}
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        className="mb-6"
+                        variants={itemVariants}
+                    >
+                        <label className="block text-sm font-medium text-green-700 mb-1">Contact Number</label>
+                        <motion.input
+                            {...register("contactNumber", {
+                                pattern: {
+                                    value: /^\d{11}$/,
+                                    message: "Contact Number must be 11 digits"
+                                },
+                                required: "Contact Number is required"
+                            })}
+                            type="text"
+                            className="w-full px-4 py-2 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="09123456789"
+                            whileFocus={{ scale: 1.01 }}
+                        />
+                        {errors.contactNumber && (
+                            <motion.p
+                                className="mt-1 text-red-500 text-sm"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                {errors.contactNumber.message}
+                            </motion.p>
+                        )}
+                    </motion.div>
+
+                    <motion.div
+                        className="mb-6"
+                        variants={itemVariants}
+                    >
+                        <label className="block text-sm font-medium text-green-700 mb-1">Email</label>
+                        <motion.input
+                            {...register("email", {
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: "Please enter a valid email address"
+                                },
+                                required: "Email is required"
+                            })}
+                            type="email"
+                            className={`w-full px-4 py-2 rounded-lg border ${errors.email ? 'border-red-500' : 'border-green-200'
+                                } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                            placeholder="john@example.com"
+                            whileFocus={{ scale: 1.01 }}
+                        />
+                        {errors.email && (
+                            <motion.p
+                                className="mt-1 text-red-500 text-sm"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                {errors.email.message}
+                            </motion.p>
+                        )}
+                    </motion.div>
+
+                    <motion.div
+                        className="mb-6"
+                        variants={itemVariants}
+                    >
+                        <label className="block text-sm font-medium text-green-700 mb-1">Password</label>
+                        <div className="relative">
+                            <motion.input
+                                {...register("password", {
+                                    minLength: {
+                                        value: 8,
+                                        message: "Password must be at least 8 characters"
+                                    },
+                                    required: "Password is required"
+                                })}
+                                type={showPassword ? "text" : "password"}
+                                className="w-full px-4 py-2 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="••••••••"
+                                whileFocus={{ scale: 1.01 }}
+                            />
+                            <motion.button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-600 hover:text-green-800"
+                            >
+                                {showPassword ? <FaEye /> : <FaEyeSlash />}
+                            </motion.button>
+                        </div>
+                        {errors.password && (
+                            <motion.p
+                                className="mt-1 text-red-500 text-sm"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                {errors.password.message}
+                            </motion.p>
+                        )}
+                    </motion.div>
+
+                    <motion.button
+                        disabled={isSubmitting}
+                        type="submit"
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:bg-green-400"
+                        whileTap={{ scale: 0.98 }}
+                        variants={itemVariants}
+                    >
+                        {isSubmitting ? 'Creating Account...' : 'Create Account'}
+                    </motion.button>
+
+                    <motion.div
+                        className="mt-6 text-center"
+                        variants={itemVariants}
+                    >
+                        <p className="text-green-800">
+                            Already have an account?{' '}
+                            <motion.span whileHover={{ scale: 1.05 }}>
+                                <Link href="/login" className="text-green-600 hover:text-green-800 font-semibold">
+                                    Sign In
+                                </Link>
+                            </motion.span>
+                        </p>
+                    </motion.div>
+                </motion.form>
+            </motion.div>
+        </motion.div>
     );
 }
