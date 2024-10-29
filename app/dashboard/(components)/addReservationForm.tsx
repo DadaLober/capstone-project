@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { toast } from 'sonner';
 import { Button } from "@/components/ui/button";
 import { Input } from '@/components/ui/input';
 import Modal from './Modal';
-import { Search, User, Calendar, CheckCircle, XCircle } from 'lucide-react';
+import { Search, User, Calendar, CheckCircle, XCircle, Loader2, Undo2 } from 'lucide-react';
 import { useReservations } from '@/hooks/useReservations';
 
 interface User {
@@ -72,7 +73,7 @@ export const ReservePropertyModal: React.FC<ReservePropertyModalProps> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const { mutation: createReservation } = useReservations();
+    const { mutation: createReservation, deleteMutation } = useReservations();
 
     const { control, handleSubmit, watch, reset, formState: { errors, isValid } } = useForm<FormValues>({
         defaultValues: {
@@ -127,17 +128,34 @@ export const ReservePropertyModal: React.FC<ReservePropertyModalProps> = ({
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
         if (data.userId !== null && data.reservationDate) {
+            const selectedUser = users.find(user => user.id === data.userId);
+            const formattedDate = new Date(data.reservationDate).toLocaleString();
+
             try {
-                const isoDate = new Date(data.reservationDate).toISOString();
                 await createReservation.mutateAsync({
                     propertyId,
                     userId: data.userId,
-                    reservationDate: isoDate,
+                    reservationDate: new Date(data.reservationDate).toISOString(),
                 });
+
+                toast.success(
+                    <div className="flex flex-col gap-1">
+                        <p className="font-semibold">Reservation Created Successfully!</p>
+                        <p className="text-sm text-gray-600">
+                            Reserved for: {selectedUser?.firstName} {selectedUser?.lastName}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                            Date: {formattedDate}
+                        </p>
+                    </div>,
+                );
                 onClose();
-            } catch (error) {
-                console.error("Error creating reservation:", error);
-                setError("Failed to create reservation. Please try again.");
+            } catch (err) {
+                const errorMessage = axios.isAxiosError(err)
+                    ? err.response?.data?.message || 'Failed to create reservation'
+                    : 'An unexpected error occurred';
+                setError(errorMessage);
+                toast.error(errorMessage);
             }
         }
     };
@@ -170,7 +188,10 @@ export const ReservePropertyModal: React.FC<ReservePropertyModalProps> = ({
                         <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     </div>
                     {isLoading ? (
-                        <p className="text-gray-500">Loading users...</p>
+                        <div className="flex items-center justify-center py-4">
+                            <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                            <span className="ml-2 text-gray-600">Loading users...</span>
+                        </div>
                     ) : error ? (
                         <p className="text-red-500 flex items-center">
                             <XCircle className="w-5 h-5 mr-2" />
@@ -247,19 +268,19 @@ export const ReservePropertyModal: React.FC<ReservePropertyModalProps> = ({
                         </div>
                     )}
                 </div>
-                {error && (
-                    <p className="text-red-500 mt-2">{error}</p>
-                )}
                 <Button
                     type="submit"
-                    disabled={isLoading || !isValid}
-                    className="w-full py-2 text-lg transition-colors duration-150 ease-in-out flex items-center justify-center"
+                    disabled={isLoading || !isValid || createReservation.isPending}
+                    className="w-full py-2 text-lg transition-colors duration-150 ease-in-out flex items-center justify-center gap-2"
                 >
-                    {isLoading ? (
-                        <>Loading...</>
+                    {createReservation.isPending ? (
+                        <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            Creating Reservation...
+                        </>
                     ) : (
                         <>
-                            <CheckCircle className="w-5 h-5 mr-2" />
+                            <CheckCircle className="w-5 h-5" />
                             Add to Reserved
                         </>
                     )}
@@ -268,3 +289,5 @@ export const ReservePropertyModal: React.FC<ReservePropertyModalProps> = ({
         </Modal>
     );
 };
+
+export default ReservePropertyModal;

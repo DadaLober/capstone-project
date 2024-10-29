@@ -10,6 +10,7 @@ import AddFormModal from './(components)/updateForm';
 import SkeletonCard from './(components)/SkeletonCard';
 import SkeletonMap from './(components)/SkeletonMap';
 import { ReservePropertyModal } from './(components)/addReservationForm';
+import { Toaster } from 'sonner';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapComponent'), {
     ssr: false,
@@ -79,44 +80,47 @@ function Dashboard() {
     );
 
     return (
-        <div className="flex flex-col h-screen bg-background text-foreground">
-            <div className="flex flex-grow overflow-hidden">
-                <Suspense fallback={<div className="w-1/2 p-4"><SkeletonCard /></div>}>
-                    <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar">
-                        <div className="space-y-4">
-                            {renderPropertyList()}
+        <>
+            <Toaster position="bottom-right" expand={true} richColors />
+            <div className="flex flex-col h-screen bg-background text-foreground">
+                <div className="flex flex-grow overflow-hidden">
+                    <Suspense fallback={<div className="w-1/2 p-4"><SkeletonCard /></div>}>
+                        <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar">
+                            <div className="space-y-4">
+                                {renderPropertyList()}
+                            </div>
                         </div>
-                    </div>
-                </Suspense>
-                <Suspense fallback={<div className="w-1/2 p-4"><SkeletonMap /></div>}>
-                    <div className="w-1/2 p-4">
-                        <div className="rounded-lg overflow-hidden h-[80vh]">
-                            <MapComponent
-                                location={properties?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
-                                propertyInfo={properties?.find(p => p.id === selectedPropertyId) ?? null}
-                            />
+                    </Suspense>
+                    <Suspense fallback={<div className="w-1/2 p-4"><SkeletonMap /></div>}>
+                        <div className="w-1/2 p-4">
+                            <div className="rounded-lg overflow-hidden h-[80vh]">
+                                <MapComponent
+                                    location={properties?.find(p => p.id === selectedPropertyId)?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
+                                    propertyInfo={properties?.find(p => p.id === selectedPropertyId) ?? null}
+                                />
+                            </div>
                         </div>
-                    </div>
-                </Suspense>
+                    </Suspense>
+                </div>
+                {isFormOpen && properties && (
+                    <AddFormModal
+                        isOpen={true}
+                        onClose={() => setIsFormOpen(false)}
+                        property={properties.find(p => p.id === selectedPropertyId) ?? null}
+                    />
+                )}
+                {isReserveModalOpen && selectedPropertyId && (
+                    <ReservePropertyModal
+                        isOpen={isReserveModalOpen}
+                        onClose={() => {
+                            setIsReserveModalOpen(false);
+                            queryClient.invalidateQueries({ queryKey: ['reservations', 'properties'] });
+                        }}
+                        propertyId={selectedPropertyId}
+                    />
+                )}
             </div>
-            {isFormOpen && properties && (
-                <AddFormModal
-                    isOpen={true}
-                    onClose={() => setIsFormOpen(false)}
-                    property={properties.find(p => p.id === selectedPropertyId) ?? null}
-                />
-            )}
-            {isReserveModalOpen && selectedPropertyId && (
-                <ReservePropertyModal
-                    isOpen={isReserveModalOpen}
-                    onClose={() => {
-                        setIsReserveModalOpen(false);
-                        queryClient.invalidateQueries({ queryKey: ['reservations', 'properties'] });
-                    }}
-                    propertyId={selectedPropertyId}
-                />
-            )}
-        </div>
+        </>
     );
 }
 

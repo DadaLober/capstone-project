@@ -7,6 +7,8 @@ import Image from 'next/image';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import "@/components/auth.css";
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
+import { Toaster } from "@/components/ui/sonner";
 
 interface FormData {
     firstName: string;
@@ -56,23 +58,20 @@ export default function RegisterPage() {
                         type: "manual",
                         message: "This email is already registered. Please use a different email."
                     });
+                    toast.error("This email is already registered");
                 } else {
-                    setError("root", {
-                        type: "manual",
-                        message: response.data.message || "An error occurred during registration. Please try again."
-                    });
+                    toast.error(response.data.message || "Registration failed");
                 }
                 return;
             }
 
-            console.log('Registration successful:', response.data);
+            toast.success("Account created successfully!", {
+                description: "Please wait for your confirmation!",
+            });
             reset();
         } catch (error) {
-            console.error('Error submitting form:', error);
-            setError("root", {
-                type: "manual",
-                message: "An unexpected error occurred. Please try again."
-            });
+            toast.error("An unexpected error occurred");
+            console.error('Error:', error);
         }
     };
 
@@ -114,12 +113,6 @@ export default function RegisterPage() {
                     >
                         Create Account
                     </motion.h1>
-                    <motion.p
-                        className="text-green-600"
-                        variants={itemVariants}
-                    >
-                        Join our property community
-                    </motion.p>
                 </motion.div>
 
                 <motion.form
@@ -303,6 +296,7 @@ export default function RegisterPage() {
                     </motion.div>
                 </motion.form>
             </motion.div>
+            <Toaster />
         </motion.div>
     );
 }

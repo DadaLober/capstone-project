@@ -29,7 +29,7 @@ export default function MapComponent({ location, propertyInfo }: MapProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [marker, setMarker] = useState<Location | null>(null);
-    const [isSearchVisible, setIsSearchVisible] = useState(true);
+    const [isSearchVisible, setIsSearchVisible] = useState(false);
     const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
     const { userInfo } = useUserInfo();
 
