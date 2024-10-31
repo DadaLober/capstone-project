@@ -47,7 +47,7 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
             sqm: Number(data.sqm),
             priceHistory: data.priceHistory?.map(item => ({
                 price: typeof item.price === 'string' ? Number(item.price) || 0 : item.price,
-                time: new Date(item.time).toISOString()
+                time: new Date().toISOString(),
             }))
         };
 

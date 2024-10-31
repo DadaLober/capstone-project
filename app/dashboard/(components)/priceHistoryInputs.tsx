@@ -17,14 +17,7 @@ function PriceHistoryInputs({ fields, register, errors, append, remove }: {
     return (
         <div className="flex flex-col space-y-4">
             <div className="flex items-center mb-4">
-                <h3 className="text-lg font-bold">Price History</h3>
-                <button
-                    type="button"
-                    onClick={() => append({ price: 0, time: new Date().toISOString() })}
-                    className="ml-auto"
-                >
-                    <MdOutlineAddCircleOutline />
-                </button>
+                <h3 className="text-lg font-bold">Price</h3>
             </div>
             {renderInputs.map((item, index) => (
                 <div key={item.id} className="flex flex-col space-y-2">
@@ -42,19 +35,6 @@ function PriceHistoryInputs({ fields, register, errors, append, remove }: {
                                 valueAsNumber: true
                             })}
                         />
-                        <Input
-                            type="datetime-local"
-                            placeholder="Time"
-                            className="w-auto"
-                            {...register(`priceHistory.${index}.time` as const, {
-                                required: "Time is required",
-                                validate: value => {
-                                    const selectedTime = new Date(value);
-                                    const currentTime = new Date();
-                                    return selectedTime <= currentTime || "Time cannot be in the future";
-                                }
-                            })}
-                        />
                         {fields.length > 1 && (
                             <button type="button" onClick={() => remove(index)} className="ml-auto">
                                 <IoIosRemoveCircleOutline />
@@ -63,9 +43,6 @@ function PriceHistoryInputs({ fields, register, errors, append, remove }: {
                     </div>
                     {errors.priceHistory?.[index]?.price && (
                         <p className="text-red-500 text-sm">Price: {errors.priceHistory[index].price?.message}</p>
-                    )}
-                    {errors.priceHistory?.[index]?.time && (
-                        <p className="text-red-500 text-sm">Time: {errors.priceHistory[index].time?.message}</p>
                     )}
                 </div>
             ))}

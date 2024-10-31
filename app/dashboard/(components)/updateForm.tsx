@@ -30,38 +30,40 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const [existingImages, setExistingImages] = useState<FileData[]>([]);
     const [isDeletingFile, setIsDeletingFile] = useState(false);
-    const { register, handleSubmit, reset, setValue, control, formState: { errors, isSubmitting }, watch } = useForm<PropertyInfo>({
+
+    const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting }, watch } = useForm<PropertyInfo>({
         defaultValues: {
             createdAt: new Date().toISOString(),
             otherAttributes: { "hello": "world" },
+            priceHistory: property?.priceHistory || []
         }
     });
-    const { remove } = useFieldArray({
-        control,
-        name: 'priceHistory'
-    });
-
     const address = watch('address');
     const sqm = watch('sqm');
+    const newPrice = watch('priceHistory.0.price');
 
     const onSubmit = async (data: PropertyInfo) => {
-        if (!property) {
-            return;
-        }
+        if (!property) return;
+
+        // Get the current price history and add the new price
+        const updatedPriceHistory = [
+            { price: Number(data.priceHistory?.[0].price), date: new Date().toISOString() },
+            ...(property.priceHistory || [])
+        ];
 
         const newData = {
-            ...property,
-            createdAt: property.createdAt || new Date().toISOString(),
-            otherAttributes: { "hello": "world" },
+            id: property.id,
+            createdAt: property.createdAt,
             address: data.address,
             sqm: Number(data.sqm),
             location: currentLocation,
+            price: Number(data.priceHistory?.[0].price),
         };
 
         try {
+            console.log(newData);
             await editMutation.mutateAsync(newData);
 
-            // Upload new files
             if (uploadedFiles.length > 0) {
                 const formData = new FormData();
                 uploadedFiles.forEach((file) => {
@@ -85,6 +87,9 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
                             </div>
                             <p className="text-sm text-gray-600">
                                 Square Meters: {sqm}m²
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                New Price: ${newPrice}
                             </p>
                             <div className="flex items-center text-sm text-gray-600">
                                 <ImageIcon className="w-4 h-4 mr-1" />
@@ -131,11 +136,16 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
     };
 
     const setPropertyValues = useCallback(() => {
-        if (!property) {
-            return;
-        }
+        if (!property) return;
         setValue('address', property.address);
         setValue('sqm', property.sqm);
+
+        // Set the initial price from the last price in the history
+        const currentPrice = property.priceHistory && property.priceHistory.length > 0
+            ? property.priceHistory[property.priceHistory.length - 1].price
+            : 0;
+
+        setValue('priceHistory', [{ price: currentPrice }]);
     }, [property, setValue]);
 
     const generateAddress = async () => {
@@ -160,7 +170,6 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
 
     const handleClose = () => {
         reset();
-        remove();
         setUploadedFiles([]);
         setExistingImages([]);
         onClose();
@@ -174,9 +183,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
             const fetchImages = async () => {
                 try {
                     const response = await fetch(`/api/getImages?id=${property.id}`);
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch images');
-                    }
+                    if (!response.ok) throw new Error('Failed to fetch images');
                     const imageData: FileData[] = await response.json();
                     if (isMounted) {
                         setExistingImages(imageData);
@@ -206,7 +213,11 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
                     <LocationInputs currentLocation={currentLocation} />
                     <AddressInput register={register} errors={errors} generateAddress={generateAddress} />
                     <SquareMetersInput register={register} errors={errors} />
-                    <PriceInput register={register} errors={errors} />
+                    <PriceInput
+                        register={register}
+                        errors={errors}
+                        currentPrice={property?.priceHistory?.[property.priceHistory.length - 1]?.price}
+                    />
                     <FileUpload
                         uploadedFiles={uploadedFiles}
                         setUploadedFiles={setUploadedFiles}

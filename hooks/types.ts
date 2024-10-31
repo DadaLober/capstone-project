@@ -14,7 +14,7 @@ interface PropertyInfo {
     sqm: number;
     priceHistory?: Array<{
         price: number;
-        time: string;
+        time?: string;
     }>;
     createdAt: string;
     otherAttributes?: {
