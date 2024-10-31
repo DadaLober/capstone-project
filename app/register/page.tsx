@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useForm } from "react-hook-form";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -51,25 +51,25 @@ export default function RegisterPage() {
     const onSubmit = async (data: FormData) => {
         try {
             const response = await axios.post<ApiResponse>('/api/register', data);
-
-            if (response.data.code === 400) {
-                if (response.data.message === "Email already taken") {
-                    setError("email", {
-                        type: "manual",
-                        message: "This email is already registered. Please use a different email."
-                    });
-                    toast.error("This email is already registered");
-                } else {
-                    toast.error(response.data.message || "Registration failed");
-                }
-                return;
-            }
-
             toast.success("Account created successfully!", {
                 description: "Please wait for your confirmation!",
             });
             reset();
         } catch (error) {
+            if (error instanceof AxiosError && error.response) {
+                if (error.response.status === 400) {
+                    if (error.response.data.message === "Email already taken") {
+                        setError("email", {
+                            type: "manual",
+                            message: "This email is already registered. Please use a different email."
+                        });
+                        toast.error("This email is already registered");
+                    } else {
+                        toast.error(error.response.data.message || "Registration failed");
+                    }
+                    return;
+                }
+            }
             toast.error("An unexpected error occurred");
             console.error('Error:', error);
         }

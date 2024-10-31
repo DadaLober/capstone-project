@@ -184,7 +184,7 @@ export default function Login() {
                         variants={itemVariants}
                     >
                         <p className="text-green-800">
-                            Don't have an account?{' '}
+                            Dont have an account?{' '}
                             <motion.span whileHover={{ scale: 1.05 }}>
                                 <Link href="/register" className="text-green-600 hover:text-green-800 font-semibold">
                                     Create Account
