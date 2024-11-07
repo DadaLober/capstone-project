@@ -93,7 +93,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
                             </p>
                             <div className="flex items-center text-sm text-gray-600">
                                 <ImageIcon className="w-4 h-4 mr-1" />
-                                {uploadedFiles.length} new photos added
+                                {uploadedFiles.length} new files added
                             </div>
                         </div>
                     ),

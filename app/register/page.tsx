@@ -18,11 +18,6 @@ interface FormData {
     password: string;
 }
 
-interface ApiResponse {
-    code: number;
-    message: string;
-}
-
 const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -50,11 +45,14 @@ export default function RegisterPage() {
 
     const onSubmit = async (data: FormData) => {
         try {
-            const response = await axios.post<ApiResponse>('/api/register', data);
+            const response = await axios.post('/api/register', data);
             toast.success("Account created successfully!", {
                 description: "Please wait for your confirmation!",
             });
             reset();
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
         } catch (error) {
             if (error instanceof AxiosError && error.response) {
                 if (error.response.status === 400) {

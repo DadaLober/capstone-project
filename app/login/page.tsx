@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useForm } from "react-hook-form";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -46,11 +46,11 @@ export default function Login() {
             if (response.status === 200) {
                 router.push('/dashboard');
             }
-        } catch (errors: any) {
-            if (errors.response.status === 400 || errors.response.status === 401) {
-                setError('password', { message: 'Invalid email or password' });
-            } else {
-                console.error('Error submitting form:', errors);
+        } catch (error) {
+            if (error instanceof AxiosError && error.response) {
+                if (error.response.status === 400) {
+                    setError('password', { message: 'Invalid email or password' });
+                }
             }
         }
     };

@@ -72,7 +72,7 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
                                     Listed Price: {formattedPrice}
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    {uploadedFiles.length} photos uploaded
+                                    {uploadedFiles.length} files uploaded
                                 </p>
                             </div>
                         ),

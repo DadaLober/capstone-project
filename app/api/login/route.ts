@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { getTokenExpiration } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
@@ -28,11 +28,12 @@ export async function POST(request: NextRequest) {
         cookieStore.set('refreshToken', refreshToken, { ...cookieOptions, maxAge: Math.floor((refreshTokenExpiry - Date.now()) / 1000) });
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        console.error('Login error:', error);
-        return NextResponse.json(
-            { message: error.response?.data?.message || 'Internal Server Error' },
-            { status: error.response?.status || 500 }
-        );
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+            return NextResponse.json(error.response.data, {
+                status: error.response.status,
+            });
+        }
+        return NextResponse.json({ message: 'Something went wrong' }, { status: 500 });
     }
 }

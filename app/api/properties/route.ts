@@ -1,37 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
-import { cookies } from 'next/headers';
-import { getUser } from '@/lib/auth';
+import { getCurrentUser, getTokenFromCookies, createAxiosInstance } from '@/lib/auth';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
-        const user = await getUser();
-
-        if (!user) {
+        const payload = await getCurrentUser();
+        if (!payload) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        const cookieStore = cookies();
-        const token = cookieStore.get('token')?.value;
-
+        const token = await getTokenFromCookies();
         if (!token) {
-            return NextResponse.json({ message: 'Invalid token' }, { status: 402 });
+            return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
         }
 
-        const axiosInstance = axios.create({
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        const response = await axiosInstance.get('http://localhost:8080/api/v1/properties');
+        const api = createAxiosInstance(token);
+        const response = await api.get('/api/v1/properties');
         return NextResponse.json(response.data);
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error fetching properties:', error);
-        if (axios.isAxiosError(error)) {
-            if (error.response?.status === 403) {
-                return NextResponse.json({ message: 'User not authorized' }, { status: 403 });
-            }
+        if (error.response?.status === 403) {
+            return NextResponse.json({ message: 'User not authorized' }, { status: 403 });
         }
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
@@ -39,31 +27,24 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json();
-        console.log('Request body:', body);
-
-        const cookieStore = cookies();
-        const token = cookieStore.get('token')?.value;
-
-        if (!token) {
+        const payload = await getCurrentUser();
+        if (!payload) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        const axiosInstance = axios.create({
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
+        const token = await getTokenFromCookies();
+        if (!token) {
+            return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
+        }
 
-        const response = await axiosInstance.post('http://localhost:8080/api/v1/properties', body);
-        console.log("Server response:", response.data);
+        const body = await request.json();
+        const api = createAxiosInstance(token);
+        const response = await api.post('/api/v1/properties', body);
         return NextResponse.json(response.data);
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating property:', error);
-        if (axios.isAxiosError(error)) {
-            if (error.response?.status === 403) {
-                return NextResponse.json({ message: 'User not authorized' }, { status: 403 });
-            }
+        if (error.response?.status === 403) {
+            return NextResponse.json({ message: 'User not authorized' }, { status: 403 });
         }
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
