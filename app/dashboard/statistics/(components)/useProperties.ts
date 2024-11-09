@@ -9,8 +9,8 @@ export const useProperties = () => {
 
     const fetchProperties = useCallback(async () => {
         try {
-            const propertiesResponse = await axios.get<PropertyInfo[]>('http://localhost:3000/api/getProperties');
-            const reservationsResponse = await axios.get<Reservations[]>('http://localhost:3000/api/getReservations');
+            const propertiesResponse = await axios.get<PropertyInfo[]>('http://localhost:3000/api/properties');
+            const reservationsResponse = await axios.get<Reservations[]>('http://localhost:3000/api/reservations');
 
             if (propertiesResponse.status !== 200 || reservationsResponse.status !== 200) {
                 throw new Error('Failed to fetch data');

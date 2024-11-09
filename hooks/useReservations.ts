@@ -7,7 +7,7 @@ import { PropertyInfo, Reservations } from './types';
 export const useReservations = () => {
     const fetchPropertiesAndReservations = async () => {
         const propertiesResponse = await axios.get<PropertyInfo[]>('http://localhost:3000/api/properties');
-        const reservationsResponse = await axios.get<Reservations[]>('http://localhost:3000/api/getReservations');
+        const reservationsResponse = await axios.get<Reservations[]>('http://localhost:3000/api/reservations');
 
         //Append reservations to properties
         const result = reservationsResponse.data.map((reservations) => ({
@@ -31,11 +31,7 @@ export const useReservations = () => {
 
     const deleteReservation = async (id: number) => {
         console.log(id);
-        await axios.delete('http://localhost:3000/api/deleteReservation', {
-            params: {
-                id: id,
-            }
-        });
+        await axios.delete(`http://localhost:3000/api/reservations/${id}`);
     };
 
     const queryKey = ['properties', 'reservations'];

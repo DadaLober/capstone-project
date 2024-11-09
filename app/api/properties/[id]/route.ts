@@ -77,3 +77,78 @@ export async function DELETE(
         return NextResponse.json({ message: 'An unexpected error occurred' }, { status: 500 });
     }
 }
+
+export async function GET(
+    request: Request,
+    { params }: { params: { id: string } }
+) {
+    try {
+        const cookieStore = cookies();
+        const token = cookieStore.get('token')?.value;
+        const refreshToken = cookieStore.get('refreshToken')?.value;
+
+        if (token && refreshToken) {
+            const axiosInstance = axios.create({
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            const response = await axiosInstance.get(`http://localhost:8080/api/v1/properties/${params.id}/files`);
+            const fileData = Array.isArray(response.data) ? response.data.map(file => ({
+                ...file,
+                imageUrl: `http://localhost:8080/assets/${file.uri}`
+            })) : [];
+            return NextResponse.json(fileData);
+        }
+
+        return NextResponse.json({ message: 'Invalid cookie format' }, { status: 401 });
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 400) {
+                return NextResponse.json({ message: 'Property does not exist' }, { status: 400 });
+            }
+            if (error.response?.status === 403) {
+                return NextResponse.json({ message: 'User not authorized' }, { status: 403 });
+            }
+        }
+        return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    }
+}
+
+export async function POST(
+    request: Request,
+    { params }: { params: { id: string } }
+) {
+    const cookieStore = cookies();
+    const token = cookieStore.get('token')?.value;
+    const refreshToken = cookieStore.get('refreshToken')?.value;
+
+    if (!token || !refreshToken) {
+        return NextResponse.json({ message: 'Invalid cookie format' }, { status: 401 });
+    }
+
+    const formData = await request.formData();
+
+    const axiosInstance = axios.create({
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    try {
+        await axiosInstance.post(
+            `http://localhost:8080/api/v1/properties/${params.id}/upload`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        );
+
+        return NextResponse.json({ message: 'File uploaded successfully' });
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        return NextResponse.json({ message: 'Error uploading file' }, { status: 500 });
+    }
+}

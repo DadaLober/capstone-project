@@ -251,7 +251,6 @@ export const ReservePropertyModal: React.FC<ReservePropertyModalProps> = ({
                             <Input
                                 type="datetime-local"
                                 placeholder="Select reservation date and time"
-                                className="w-full"
                                 {...field}
                             />
                         )}

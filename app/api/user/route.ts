@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import axios from 'axios';
 import { jwtVerify } from 'jose';
 
 const SECRET_KEY = '12345678901234567890123456789012';
@@ -22,6 +23,35 @@ export async function GET(request: NextRequest) {
         });
     } catch (error) {
         console.error('Error fetching user info:', error);
+        return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    }
+}
+
+export async function PATCH(request: Request) {
+    try {
+        const body = await request.json();
+        const { id } = body;
+        const cookieStore = cookies();
+        const token = cookieStore.get('token')?.value;
+        const refreshToken = cookieStore.get('refreshToken')?.value;
+
+        if (token && refreshToken) {
+            const axiosInstance = axios.create({
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            const response = await axiosInstance.patch(`http://localhost:8080/api/v1/users/${id}`, { status: 'active' });
+            return NextResponse.json(response.data);
+        }
+
+        return NextResponse.json({ message: 'Invalid cookie format' }, { status: 401 });
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 403) {
+                return NextResponse.json({ message: 'User not authorized' }, { status: 403 });
+            }
+        }
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
 }

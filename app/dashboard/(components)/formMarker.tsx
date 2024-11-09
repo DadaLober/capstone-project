@@ -101,7 +101,7 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
 
     const fetchPropertyFiles = async (propertyId: number) => {
         try {
-            const response = await axios.get(`/api/getImages?id=${propertyId}`)
+            const response = await axios.get(`/api/properties/${propertyId}`)
             const fileUrls = Array.isArray(response.data) ? response.data : []
             setFiles(fileUrls.map((file: any) => ({
                 url: file.imageUrl,

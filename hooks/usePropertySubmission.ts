@@ -7,7 +7,7 @@ export const usePropertySubmission = () => {
 
     const submitProperty = async (data: PropertyInfo) => {
         console.log('Submitting property:', data);
-        const response = await axios.post('/api/addProperty', data);
+        const response = await axios.post('/api/properties', data);
         return response.data;
     };
 
@@ -15,7 +15,7 @@ export const usePropertySubmission = () => {
         for (const file of files) {
             const formData = new FormData();
             formData.append('file', file);
-            await axios.post(`/api/uploadPropertyFile?id=${propertyId}`, formData, {
+            await axios.post(`/api/properties/${propertyId}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
         }

@@ -51,6 +51,9 @@ export default function Login() {
                 if (error.response.status === 400) {
                     setError('password', { message: 'Invalid email or password' });
                 }
+                if (error.response.data.message !== undefined) {
+                    console.error(error.response.data.message);
+                }
             }
         }
     };

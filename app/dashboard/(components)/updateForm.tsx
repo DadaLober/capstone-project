@@ -182,9 +182,9 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
             setPropertyValues();
             const fetchImages = async () => {
                 try {
-                    const response = await fetch(`/api/getImages?id=${property.id}`);
-                    if (!response.ok) throw new Error('Failed to fetch images');
-                    const imageData: FileData[] = await response.json();
+                    const response = await axios.get(`/api/properties/${property.id}`);
+                    if (response.status !== 200) throw new Error('Failed to fetch images');
+                    const imageData: FileData[] = response.data;
                     if (isMounted) {
                         setExistingImages(imageData);
                     }
@@ -194,8 +194,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
                         icon: <AlertCircle className="w-5 h-5 text-red-500" />
                     });
                 }
-            };
-            fetchImages();
+            }; fetchImages();
         }
 
         return () => {
