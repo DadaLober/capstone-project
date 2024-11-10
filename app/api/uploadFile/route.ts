@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         const formDataToSend = new FormData();
         formDataToSend.append('file', blob, (file as File).name);
 
-        await axiosInstance.post(`http://localhost:8080/api/v1/properties/${id}/upload`, formDataToSend, {
+        await axiosInstance.post(`${process.env.NEXT_BASE_API_URL}/api/v1/properties/${id}/upload`, formDataToSend, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

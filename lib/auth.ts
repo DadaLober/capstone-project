@@ -88,7 +88,7 @@ const processQueue = (error: any, token: string | null = null) => {
 
 export function createAxiosInstance(token: string | undefined): AxiosInstance {
     const api = axios.create({
-        baseURL: process.env.API_BASE_URL || 'http://localhost:8080',
+        baseURL: process.env.NEXT_BASE_API_URL,
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ export function createAxiosInstance(token: string | undefined): AxiosInstance {
                     throw new Error('No refresh token available');
                 }
 
-                const response = await axios.get('http://localhost:8080/refresh', {
+                const response = await axios.get(`${process.env.NEXT_BASE_API_URL}/refresh`, {
                     headers: {
                         'Cookie': `refreshToken=${refreshTokenCookie.value};`
                     }
@@ -164,7 +164,7 @@ export function createAxiosInstance(token: string | undefined): AxiosInstance {
 }
 
 export async function refreshAuthToken(refreshToken: string) {
-    const response = await axios.post('http://localhost:8080/refresh', null, {
+    const response = await axios.post(`${process.env.NEXT_BASE_API_URL}/refresh`, null, {
         headers: {
             'Cookie': `refreshToken=${refreshToken}`
         }

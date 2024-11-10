@@ -18,7 +18,7 @@ export async function GET() {
     });
 
     try {
-        const response = await axiosInstance.get('http://localhost:8080/api/v1/users');
+        const response = await axiosInstance.get(`${process.env.NEXT_BASE_API_URL}/api/v1/users`);
         return NextResponse.json(response.data);
     } catch (error) {
         if (axios.isAxiosError(error)) {

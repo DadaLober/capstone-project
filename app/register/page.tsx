@@ -45,7 +45,7 @@ export default function RegisterPage() {
 
     const onSubmit = async (data: FormData) => {
         try {
-            const response = await axios.post('/api/register', data);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, data);
             toast.success("Account created successfully!", {
                 description: "Please wait for your confirmation!",
             });

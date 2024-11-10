@@ -9,7 +9,7 @@ export async function GET() {
         const refreshToken = cookieStore.get('refreshToken')?.value;
 
         // Remove cookie from backend
-        const response = await axios.get('http://localhost:8080/logout', {
+        const response = await axios.get(`${process.env.NEXT_BASE_API_URL}/logout`, {
             headers: {
                 'Cookie': `token=${token}; refreshToken=${refreshToken}`
             }

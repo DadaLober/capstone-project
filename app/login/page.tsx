@@ -42,7 +42,7 @@ export default function Login() {
 
     const onSubmit = async (data: TypeForm) => {
         try {
-            const response = await axios.post('/api/login', data);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, data);
             if (response.status === 200) {
                 router.push('/dashboard');
             }

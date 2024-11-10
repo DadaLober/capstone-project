@@ -10,7 +10,7 @@ export default async function middleware(req: NextRequest) {
 
     if (tokenCookie === undefined && refreshTokenCookie) {
         try {
-            const response = await axios.get('http://localhost:8080/refresh', {
+            const response = await axios.get(`${process.env.NEXT_BASE_API_URL}/refresh`, {
                 headers: {
                     'Cookie': `refreshToken=${refreshTokenCookie.value};`
                 }

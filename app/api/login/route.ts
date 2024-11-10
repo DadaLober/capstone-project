@@ -6,7 +6,7 @@ import { getTokenExpiration } from '@/lib/auth';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const response = await axios.post('http://localhost:8080/login', body);
+        const response = await axios.post(`${process.env.NEXT_BASE_API_URL}/login`, body);
 
         const { token, refreshToken } = response.data;
 

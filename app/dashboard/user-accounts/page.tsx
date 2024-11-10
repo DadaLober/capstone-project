@@ -18,11 +18,9 @@ interface UserData {
 
 type UsersType = UserData[];
 
-const API_ENDPOINT = '/api/users';
-
 async function getData(): Promise<UsersType> {
     try {
-        const response = await axios.get<UsersType>(API_ENDPOINT);
+        const response = await axios.get<UsersType>(`${process.env.NEXT_PUBLIC_API_URL}/api/users`);
         return response.data;
     } catch (error: any) {
         if (error.response?.status) {
@@ -46,7 +44,7 @@ export default function UserAccountsPage() {
             } catch (error: any) {
                 console.error('Error fetching user data:', error);
                 console.error('Response Data:', error.response?.data);
-                console.error('Full URL:', API_ENDPOINT);
+                console.error('Full URL:', `${process.env.NEXT_PUBLIC_API_URL}/api/users`);
             } finally {
                 setIsLoading(false);
             }

@@ -91,7 +91,7 @@ export const ReservePropertyModal: React.FC<ReservePropertyModalProps> = ({
             setIsLoading(true);
             setError(null);
             try {
-                const response = await axios.get<User[]>('/api/users');
+                const response = await axios.get<User[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/users`);
                 setUsers(response.data);
             } catch (err) {
                 if (axios.isAxiosError(err)) {

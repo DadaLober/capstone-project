@@ -8,16 +8,16 @@ export const useProperties = () => {
     const queryClient = useQueryClient();
 
     const fetchProperties = async (): Promise<PropertyInfo[]> => {
-        const response = await axios.get('/api/properties');
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`);
         return response.data;
     };
 
     const deleteProperty = async (id: number): Promise<void> => {
-        await axios.delete(`/api/properties/${id}`);
+        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${id}`);
     };
 
     const editProperty = async (property: PropertyInfo): Promise<PropertyInfo> => {
-        const response = await axios.patch(`/api/properties/${property.id}`, property);
+        const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${property.id}`, property);
         return response.data;
     };
 

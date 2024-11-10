@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
             expiresAt: reservationDate,
         };
 
-        const response = await axiosInstance.post('http://localhost:8080/api/v1/reservations', reservationData);
+        const response = await axiosInstance.post(`${process.env.NEXT_BASE_API_URL}/api/v1/reservations`, reservationData);
 
         console.log("Server response:", response.data);
         return NextResponse.json(response.data);

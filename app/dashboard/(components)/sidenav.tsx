@@ -30,7 +30,7 @@ const SideNav = () => {
 
     const handleLogout = async () => {
         try {
-            const response = await axios.get('/api/logout');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/logout`);
             console.log(response.data);
             window.location.href = '/login';
         } catch (error) {

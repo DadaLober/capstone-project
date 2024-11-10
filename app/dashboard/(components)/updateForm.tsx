@@ -69,7 +69,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
                 uploadedFiles.forEach((file) => {
                     formData.append('file', file);
                 });
-                await axios.post(`/api/uploadFile?id=${property.id}`, formData, {
+                await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/uploadFile?id=${property.id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -119,7 +119,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
         if (property) {
             setIsDeletingFile(true);
             try {
-                await axios.delete(`/api/properties/${property.id}/files/${fileId}`);
+                await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${property.id}/files/${fileId}`);
                 setExistingImages(prevImages => prevImages.filter(img => img.id !== fileId));
                 toast.success('Image deleted successfully', {
                     icon: <CheckCircle className="w-5 h-5 text-green-500" />
@@ -182,7 +182,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
             setPropertyValues();
             const fetchImages = async () => {
                 try {
-                    const response = await axios.get(`/api/properties/${property.id}`);
+                    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${property.id}`);
                     if (response.status !== 200) throw new Error('Failed to fetch images');
                     const imageData: FileData[] = response.data;
                     if (isMounted) {

@@ -23,7 +23,7 @@ export async function PATCH(
             },
         });
 
-        const response = await axiosInstance.patch(`http://localhost:8080/api/v1/properties/${params.id}`, body);
+        const response = await axiosInstance.patch(`${process.env.NEXT_BASE_API_URL}/api/v1/properties/${params.id}`, body);
         console.log("Server response:", response.data);
         return NextResponse.json(response.data);
     } catch (error) {
@@ -60,7 +60,7 @@ export async function DELETE(
             },
         });
 
-        const response = await axiosInstance.delete(`http://localhost:8080/api/v1/properties/${params.id}`);
+        const response = await axiosInstance.delete(`${process.env.NEXT_BASE_API_URL}/api/v1/properties/${params.id}`);
         return NextResponse.json(response.data);
     } catch (error) {
         console.error('Error deleting property:', error);
@@ -93,10 +93,10 @@ export async function GET(
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            const response = await axiosInstance.get(`http://localhost:8080/api/v1/properties/${params.id}/files`);
+            const response = await axiosInstance.get(`${process.env.NEXT_BASE_API_URL}/api/v1/properties/${params.id}/files`);
             const fileData = Array.isArray(response.data) ? response.data.map(file => ({
                 ...file,
-                imageUrl: `http://localhost:8080/assets/${file.uri}`
+                imageUrl: `${process.env.NEXT_BASE_API_URL}/assets/${file.uri}`
             })) : [];
             return NextResponse.json(fileData);
         }
@@ -137,7 +137,7 @@ export async function POST(
 
     try {
         await axiosInstance.post(
-            `http://localhost:8080/api/v1/properties/${params.id}/upload`,
+            `${process.env.NEXT_BASE_API_URL}/api/v1/properties/${params.id}/upload`,
             formData,
             {
                 headers: {

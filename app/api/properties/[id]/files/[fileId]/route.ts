@@ -21,7 +21,7 @@ export async function DELETE(
             },
         });
 
-        const response = await axiosInstance.delete(`http://localhost:8080/api/v1/properties/${params.id}/files/${params.fileId}`);
+        const response = await axiosInstance.delete(`${process.env.NEXT_BASE_API_URL}/api/v1/properties/${params.id}/files/${params.fileId}`);
         return NextResponse.json(response.data);
     } catch (error) {
         console.error('Error deleting file:', error);

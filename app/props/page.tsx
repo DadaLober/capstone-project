@@ -9,8 +9,8 @@ const PropertyListing: React.FC = () => {
 
     const fetchData = useCallback(async () => {
         try {
-            const propertiesResponse = await axios.get<PropertyInfo[]>('http://localhost:3000/api/properties');
-            const reservationsResponse = await axios.get<Reservations[]>('http://localhost:3000/api/reservations');
+            const propertiesResponse = await axios.get<PropertyInfo[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`);
+            const reservationsResponse = await axios.get<Reservations[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations`);
 
             if (propertiesResponse.status !== 200 || reservationsResponse.status !== 200) {
                 throw new Error('Failed to fetch data');

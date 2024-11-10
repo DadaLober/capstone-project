@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import DashboardContent from './(components)/DashboardContent';
 import PendingStatusScreen from './(components)/PendingStatus';
+import axios from 'axios';
 
 function Dashboard() {
     const [userStatus, setUserStatus] = useState<string | null>(null);
@@ -11,9 +12,8 @@ function Dashboard() {
     useEffect(() => {
         const fetchStatus = async () => {
             try {
-                const response = await fetch('/api/auth/status');
-                const data = await response.json();
-                setUserStatus(data.status);
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/status`);
+                setUserStatus(response.data.status);
             } catch (error) {
                 console.error('Failed to fetch user status:', error);
             } finally {
@@ -22,6 +22,7 @@ function Dashboard() {
         };
         fetchStatus();
     }, []);
+
 
     if (isLoading) {
         return <div className="flex items-center justify-center h-screen">

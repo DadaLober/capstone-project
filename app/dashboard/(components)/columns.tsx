@@ -82,7 +82,7 @@ export const columns: ColumnDef<Users, any>[] = [
 
             const activateAccount = async () => {
                 try {
-                    await axios.patch('/api/user', { id: users.id });
+                    await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, { id: users.id });
                     (table.options.meta as TableMeta)?.updateData(users.id, 'status', 'active');
                 } catch (error) {
                     console.error('Error activating account:', error);

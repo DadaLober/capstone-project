@@ -6,8 +6,8 @@ import { PropertyInfo, Reservations } from './types';
 
 export const useReservations = () => {
     const fetchPropertiesAndReservations = async () => {
-        const propertiesResponse = await axios.get<PropertyInfo[]>('http://localhost:3000/api/properties');
-        const reservationsResponse = await axios.get<Reservations[]>('http://localhost:3000/api/reservations');
+        const propertiesResponse = await axios.get<PropertyInfo[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`);
+        const reservationsResponse = await axios.get<Reservations[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations`);
 
         //Append reservations to properties
         const result = reservationsResponse.data.map((reservations) => ({
@@ -21,7 +21,7 @@ export const useReservations = () => {
 
     const createReservation = async ({ propertyId, userId, reservationDate }: { propertyId: number, userId: number, reservationDate: string }) => {
         const isoDate = new Date(reservationDate).toISOString();
-        const response = await axios.post('http://localhost:3000/api/reservations', {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations`, {
             propertyId,
             userId,
             reservationDate: isoDate,
@@ -31,7 +31,7 @@ export const useReservations = () => {
 
     const deleteReservation = async (id: number) => {
         console.log(id);
-        await axios.delete(`http://localhost:3000/api/reservations/${id}`);
+        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations/${id}`);
     };
 
     const queryKey = ['properties', 'reservations'];

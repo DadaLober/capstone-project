@@ -41,7 +41,7 @@ export async function PATCH(request: Request) {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            const response = await axiosInstance.patch(`http://localhost:8080/api/v1/users/${id}`, { status: 'active' });
+            const response = await axiosInstance.patch(`${process.env.NEXT_BASE_API_URL}/api/v1/users/${id}`, { status: 'active' });
             return NextResponse.json(response.data);
         }
 
