@@ -26,9 +26,9 @@ const PriceComparisonComponent: React.FC<PriceComparisonComponentProps> = ({ pro
         properties.find(p => p.id.toString() === id)
     ).filter((p): p is PropertyInfo => p !== undefined);
 
-    const getLatestPrice = (priceHistory: { price: number; time: string }[] | undefined) => {
+    const getLatestPrice = (priceHistory: { price: number; time?: string }[] | undefined) => {
         return priceHistory && priceHistory.length > 0
-            ? priceHistory.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())[0].price
+            ? priceHistory.sort((a, b) => (a.time && b.time) ? new Date(b.time).getTime() - new Date(a.time).getTime() : 0)[0].price
             : 0;
     };
 
@@ -84,8 +84,8 @@ const PriceComparisonComponent: React.FC<PriceComparisonComponentProps> = ({ pro
                                     <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar yAxisId="left" dataKey="price" fill="#8884d8" name="Total Price ($)" />
-                                    <Bar yAxisId="right" dataKey="pricePerSqm" fill="#82ca9d" name="Price per sqm ($/sqm)" />
+                                    <Bar yAxisId="left" dataKey="price" fill="#8884d8" name="Total Price (₱)" />
+                                    <Bar yAxisId="right" dataKey="pricePerSqm" fill="#82ca9d" name="Price per sqm (₱/sqm)" />
                                     <Bar yAxisId="right" dataKey="area" fill="#ffc658" name="Area (sqm)" />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -98,8 +98,8 @@ const PriceComparisonComponent: React.FC<PriceComparisonComponentProps> = ({ pro
                                         <PolarGrid />
                                         <PolarAngleAxis dataKey="subject" />
                                         <PolarRadiusAxis angle={30} domain={[0, 'auto']} />
-                                        <Radar name="Price (thousands $)" dataKey="price" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-                                        <Radar name="Price per sqm ($/sqm)" dataKey="pricePerSqm" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6} />
+                                        <Radar name="Price (thousands ₱)" dataKey="price" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                                        <Radar name="Price per sqm (₱/sqm)" dataKey="pricePerSqm" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6} />
                                         <Radar name="Area (hundreds sqm)" dataKey="area" stroke="#ffc658" fill="#ffc658" fillOpacity={0.6} />
                                         <Legend />
                                     </RadarChart>
@@ -112,8 +112,8 @@ const PriceComparisonComponent: React.FC<PriceComparisonComponentProps> = ({ pro
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Property</TableHead>
-                                        <TableHead>Total Price ($)</TableHead>
-                                        <TableHead>Price per sqm ($/sqm)</TableHead>
+                                        <TableHead>Total Price (₱)</TableHead>
+                                        <TableHead>Price per sqm (₱/sqm)</TableHead>
                                         <TableHead>Area (sqm)</TableHead>
                                         <TableHead>Status</TableHead>
                                     </TableRow>

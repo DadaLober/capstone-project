@@ -97,7 +97,7 @@ const PropertyListing: React.FC = () => {
                             </p>
                             {property.priceHistory && property.priceHistory.length > 0 && (
                                 <p className="text-gray-600 mt-2">
-                                    Current Price: ${property.priceHistory[property.priceHistory.length - 1].price.toFixed(2)}
+                                    Current Price: ₱{property.priceHistory[property.priceHistory.length - 1].price.toFixed(2)}
                                 </p>
                             )}
                         </div>

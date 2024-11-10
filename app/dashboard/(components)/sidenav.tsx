@@ -20,7 +20,8 @@ const SideNav = () => {
         { name: 'Home', href: '/dashboard', icon: Home },
         { name: 'User Accounts', href: '/dashboard/user-accounts', icon: Users, roleRequired: 'broker' },
         { name: 'Reserved', href: '/dashboard/reserved', icon: BookMarked },
-        { name: 'Statistics', href: '/dashboard/statistics', icon: Waypoints },
+        { name: 'Statistics', href: '/dashboard/statistics', icon: Waypoints, roleRequired: 'broker' },
+        { name: 'Performance', href: '/dashboard/performance', icon: Waypoints },
     ], []);
 
     const filteredLinks = useMemo(() => {
@@ -37,6 +38,10 @@ const SideNav = () => {
             console.error(error);
         }
     };
+
+    if (userInfo?.status === 'pending') {
+        return;
+    }
 
     return (
         <nav className={cn(

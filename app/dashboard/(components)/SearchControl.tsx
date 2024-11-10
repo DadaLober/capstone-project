@@ -50,7 +50,7 @@ export const SearchControl: React.FC<SearchControlProps> = ({ onSearchResult }) 
     }, []);
 
     const debouncedFetchSuggestions = useCallback(
-        debounce((query: string) => fetchSuggestions(query), 300),
+        (query: string) => fetchSuggestions(query),
         [fetchSuggestions]
     );
 

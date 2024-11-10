@@ -32,7 +32,7 @@ function PriceInput({ register, errors, currentPrice }: PriceInputProps) {
                 )}
                 {currentPrice && (
                     <p className="text-sm text-gray-500">
-                        Current Price: ${currentPrice}
+                        Current Price: ₱{currentPrice}
                     </p>
                 )}
             </div>

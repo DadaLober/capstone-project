@@ -105,7 +105,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ properties, selectedPropert
                         <b>Property ID:</b> ${property.id}<br>
                         <b>Address:</b> ${property.address}<br>
                         <b>Status:</b> ${property.status || 'Unknown'}<br>
-                        <b>Latest Price:</b> $${latestPrice}<br>
+                        <b>Latest Price:</b> ₱${latestPrice}<br>
                         <b>Area:</b> ${property.sqm} sqm
                     `);
                     markersRef.current[property.id] = marker;

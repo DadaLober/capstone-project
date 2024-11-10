@@ -202,7 +202,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
             setUploadedFiles([]);
             setExistingImages([]);
         };
-    }, [isOpen, property?.id]);
+    }, [isOpen, property?.id, property, setPropertyValues]);
 
     return (
         <Modal isOpen={isOpen} onClose={handleClose}>

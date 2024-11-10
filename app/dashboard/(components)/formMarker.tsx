@@ -190,7 +190,7 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                                     <div className="flex items-center space-x-2">
                                         <span className="font-bold">Price:</span>
                                         <span className="text-primary font-semibold">
-                                            ${propertyInfo.priceHistory?.[0]?.price.toLocaleString() || 'N/A'}
+                                            ₱{propertyInfo.priceHistory?.[0]?.price.toLocaleString() || 'N/A'}
                                         </span>
                                     </div>
                                     <div className="flex items-center space-x-2 text-sm text-muted-foreground">

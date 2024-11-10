@@ -6,6 +6,7 @@ import { useTheme } from 'next-themes';
 import { Toggle } from "@/components/ui/toggle";
 import { Moon, Sun } from "lucide-react";
 import { useUserInfo } from '@/hooks/useUserInfo';
+import axios from 'axios';
 
 const Header: React.FC = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -25,6 +26,16 @@ const Header: React.FC = () => {
         return null;
     }
 
+    const handleLogout = async () => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/logout`);
+            console.log(response.data);
+            window.location.href = '/login';
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <header className="bg-background text-foreground px-6 py-4 shadow-sm">
             <div className="flex items-center justify-between">
@@ -39,9 +50,6 @@ const Header: React.FC = () => {
                     >
                         {theme === 'dark' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
                     </Toggle>
-                    <button className="text-muted-foreground hover:text-primary transition-colors">
-                        <Bell size={20} />
-                    </button>
                     <div className="relative">
                         <button
                             onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -58,7 +66,7 @@ const Header: React.FC = () => {
                         {isProfileOpen && (
                             <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-[900] bg-popover text-popover-foreground">
                                 <a href="#" className="block px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground">Profile</a>
-                                <a href="#" className="block px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground">Logout</a>
+                                <a href="#" className="block px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground" onClick={handleLogout}>Logout</a>
                             </div>
                         )}
                     </div>

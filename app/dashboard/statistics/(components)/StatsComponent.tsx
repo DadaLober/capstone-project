@@ -8,9 +8,9 @@ interface StatsComponentProps {
 }
 
 const StatsComponent: React.FC<StatsComponentProps> = ({ properties }) => {
-    const getLatestPrice = (priceHistory: { price: number; time: string }[] | undefined) => {
+    const getLatestPrice = (priceHistory: { price: number; time?: string }[] | undefined) => {
         return priceHistory && priceHistory.length > 0
-            ? priceHistory.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())[0].price
+            ? priceHistory.sort((a, b) => (a.time && b.time) ? new Date(b.time).getTime() - new Date(a.time).getTime() : 0)[0].price
             : 0;
     };
 
@@ -76,11 +76,11 @@ const StatsComponent: React.FC<StatsComponentProps> = ({ properties }) => {
                         </div>
                         <div>
                             <p className="text-sm font-medium">Total Prices</p>
-                            <p className="text-2xl font-bold">${totalPrices.toFixed(2)}</p>
+                            <p className="text-2xl font-bold">₱{totalPrices.toFixed(2)}</p>
                         </div>
                         <div>
                             <p className="text-sm font-medium">Average Price</p>
-                            <p className="text-2xl font-bold">${averagePrice.toFixed(2)}</p>
+                            <p className="text-2xl font-bold">₱{averagePrice.toFixed(2)}</p>
                         </div>
                         <div>
                             <p className="text-sm font-medium">Total Area</p>
@@ -88,7 +88,7 @@ const StatsComponent: React.FC<StatsComponentProps> = ({ properties }) => {
                         </div>
                         <div>
                             <p className="text-sm font-medium">Avg Price per sqm</p>
-                            <p className="text-2xl font-bold">${averagePricePerSqm.toFixed(2)}</p>
+                            <p className="text-2xl font-bold">₱{averagePricePerSqm.toFixed(2)}</p>
                         </div>
                         <div>
                             <p className="text-sm font-medium">Active Properties</p>
@@ -124,7 +124,7 @@ const StatsComponent: React.FC<StatsComponentProps> = ({ properties }) => {
                             <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                                 <CartesianGrid />
                                 <XAxis type="number" dataKey="area" name="Area" unit="sqm" />
-                                <YAxis type="number" dataKey="price" name="Price" unit="$" />
+                                <YAxis type="number" dataKey="price" name="Price" unit="₱" />
                                 <Tooltip cursor={{ strokeDasharray: '3 3' }} />
                                 <Legend />
                                 <Scatter name="Properties" data={areaVsPriceData} fill="#8884d8">

@@ -13,7 +13,7 @@ const PriceTrendsComponent: React.FC<PriceTrendsComponentProps> = ({ properties 
 
     const getPriceHistory = (property: PropertyInfo) => {
         return property.priceHistory?.map(history => ({
-            date: new Date(history.time),
+            date: new Date(history.time ?? ''),
             price: history.price
         }))
             ?.sort((a, b) => a.date.getTime() - b.date.getTime())
@@ -27,7 +27,7 @@ const PriceTrendsComponent: React.FC<PriceTrendsComponentProps> = ({ properties 
         const allHistory: { [date: string]: { total: number; count: number } } = {};
         properties.forEach(property => {
             property.priceHistory?.forEach(history => {
-                const date = new Date(history.time);
+                const date = new Date(history.time ?? '');
                 const dateString = date.toLocaleDateString();
                 if (!allHistory[dateString]) {
                     allHistory[dateString] = { total: 0, count: 0 };

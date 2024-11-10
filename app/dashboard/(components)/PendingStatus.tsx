@@ -33,7 +33,7 @@ const PendingStatusScreen = () => {
                         <div className="flex items-center justify-center space-x-2">
                             <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
                             <p className="text-sm text-muted-foreground">
-                                Verification typically takes 24-48 hours. You'll receive an email once your account is approved.
+                                Verification typically takes 24-48 hours. You will receive an email once your account is approved.
                             </p>
                         </div>
                     </div>

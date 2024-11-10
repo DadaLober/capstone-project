@@ -46,7 +46,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
             </p>
             {latestPrice !== null && (
                 <p className="text-sm text-gray-600 mt-2">
-                    Current Price: ${latestPrice.toFixed(2)}
+                    Current Price: ₱{latestPrice.toFixed(2)}
                 </p>
             )}
         </div>
