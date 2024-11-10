@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import Modal from './Modal';
 import { Search, User, Calendar, CheckCircle, XCircle, Loader2, Undo2 } from 'lucide-react';
 import { useReservations } from '@/hooks/useReservations';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface User {
     id: number;
@@ -137,7 +138,6 @@ export const ReservePropertyModal: React.FC<ReservePropertyModalProps> = ({
                     userId: data.userId,
                     reservationDate: new Date(data.reservationDate).toISOString(),
                 });
-
                 toast.success(
                     <div className="flex flex-col gap-1">
                         <p className="font-semibold">Reservation Created Successfully!</p>

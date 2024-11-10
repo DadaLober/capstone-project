@@ -11,6 +11,7 @@ import SkeletonCard from './SkeletonCard';
 import SkeletonMap from './SkeletonMap';
 import { ReservePropertyModal } from './addReservationForm';
 import { Toaster } from 'sonner';
+import { MapPinHouse } from 'lucide-react';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapComponent'), {
     ssr: false,
@@ -63,7 +64,7 @@ function DashboardContent() {
                     <SkeletonCard />
                 </React.Fragment>
             ))
-        ) : (
+        ) : properties && properties.length > 0 ? (
             properties && properties.map((property) => (
                 <React.Fragment key={property.id}>
                     <PropertyCard
@@ -76,6 +77,12 @@ function DashboardContent() {
                     />
                 </React.Fragment>
             ))
+        ) : (
+            <div className="flex flex-col items-center justify-center h-full">
+                <MapPinHouse className="text-gray-400 text-6xl mb-4" />
+                <h2 className="text-2xl font-semibold text-gray-700 mb-2">No Properties Listed</h2>
+                <p className="text-gray-500">There are no properties listed at the moment.</p>
+            </div>
         )
     );
 
@@ -85,7 +92,7 @@ function DashboardContent() {
             <div className="flex flex-col h-screen bg-background text-foreground">
                 <div className="flex flex-grow overflow-hidden">
                     <Suspense fallback={<div className="w-1/2 p-4"><SkeletonCard /></div>}>
-                        <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar">
+                        <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar h-[90vh]">
                             <div className="space-y-4">
                                 {renderPropertyList()}
                             </div>

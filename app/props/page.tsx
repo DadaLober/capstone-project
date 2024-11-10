@@ -1,111 +1,86 @@
-"use client";
-import React, { useEffect, useState, useCallback } from 'react';
-import { PropertyInfo, Reservations } from '../../hooks/types';
-import axios from 'axios';
+'use client'
 
-const PropertyListing: React.FC = () => {
-    const [properties, setProperties] = useState<PropertyInfo[]>([]);
-    const [error, setError] = useState<string | null>(null);
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Home, TrendingUp } from "lucide-react"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
-    const fetchData = useCallback(async () => {
-        try {
-            const propertiesResponse = await axios.get<PropertyInfo[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`);
-            const reservationsResponse = await axios.get<Reservations[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations`);
-
-            if (propertiesResponse.status !== 200 || reservationsResponse.status !== 200) {
-                throw new Error('Failed to fetch data');
-            }
-
-            const propertiesData: PropertyInfo[] = propertiesResponse.data;
-            const reservationsData: Reservations[] = reservationsResponse.data;
-
-            // Create a map of propertyId to its latest active reservation status
-            const reservationStatusMap = new Map<number, string>();
-            reservationsData.forEach(reservation => {
-                const propertyId = reservation.propertyId;
-                const status = reservation.status.toLowerCase();
-                if (status === 'active' || !reservationStatusMap.has(propertyId)) {
-                    reservationStatusMap.set(propertyId, status);
-                }
-            });
-
-            // Update properties with reservation status
-            const updatedProperties = propertiesData.map(property => {
-                const reservationStatus = reservationStatusMap.get(property.id);
-                let newStatus = property.status?.toLowerCase() ?? '';
-
-                if (reservationStatus === 'active') {
-                    newStatus = 'reserved';
-                } else if (reservationStatus === 'sold') {
-                    newStatus = 'sold';
-                } else if (!['sold', 'cancelled', 'canceled', 'expired'].includes(newStatus)) {
-                    newStatus = 'active';
-                }
-
-                return { ...property, status: newStatus };
-            });
-
-            setProperties(updatedProperties);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            setError('Failed to load data. Please try again later.');
-        }
-    }, []);
-
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
-
-    const getStatusColor = (status: string) => {
-        switch (status.toLowerCase()) {
-            case 'reserved':
-                return 'text-yellow-600';
-            case 'active':
-                return 'text-green-600';
-            case 'sold':
-                return 'text-red-600';
-            case 'cancelled':
-            case 'canceled':
-                return 'text-gray-600';
-            case 'expired':
-                return 'text-orange-600';
-            default:
-                return 'text-blue-600';
-        }
-    };
-
-    if (error) {
-        return <div className="text-red-600 text-center mt-8">{error}</div>;
-    }
-
+export default function Component() {
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Property Listings</h1>
-            {properties.length === 0 ? (
-                <p className="text-center">Loading properties...</p>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {properties.map(property => (
-                        <div key={property.id} className="bg-white rounded-lg shadow-md p-6">
-                            <h2 className="text-xl font-semibold mb-2">{property.address}</h2>
-                            <p className="text-gray-600 mb-2">Size: {property.sqm} sqm</p>
-                            <p className="text-gray-600 mb-2">
-                                Location: {property.location.name || `${property.location.lat.toFixed(6)}, ${property.location.lng.toFixed(6)}`}
-                            </p>
-                            <p className={`font-bold ${getStatusColor(property.status || '')}`}>
-                                Status: {property.status || 'Unknown'}
-                            </p>
-                            {property.priceHistory && property.priceHistory.length > 0 && (
-                                <p className="text-gray-600 mt-2">
-                                    Current Price: ₱{property.priceHistory[property.priceHistory.length - 1].price.toFixed(2)}
-                                </p>
-                            )}
-                        </div>
-                    ))}
+        <div className="flex flex-col gap-8 p-6 md:p-8 bg-gradient-to-br from-emerald-50 to-teal-100 min-h-screen">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight text-emerald-800">Agent Performance</h1>
+                    <p className="text-emerald-600">Track your real estate sales and metrics</p>
                 </div>
-            )}
+                <Select defaultValue="thisMonth">
+                    <SelectTrigger className="w-[180px] bg-white bg-opacity-50 backdrop-blur-sm border-emerald-200">
+                        <SelectValue placeholder="Select period" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="thisWeek">This Week</SelectItem>
+                        <SelectItem value="thisMonth">This Month</SelectItem>
+                        <SelectItem value="thisQuarter">This Quarter</SelectItem>
+                        <SelectItem value="thisYear">This Year</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+            <Card className="bg-white bg-opacity-60 backdrop-blur-sm border-emerald-200 shadow-lg">
+                <CardHeader>
+                    <CardTitle className="text-xl font-semibold text-emerald-800">Performance Overview</CardTitle>
+                </CardHeader>
+                <CardContent className="grid gap-6 md:grid-cols-2">
+                    <div className="bg-gradient-to-br from-emerald-400 to-teal-500 p-6 rounded-xl text-white">
+                        <div className="flex items-center mb-2">
+                            <Home className="h-6 w-6 mr-2" />
+                            <span className="font-medium text-lg">Properties Sold</span>
+                        </div>
+                        <span className="text-4xl font-bold">8</span>
+                        <p className="text-sm mt-2 text-emerald-100">+2 from last month</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-teal-400 to-emerald-500 p-6 rounded-xl text-white">
+                        <div className="flex items-center mb-2">
+                            <TrendingUp className="h-6 w-6 mr-2" />
+                            <span className="font-medium text-lg">Estimated Sales</span>
+                        </div>
+                        <span className="text-4xl font-bold">₱4.2M</span>
+                        <p className="text-sm mt-2 text-emerald-100">+20.1% from last month</p>
+                    </div>
+                </CardContent>
+            </Card>
+            <Card className="bg-white bg-opacity-60 backdrop-blur-sm border-emerald-200 shadow-lg">
+                <CardHeader>
+                    <CardTitle className="text-xl font-semibold text-emerald-800">Recent Sales</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        {[
+                            { name: "Acropolis North Property", price: "₱1.2M", date: "2 days ago" },
+                            { name: "Hermes Residence", price: "₱980K", date: "1 week ago" },
+                            { name: "Sumacab Sur Villa", price: "₱1.5M", date: "2 weeks ago" },
+                        ].map((sale, index) => (
+                            <div key={index} className="flex items-center gap-4 bg-white bg-opacity-70 p-4 rounded-lg shadow transition-all hover:shadow-md hover:bg-opacity-100">
+                                <div className="size-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center">
+                                    <Home className="h-6 w-6 text-white" />
+                                </div>
+                                <div className="space-y-1 flex-1">
+                                    <p className="text-sm font-medium text-emerald-800">{sale.name}</p>
+                                    <p className="text-xs text-emerald-600">Sold for {sale.price}</p>
+                                </div>
+                                <div className="text-xs text-emerald-500">
+                                    {sale.date}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
         </div>
-    );
-};
-
-export default PropertyListing;
+    )
+}   

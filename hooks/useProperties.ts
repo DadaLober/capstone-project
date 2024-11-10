@@ -4,12 +4,36 @@ import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { PropertyInfo } from './types';
 
+interface Reservation {
+    id: number;
+    propertyId: number;
+    userId: number;
+    expiresAt: string;
+    createdAt: string;
+    status: string;
+}
+
 export const useProperties = () => {
     const queryClient = useQueryClient();
 
-    const fetchProperties = async (): Promise<PropertyInfo[]> => {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`);
-        return response.data;
+    const fetchPropertiesAndReservations = async (): Promise<PropertyInfo[]> => {
+        const [propertiesResponse, reservationsResponse] = await Promise.all([
+            axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`),
+            axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations`)
+        ]);
+
+        const properties = propertiesResponse.data;
+        const reservations = reservationsResponse.data;
+
+        // Filter out properties that are reserved
+        const unreservedProperties = properties.filter((property: PropertyInfo) =>
+            !reservations.some((reservation: Reservation) =>
+                reservation.propertyId === property.id &&
+                reservation.status !== 'cancelled'
+            )
+        );
+
+        return unreservedProperties;
     };
 
     const deleteProperty = async (id: number): Promise<void> => {
@@ -25,7 +49,7 @@ export const useProperties = () => {
 
     const { data: properties, isLoading, isError } = useQuery({
         queryKey,
-        queryFn: fetchProperties,
+        queryFn: fetchPropertiesAndReservations,
     });
 
     const deleteMutation = useMutation({

@@ -66,7 +66,7 @@ function ReservedPage() {
             <div className="flex flex-col items-center justify-center h-full">
                 <FaCalendarTimes className="text-gray-400 text-6xl mb-4" />
                 <h2 className="text-2xl font-semibold text-gray-700 mb-2">No Reservations Available</h2>
-                <p className="text-gray-500">You currently have no active reservations.</p>
+                <p className="text-gray-500">There are no active reservations.</p>
             </div>
         )
     );
@@ -75,7 +75,7 @@ function ReservedPage() {
 
     return (
         <div className="flex flex-col h-screen bg-background text-foreground">
-            <div className="flex flex-grow overflow-hidden">
+            <div className="flex flex-grow overflow-hidden h-[90vh]">
                 <Suspense fallback={<div className="w-1/2 p-4"><SkeletonCard /></div>}>
                     <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar">
                         <div className="space-y-4">

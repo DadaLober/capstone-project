@@ -1,10 +1,11 @@
 'use client'
 
 import axios from 'axios';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { PropertyInfo, Reservations } from './types';
 
 export const useReservations = () => {
+    const queryClient = useQueryClient();
     const fetchPropertiesAndReservations = async () => {
         const propertiesResponse = await axios.get<PropertyInfo[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`);
         const reservationsResponse = await axios.get<Reservations[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations`);
@@ -49,6 +50,9 @@ export const useReservations = () => {
 
     const mutation = useMutation({
         mutationFn: createReservation,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey });
+        }
     });
 
     const deleteMutation = useMutation({
