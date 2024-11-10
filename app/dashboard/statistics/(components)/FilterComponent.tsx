@@ -51,7 +51,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({ filters, setFilters }
                                 <SelectItem value="active">Active</SelectItem>
                                 <SelectItem value="reserved">Reserved</SelectItem>
                                 <SelectItem value="sold">Sold</SelectItem>
-                                <SelectItem value="cancelled">Cancelled</SelectItem>
                                 <SelectItem value="expired">Expired</SelectItem>
                             </SelectContent>
                         </Select>

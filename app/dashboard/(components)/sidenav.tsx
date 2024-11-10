@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { LogOut, Home, Users, Waypoints, BookMarked, Menu } from 'lucide-react';
+import { LogOut, Home, Users, Waypoints, BookMarked, Menu, FileChartColumn } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -20,8 +20,8 @@ const SideNav = () => {
         { name: 'Home', href: '/dashboard', icon: Home },
         { name: 'User Accounts', href: '/dashboard/user-accounts', icon: Users, roleRequired: 'broker' },
         { name: 'Reserved', href: '/dashboard/reserved', icon: BookMarked },
+        { name: 'Performance', href: '/dashboard/performance', icon: FileChartColumn },
         { name: 'Statistics', href: '/dashboard/statistics', icon: Waypoints, roleRequired: 'broker' },
-        { name: 'Performance', href: '/dashboard/performance', icon: Waypoints },
     ], []);
 
     const filteredLinks = useMemo(() => {

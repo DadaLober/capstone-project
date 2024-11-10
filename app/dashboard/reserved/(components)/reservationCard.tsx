@@ -14,9 +14,10 @@ interface PropertyCardProps {
     isSelected: boolean;
     onClick: () => void;
     onDelete: () => void;
+    onMarkAsSold: () => void;
 }
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({ reservation, isSelected, onClick, onDelete }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({ reservation, isSelected, onClick, onDelete, onMarkAsSold }) => {
     const { userInfo } = useUserInfo();
     const property = reservation.propertyInfo[0];
 
@@ -35,15 +36,18 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ reservation, isSelec
                                 <DropdownMenuTrigger>
                                     <SlOptions className="h-4 w-4 mr-1" />
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="bg-white shadow-md rounded-lg">
-                                    <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none">
-                                        Edit Reservation
+                                <DropdownMenuContent className="bg-white shadow-md rounded-lg z-[500]">
+                                    <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={(e) => {
+                                        e.stopPropagation();
+                                        onMarkAsSold();
+                                    }}>
+                                        Mark as Sold
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={(e) => {
                                         e.stopPropagation();
                                         onDelete();
                                     }}>
-                                        Delete Reservation
+                                        Cancel Reservation
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
