@@ -60,7 +60,11 @@
 }
 
 .dark .gradient-green-bg {
-  background: linear-gradient(to bottom right, #0a3d31, #1e5842, #34805f);
+  background-image: linear-gradient(to bottom, #0f1729, #0f1729, #0f1729, #0f1729, #0f1729, #0d1f33, #08273c, #003045, #004455, #00585f, #006d62, #34805f);
+}
+
+.dark body {
+  background-image: linear-gradient(to bottom, #0f1729, #0f1729, #0f1729, #0f1729, #0f1729, #0d1f33, #08273c, #003045, #004455, #00585f, #006d62, #34805f);
 }
 
 .active-link {

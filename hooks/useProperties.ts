@@ -36,6 +36,11 @@ export const useProperties = () => {
         return unreservedProperties;
     };
 
+    const fetchAllProperties = async (): Promise<PropertyInfo[]> => {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`);
+        return response.data;
+    };
+
     const deleteProperty = async (id: number): Promise<void> => {
         await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${id}`);
     };
@@ -85,5 +90,10 @@ export const useProperties = () => {
         },
     });
 
-    return { properties, isLoading, isError, deleteMutation, editMutation };
+    const allProperties = useQuery({
+        queryKey: ['allProperties'],
+        queryFn: fetchAllProperties,
+    });
+
+    return { properties, isLoading, isError, deleteMutation, editMutation, allProperties };
 };

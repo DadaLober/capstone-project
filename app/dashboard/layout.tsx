@@ -8,9 +8,9 @@ import { usePathname } from 'next/navigation';
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
-    const mainClassName = `flex-1 p-4 ${pathname === '/dashboard/statistics'
-            ? 'overflow-y-auto'
-            : 'overflow-y-hidden'
+    const mainClassName = `flex-1 p-4 ${pathname === '/dashboard/statistics' || pathname === '/dashboard/performance'
+        ? 'overflow-y-auto'
+        : 'overflow-y-hidden'
         } custom-scrollbar`;
 
     return (

@@ -60,4 +60,14 @@ const customIcon = L.icon({
 
 export { customIcon };
 
+export interface UserInfo {
+    id: number;
+    firstName: string;
+    lastName: string;
+    contactNumber: string;
+    email: string;
+    status: string;
+    role: string;
+}
+
 export type { Location, PropertyInfo, GeocodeResult, Reservations, FileData };

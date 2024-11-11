@@ -16,8 +16,13 @@ export const useReservations = () => {
             propertyInfo: propertiesResponse.data.filter((property) => property.id === reservations.propertyId),
         }));
         console.log(result)
-
+        //return reservation with propertyInfo
         return result;
+    };
+
+    const getAllReservations = async () => {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations`);
+        return response.data;
     };
 
     const createReservation = async ({ propertyId, userId, reservationDate }: { propertyId: number, userId: number, reservationDate: string }) => {
@@ -63,5 +68,10 @@ export const useReservations = () => {
         mutationFn: (id: number) => markAsSold(id),
     });
 
-    return { properties, isLoading, isError, mutation, deleteMutation, markAsSoldMutation };
+    const getAllReserved = useQuery({
+        queryKey: ['reservations'],
+        queryFn: getAllReservations,
+    });
+
+    return { properties, isLoading, isError, mutation, deleteMutation, markAsSoldMutation, getAllReserved };
 };
