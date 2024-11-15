@@ -77,7 +77,7 @@ function ReservedPage() {
         <div className="flex flex-col h-screen bg-background text-foreground">
             <div className="flex flex-grow overflow-hidden h-[90vh]">
                 <Suspense fallback={<div className="w-1/2 p-4"><SkeletonCard /></div>}>
-                    <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar">
+                    <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar h-[90vh]">
                         <div className="space-y-4">
                             {renderReservationList()}
                         </div>

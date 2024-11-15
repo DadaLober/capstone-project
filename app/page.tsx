@@ -43,7 +43,7 @@ export default function LandingPage() {
 
       {/* Content wrapper */}
       <div className="relative z-10 flex flex-col min-h-screen bg-gradient-to-b from-green-50/90 to-green-100/90">
-        <header className="px-4 lg:px-6 h-14 flex items-center backdrop-blur-md bg-green-600/10">
+        <header className="px-4 lg:px-6 h-14 flex items-center backdrop-blur-md bg-green-200">
           <Link className="flex items-center justify-center" href="#">
             <span className="ml-2 text-lg font-semibold text-green-800">PortMan</span>
           </Link>

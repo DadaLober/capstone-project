@@ -4,6 +4,7 @@ import React from 'react';
 import SideNav from './(components)/sidenav';
 import Header from './(components)/header';
 import { usePathname } from 'next/navigation';
+import { Toaster } from "@/components/ui/toaster"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -21,6 +22,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <main className={mainClassName}>
                     {children}
                 </main>
+                <Toaster />
                 <div id="modal-root"></div>
             </div>
         </div>

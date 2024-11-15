@@ -30,7 +30,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ reservation, isSelec
                 <div className="flex items-center mb-2">
                     <FaAddressBook className="mr-2 text-green-500" size={18} />
                     <h2 className="text-l font-semibold">{property.address}</h2>
-                    {userInfo?.role === 'broker' &&
+                    {userInfo?.role === 'broker' && reservation.status.toLowerCase() !== 'sold' &&
                         <div className="ml-auto">
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
@@ -63,7 +63,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ reservation, isSelec
                     </div>
                 </div>
                 <div className="flex justify-end items-end mb-2 space-x-2">
-                    <Badge variant="default">
+                    <Badge variant={reservation.status.toLowerCase() === 'sold' ? 'destructive' : 'default'}>
                         {reservation.status}
                     </Badge>
                     <Badge variant="secondary">

@@ -27,9 +27,9 @@ export default function DashboardPage() {
     const [filters, setFilters] = useState({
         status: 'all',
         priceMin: 0,
-        priceMax: Infinity,
+        priceMax: 1000000000,
         areaMin: 0,
-        areaMax: Infinity,
+        areaMax: 1000000,
         selectedArea: 'all',
     });
     const { properties, isLoading, isError } = useProperties();
