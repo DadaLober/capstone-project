@@ -95,7 +95,6 @@ export function createAxiosInstance(token: string | undefined): AxiosInstance {
         },
         timeout: 10000,
     });
-    console.log(api)
 
     api.interceptors.response.use(
         (response) => response,
