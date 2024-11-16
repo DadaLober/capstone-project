@@ -82,10 +82,19 @@ export const columns: ColumnDef<Users, any>[] = [
 
             const activateAccount = async () => {
                 try {
-                    await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, { id: users.id });
+                    await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, { id: users.id, action: 'activate' });
                     (table.options.meta as TableMeta)?.updateData(users.id, 'status', 'active');
                 } catch (error) {
                     console.error('Error activating account:', error);
+                }
+            }
+
+            const suspendAccount = async () => {
+                try {
+                    await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, { id: users.id, action: 'suspend' });
+                    (table.options.meta as TableMeta)?.updateData(users.id, 'status', 'suspended');
+                } catch (error) {
+                    console.error('Error suspending account:', error);
                 }
             }
 
@@ -103,13 +112,14 @@ export const columns: ColumnDef<Users, any>[] = [
                             <DropdownMenuItem onClick={activateAccount}>
                                 Activate Account
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={suspendAccount}>
+                                Suspend Account
+                            </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => navigator.clipboard.writeText(`${users.id}`)}
                             >
                                 Copy ID
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>...</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

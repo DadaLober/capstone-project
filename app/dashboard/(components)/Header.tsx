@@ -56,7 +56,7 @@ const Header: React.FC<{
         <>
             <header className="bg-background text-foreground shadow-sm">
                 <div className="flex items-center justify-between w-full">
-                    {showSearchBar && (
+                    {showSearchBar && userInfo?.role === 'broker' && (
                         <div className="flex-1">
                             <SearchBar
                                 onSearch={handleSearch}

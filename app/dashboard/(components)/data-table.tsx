@@ -41,11 +41,12 @@ export function DataTable<TData extends { id: number }, TValue>({
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const filteredData = data.filter(row => row.id !== 1);
     const [tableData, setTableData] = React.useState(data)
     const [filterColumn, setFilterColumn] = React.useState("email")
 
     const table = useReactTable({
-        data: tableData,
+        data: filteredData,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
