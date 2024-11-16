@@ -25,7 +25,7 @@ interface UserSettings {
 }
 
 export default function UserSettingsModal({ isOpen, onClose }: UserSettingsModalProps) {
-    const { userInfo, isLoading } = useUserInfo();
+    const { userInfo } = useUserInfo();
     const [settings, setSettings] = useState<UserSettings>({
         firstName: userInfo?.firstName || "",
         lastName: userInfo?.lastName || "",
@@ -47,10 +47,6 @@ export default function UserSettingsModal({ isOpen, onClose }: UserSettingsModal
             });
         }
     }, [userInfo]);
-
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSettings({ ...settings, [e.target.name]: e.target.value })

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { ReservePropertyModal } from './addReservationForm';
+import { DeleteConfirmationModal } from './deleteConfirmation';
 
 interface PropertyCardProps {
     property: PropertyInfo;
@@ -20,6 +21,7 @@ interface PropertyCardProps {
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected, onClick, onDelete, onAddToReserved, onUpdate }) => {
     const { userInfo } = useUserInfo();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     return (
         <>
             <Card
@@ -47,7 +49,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                                         <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={() => setIsModalOpen(true)}>
                                             Add to Reserved
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onDelete}>
+                                        <DropdownMenuItem
+                                            className="focus:outline-none text-red-600"
+                                            onClick={() => setIsDeleteModalOpen(true)}
+                                        >
                                             Delete Property
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
@@ -74,6 +79,12 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 propertyId={property.id}
+            />
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={onDelete}
+                propertyAddress={property.address}
             />
         </>
     );
