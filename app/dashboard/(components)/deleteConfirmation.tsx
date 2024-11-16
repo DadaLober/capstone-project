@@ -40,9 +40,8 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
                     <div className="space-y-4">
                         <div className="flex items-start space-x-2">
                             <AlertTriangle className="h-5 w-5 text-yellow-500 mt-1" />
-                            <div>
-                                <p>This action cannot be undone. This will permanently delete the property at:</p>
-                                <p className="font-medium">{propertyAddress}</p>
+                            <div className='flex flex-col space-y-4'>
+                                <p>This action cannot be undone. This will permanently delete the property.</p>
                                 <p>Please type <span className="font-extrabold">{propertyAddress}</span> to confirm.</p>
                             </div>
                         </div>

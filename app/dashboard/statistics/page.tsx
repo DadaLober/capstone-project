@@ -10,6 +10,7 @@ import { PropertyInfo } from '@/hooks/types';
 import FilterComponent from './(components)/FilterComponent';
 import PriceTrendsComponent from './(components)/PriceTrendsComponent';
 import PriceComparisonComponent from './(components)/PriceComparisonComponent';
+import Header from '../(components)/header';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/statistics/(components)/MapComponent'), {
     ssr: false,
@@ -67,80 +68,83 @@ export default function DashboardPage() {
     );
 
     return (
-        <div className="container mx-auto p-4">
-            <FilterComponent filters={filters} setFilters={setFilters} />
-            <Tabs defaultValue="map" className="space-y-4">
-                <TabsList>
-                    <TabsTrigger value="map">Map View</TabsTrigger>
-                    <TabsTrigger value="stats">Statistics</TabsTrigger>
-                    <TabsTrigger value="pricetrends">Price Trends</TabsTrigger>
-                    <TabsTrigger value="pricecomparison">Price Comparison</TabsTrigger>
-                </TabsList>
-                <TabsContent value="map" className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Card className="md:col-span-1 h-[500px] overflow-y-auto">
-                            <CardHeader>
-                                <CardTitle>Properties</CardTitle>
-                            </CardHeader>
+        <>
+            <Header />
+            <div className="container mx-auto p-4">
+                <FilterComponent filters={filters} setFilters={setFilters} />
+                <Tabs defaultValue="map" className="space-y-4">
+                    <TabsList>
+                        <TabsTrigger value="map">Map View</TabsTrigger>
+                        <TabsTrigger value="stats">Statistics</TabsTrigger>
+                        <TabsTrigger value="pricetrends">Price Trends</TabsTrigger>
+                        <TabsTrigger value="pricecomparison">Price Comparison</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="map" className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <Card className="md:col-span-1 h-[500px] overflow-y-auto">
+                                <CardHeader>
+                                    <CardTitle>Properties</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {filteredProperties.length > 0 ? (
+                                        filteredProperties.map((property: PropertyInfo) => (
+                                            <PropertyCard
+                                                key={property.id}
+                                                property={property}
+                                                isSelected={selectedPropertyId === property.id}
+                                                onClick={() => handleCardClick(property.id)}
+                                            />
+                                        ))
+                                    ) : (
+                                        <NoResultsMessage />
+                                    )}
+                                </CardContent>
+                            </Card>
+                            <Card className="md:col-span-2">
+                                <CardContent className="p-0 h-[500px]">
+                                    <MapComponent
+                                        properties={filteredProperties}
+                                        selectedPropertyId={selectedPropertyId}
+                                    />
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="stats">
+                        <Card>
                             <CardContent>
                                 {filteredProperties.length > 0 ? (
-                                    filteredProperties.map((property: PropertyInfo) => (
-                                        <PropertyCard
-                                            key={property.id}
-                                            property={property}
-                                            isSelected={selectedPropertyId === property.id}
-                                            onClick={() => handleCardClick(property.id)}
-                                        />
-                                    ))
+                                    <StatsComponent properties={filteredProperties} />
                                 ) : (
                                     <NoResultsMessage />
                                 )}
                             </CardContent>
                         </Card>
-                        <Card className="md:col-span-2">
-                            <CardContent className="p-0 h-[500px]">
-                                <MapComponent
-                                    properties={filteredProperties}
-                                    selectedPropertyId={selectedPropertyId}
-                                />
+                    </TabsContent>
+                    <TabsContent value="pricetrends">
+                        <Card>
+                            <CardContent>
+                                {filteredProperties.length > 0 ? (
+                                    <PriceTrendsComponent properties={filteredProperties} />
+                                ) : (
+                                    <NoResultsMessage />
+                                )}
                             </CardContent>
                         </Card>
-                    </div>
-                </TabsContent>
-                <TabsContent value="stats">
-                    <Card>
-                        <CardContent>
-                            {filteredProperties.length > 0 ? (
-                                <StatsComponent properties={filteredProperties} />
-                            ) : (
-                                <NoResultsMessage />
-                            )}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-                <TabsContent value="pricetrends">
-                    <Card>
-                        <CardContent>
-                            {filteredProperties.length > 0 ? (
-                                <PriceTrendsComponent properties={filteredProperties} />
-                            ) : (
-                                <NoResultsMessage />
-                            )}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-                <TabsContent value="pricecomparison">
-                    <Card>
-                        <CardContent>
-                            {filteredProperties.length > 0 ? (
-                                <PriceComparisonComponent properties={filteredProperties} />
-                            ) : (
-                                <NoResultsMessage />
-                            )}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
-        </div>
+                    </TabsContent>
+                    <TabsContent value="pricecomparison">
+                        <Card>
+                            <CardContent>
+                                {filteredProperties.length > 0 ? (
+                                    <PriceComparisonComponent properties={filteredProperties} />
+                                ) : (
+                                    <NoResultsMessage />
+                                )}
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                </Tabs>
+            </div>
+        </>
     );
 }

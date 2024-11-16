@@ -12,6 +12,7 @@ import SkeletonMap from './SkeletonMap';
 import { ReservePropertyModal } from './addReservationForm';
 import { Toaster } from 'sonner';
 import { MapPinHouse } from 'lucide-react';
+import Header from './header';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapComponent'), {
     ssr: false,
@@ -23,6 +24,8 @@ function DashboardContent() {
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isReserveModalOpen, setIsReserveModalOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sortBy, setSortBy] = useState('');
     const { properties, isLoading, isError, deleteMutation: deleteProperty } = useProperties();
 
     const handleAction = (property: PropertyInfo, action: 'select' | 'delete' | 'reserve' | 'update') => {
@@ -53,9 +56,59 @@ function DashboardContent() {
         queryClient.invalidateQueries({ queryKey: ['properties'] });
     };
 
-    if (isError) {
-        return <div className="p-4 rounded-md bg-destructive text-destructive-foreground">Error loading properties. Please try again later.</div>;
-    }
+    const handleSort = (criteria: string) => {
+        setSortBy(criteria);
+    };
+
+    const filteredProperties = React.useMemo(() => {
+        let sorted = properties?.filter(property => {
+            if (!searchQuery.trim()) return true;
+
+            const searchLower = searchQuery.toLowerCase();
+            const latestPrice = property.priceHistory?.[property.priceHistory.length - 1]?.price;
+
+            const searchableFields = [
+                property.address.toLowerCase(),
+                latestPrice?.toString(),
+                property.sqm?.toString(),
+            ];
+
+            return searchableFields.some(field => field?.includes(searchLower));
+        });
+
+        if (sorted && sortBy) {
+            sorted = sorted.sort((a, b) => {
+                switch (sortBy) {
+                    case 'updated':
+                        const lastTimeA = a.priceHistory?.[a.priceHistory?.length - 1]?.time || '';
+                        const lastTimeB = b.priceHistory?.[b.priceHistory?.length - 1]?.time || '';
+                        return new Date(lastTimeB).getTime() - new Date(lastTimeA).getTime();
+                    case 'status':
+                        return (a.status || '').localeCompare(b.status || '');
+                    case 'price_asc': {
+                        const lastPriceA = a.priceHistory?.[a.priceHistory?.length - 1]?.price || 0;
+                        const lastPriceB = b.priceHistory?.[b.priceHistory?.length - 1]?.price || 0;
+                        return lastPriceA - lastPriceB;
+                    }
+                    case 'price_desc': {
+                        const lastPriceA = a.priceHistory?.[a.priceHistory?.length - 1]?.price || 0;
+                        const lastPriceB = b.priceHistory?.[b.priceHistory?.length - 1]?.price || 0;
+                        return lastPriceB - lastPriceA;
+                    }
+                    case 'sqm':
+                        return (b.sqm || 0) - (a.sqm || 0);
+                    default:
+                        return 0;
+                }
+            });
+        }
+
+        return sorted;
+    }, [properties, searchQuery, sortBy]);
+
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+    };
 
     const renderPropertyList = () => (
         isLoading ? (
@@ -64,8 +117,8 @@ function DashboardContent() {
                     <SkeletonCard />
                 </React.Fragment>
             ))
-        ) : properties && properties.length > 0 ? (
-            properties && properties.map((property) => (
+        ) : filteredProperties && filteredProperties.length > 0 ? (
+            filteredProperties.map((property) => (
                 <React.Fragment key={property.id}>
                     <PropertyCard
                         property={property}
@@ -80,14 +133,19 @@ function DashboardContent() {
         ) : (
             <div className="flex flex-col items-center justify-center h-full">
                 <MapPinHouse className="text-gray-400 text-6xl mb-4" />
-                <h2 className="text-2xl font-semibold text-gray-700 mb-2">No Properties Listed</h2>
-                <p className="text-gray-500">There are no properties listed at the moment.</p>
+                <h2 className="text-2xl font-semibold text-gray-700 mb-2">No Properties Found</h2>
+                <p className="text-gray-500">Try adjusting your search criteria.</p>
             </div>
         )
     );
 
+    if (isError) {
+        return <div className="p-4 rounded-md bg-destructive text-destructive-foreground">Error loading properties. Please try again later.</div>;
+    }
+
     return (
         <>
+            <Header onSearch={handleSearch} onSort={handleSort} />
             <Toaster position="bottom-right" expand={true} richColors />
             <div className="flex flex-col h-screen bg-background text-foreground">
                 <div className="flex flex-grow overflow-hidden">

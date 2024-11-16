@@ -52,7 +52,7 @@ const SideNav = () => {
             <div className="h-full flex flex-col justify-between p-4">
                 <div>
                     <div className="flex items-center justify-between mb-8">
-                        <h2 className={cn("text-2xl font-bold", isOpen ? 'block' : 'hidden')}>PortMan</h2>
+                        <h2 className={cn("text-2xl font-bold text-primary", isOpen ? 'block' : 'hidden')}>PortMan</h2>
                         <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
                             <Menu className="h-5 w-5" />
                         </Button>

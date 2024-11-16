@@ -8,6 +8,7 @@ import { useReservations } from '../../../hooks/useReservations';
 import { FaCalendarTimes } from 'react-icons/fa';
 import SkeletonCard from '../(components)/SkeletonCard';
 import SkeletonMap from '../(components)/SkeletonMap';
+import Header from '../(components)/header';
 
 const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapComponent'), {
     ssr: false,
@@ -74,27 +75,29 @@ function ReservedPage() {
     const selectedProperty = properties?.find(r => r.id === selectedPropertyId);
 
     return (
-        <div className="flex flex-col h-screen bg-background text-foreground">
-            <div className="flex flex-grow overflow-hidden h-[90vh]">
-                <Suspense fallback={<div className="w-1/2 p-4"><SkeletonCard /></div>}>
-                    <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar h-[90vh]">
-                        <div className="space-y-4">
-                            {renderReservationList()}
+        <>
+            <Header />
+            <div className="flex flex-col h-screen bg-background text-foreground">
+                <div className="flex flex-grow overflow-hidden h-[90vh]">
+                    <Suspense fallback={<div className="w-1/2 p-4"><SkeletonCard /></div>}>
+                        <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar h-[90vh]">
+                            <div className="space-y-4">
+                                {renderReservationList()}
+                            </div>
                         </div>
-                    </div>
-                </Suspense>
-                <Suspense fallback={<div className="w-1/2 p-4"><SkeletonMap /></div>}>
-                    <div className="w-1/2 p-4">
-                        <div className="rounded-lg overflow-hidden h-[80vh]">
-                            <MapComponent
-                                location={selectedProperty?.propertyInfo[0]?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
-                                propertyInfo={selectedProperty?.propertyInfo[0] ?? null}
-                            />
+                    </Suspense>
+                    <Suspense fallback={<div className="w-1/2 p-4"><SkeletonMap /></div>}>
+                        <div className="w-1/2 p-4">
+                            <div className="rounded-lg overflow-hidden h-[80vh]">
+                                <MapComponent
+                                    location={selectedProperty?.propertyInfo[0]?.location ?? { lat: 15.44926200736128, lng: 120.94014116008933 }}
+                                    propertyInfo={selectedProperty?.propertyInfo[0] ?? null} />
+                            </div>
                         </div>
-                    </div>
-                </Suspense>
+                    </Suspense>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 

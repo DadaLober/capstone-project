@@ -1,15 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, User, Bell, ChevronDown } from 'lucide-react';
+import { User, ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Toggle } from "@/components/ui/toggle";
 import { Moon, Sun } from "lucide-react";
 import { useUserInfo } from '@/hooks/useUserInfo';
 import axios from 'axios';
 import UserSettingsModal from './user-settings';
+import SearchBar from './searchbar';
+import { usePathname } from 'next/navigation';
 
-const Header: React.FC = () => {
+const Header: React.FC<{
+    onSearch?: (query: string) => void;
+    onSort?: (criteria: string) => void;
+}> = ({ onSearch, onSort }) => {
+    const pathname = usePathname();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const { theme, setTheme } = useTheme();
@@ -19,6 +25,12 @@ const Header: React.FC = () => {
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    const handleSearch = (query: string) => {
+        if (onSearch) {
+            onSearch(query);
+        }
+    };
 
     const toggleTheme = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -38,14 +50,21 @@ const Header: React.FC = () => {
         }
     };
 
+    const showSearchBar = pathname === '/dashboard';
+
     return (
         <>
-            <header className="bg-background text-foreground px-6 py-4 shadow-sm">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                        <h1 className="text-2xl font-bold text-primary">PortMan</h1>
-                    </div>
-                    <div className="flex items-center space-x-4">
+            <header className="bg-background text-foreground shadow-sm">
+                <div className="flex items-center justify-between w-full">
+                    {showSearchBar && (
+                        <div className="flex-1">
+                            <SearchBar
+                                onSearch={handleSearch}
+                                onSort={(criteria) => onSort?.(criteria)}
+                            />
+                        </div>
+                    )}
+                    <div className="flex items-center space-x-4 p-4 ml-auto">
                         <Toggle
                             aria-label="Toggle theme"
                             pressed={theme === 'dark'}
@@ -75,7 +94,7 @@ const Header: React.FC = () => {
                         </div>
                     </div>
                 </div>
-            </header>
+            </header >
             <UserSettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
         </>
     );

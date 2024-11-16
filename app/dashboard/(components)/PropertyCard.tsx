@@ -68,11 +68,15 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                             </p>
                         </div>
                     </div>
-                    <div className="flex justify-end items-end">
+                    <div className="flex justify-end items-end gap-2">
+                        <Badge variant="default">
+                            ₱{property.priceHistory?.[property.priceHistory.length - 1]?.price?.toLocaleString() || '0'}
+                        </Badge>
                         <Badge variant="secondary">
                             {property.sqm} m²
                         </Badge>
                     </div>
+
                 </CardContent>
             </Card>
             <ReservePropertyModal

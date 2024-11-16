@@ -6,6 +6,7 @@ import axios from "axios"
 import { UserInfo } from "@/hooks/types"
 import UserPerformance from "../../dashboard/performance/(components)/UserPerformance"
 import AdminPerformance from "../../dashboard/performance/(components)/adminPerformance"
+import Header from "../(components)/header"
 
 export default function DashboardPage() {
     const [agents, setAgents] = useState<UserInfo[]>([]);
@@ -35,25 +36,28 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="p-6 md:p-8 min-h-screen">
-            <Tabs defaultValue="personal" className="space-y-8">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div>
-                        <TabsList className="mt-2">
-                            <TabsTrigger value="personal">Personal Performance</TabsTrigger>
-                            <TabsTrigger value="team">Team Overview</TabsTrigger>
-                        </TabsList>
+        <>
+            <Header />
+            <div className="p-6 md:p-8 min-h-screen">
+                <Tabs defaultValue="personal" className="space-y-8">
+                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <TabsList className="mt-2">
+                                <TabsTrigger value="personal">Personal Performance</TabsTrigger>
+                                <TabsTrigger value="team">Team Overview</TabsTrigger>
+                            </TabsList>
+                        </div>
                     </div>
-                </div>
 
-                <TabsContent value="personal">
-                    <UserPerformance />
-                </TabsContent>
+                    <TabsContent value="personal">
+                        <UserPerformance />
+                    </TabsContent>
 
-                <TabsContent value="team">
-                    <AdminPerformance />
-                </TabsContent>
-            </Tabs>
-        </div>
+                    <TabsContent value="team">
+                        <AdminPerformance />
+                    </TabsContent>
+                </Tabs>
+            </div>
+        </>
     );
 }
