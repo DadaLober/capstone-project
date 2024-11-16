@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import Modal from './Modal'
 import { useUserInfo } from '@/hooks/useUserInfo'
 
@@ -55,9 +55,8 @@ export default function UserSettingsModal({ isOpen, onClose }: UserSettingsModal
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         console.log('Updated settings:', settings)
-        toast({
-            title: "Settings updated",
-            description: "Your profile information has been updated successfully.",
+        toast.success('Settings updated', {
+            description: 'Your settings have been updated successfully.'
         })
         onClose()
     }

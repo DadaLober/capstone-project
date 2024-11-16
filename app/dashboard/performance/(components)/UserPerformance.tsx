@@ -47,7 +47,7 @@ export default function UserPerformance() {
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">
-                        {currentUser.firstName}'s Performance
+                        {currentUser.firstName} Performance
                     </h1>
                 </div>
                 <Select

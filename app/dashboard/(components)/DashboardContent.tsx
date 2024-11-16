@@ -10,7 +10,6 @@ import AddFormModal from './updateForm';
 import SkeletonCard from './SkeletonCard';
 import SkeletonMap from './SkeletonMap';
 import { ReservePropertyModal } from './addReservationForm';
-import { Toaster } from 'sonner';
 import { MapPinHouse } from 'lucide-react';
 import Header from './header';
 
@@ -146,7 +145,6 @@ function DashboardContent() {
     return (
         <>
             <Header onSearch={handleSearch} onSort={handleSort} />
-            <Toaster position="bottom-right" expand={true} richColors />
             <div className="flex flex-col h-screen bg-background text-foreground">
                 <div className="flex flex-grow overflow-hidden">
                     <Suspense fallback={<div className="w-1/2 p-4"><SkeletonCard /></div>}>

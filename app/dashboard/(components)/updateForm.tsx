@@ -76,7 +76,7 @@ function UpdatePropertyModal({ isOpen, onClose, property }: UpdatePropertyModalP
                 });
             }
 
-            toast(
+            toast.success(
                 'Property Updated Successfully!',
                 {
                     description: (

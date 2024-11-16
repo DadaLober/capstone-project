@@ -59,7 +59,7 @@ function AddFormModal({ isOpen, onClose, location }: AddFormModalProps) {
                     currency: 'USD'
                 }).format(Number(latestPrice));
 
-                toast(
+                toast.success(
                     'Property Added Successfully!',
                     {
                         description: (

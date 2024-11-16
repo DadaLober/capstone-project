@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useToast } from '@/hooks/useToast';
+import { toast } from 'sonner';
 
 interface FilterComponentProps {
     filters: {
@@ -35,7 +35,6 @@ const initialFilters = {
 };
 
 const FilterComponent: React.FC<FilterComponentProps> = ({ filters, setFilters }) => {
-    const { toast } = useToast();
     const [localFilters, setLocalFilters] = useState(filters);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -43,28 +42,22 @@ const FilterComponent: React.FC<FilterComponentProps> = ({ filters, setFilters }
         const numValue = parseFloat(value);
 
         if (numValue < 0) {
-            toast({
-                title: "Invalid Input",
-                description: "Values cannot be negative",
-                variant: "destructive",
+            toast.error("Invalid input.", {
+                description: "Please enter a positive number.",
             });
             return;
         }
 
         if (name === 'priceMax' && numValue <= localFilters.priceMin) {
-            toast({
-                title: "Invalid Price Range",
-                description: "Maximum price must be greater than minimum price",
-                variant: "destructive",
+            toast.error("Invalid Price Range", {
+                description: "Maximum price must be greater than minimum price"
             });
             return;
         }
 
         if (name === 'areaMax' && numValue <= localFilters.areaMin) {
-            toast({
-                title: "Invalid Area Range",
-                description: "Maximum area must be greater than minimum area",
-                variant: "destructive",
+            toast.error("Invalid Area Range", {
+                description: "Maximum area must be greater than minimum area"
             });
             return;
         }
@@ -74,18 +67,16 @@ const FilterComponent: React.FC<FilterComponentProps> = ({ filters, setFilters }
 
     const handleApplyFilters = () => {
         setFilters(localFilters);
-        toast({
-            title: "Filters Applied",
-            description: "Your filters have been updated successfully",
+        toast.success("Filters Applied", {
+            description: "Your filters have been applied successfully.",
         });
     };
 
     const handleReset = () => {
         setLocalFilters(initialFilters);
         setFilters(initialFilters);
-        toast({
-            title: "Filters Reset",
-            description: "All filters have been reset to default values",
+        toast.success("Filters Reset", {
+            description: "Your filters have been reset successfully.",
         });
     };
 

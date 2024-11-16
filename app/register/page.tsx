@@ -8,7 +8,6 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import "@/components/auth.css";
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { Toaster } from "@/components/ui/sonner";
 
 interface FormData {
     firstName: string;
@@ -294,7 +293,6 @@ export default function RegisterPage() {
                     </motion.div>
                 </motion.form>
             </motion.div>
-            <Toaster />
         </motion.div>
     );
 }
