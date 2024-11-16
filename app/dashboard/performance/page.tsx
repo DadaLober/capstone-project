@@ -7,8 +7,10 @@ import { UserInfo } from "@/hooks/types"
 import UserPerformance from "../../dashboard/performance/(components)/UserPerformance"
 import AdminPerformance from "../../dashboard/performance/(components)/adminPerformance"
 import Header from "../(components)/header"
+import { useUserInfo } from "@/hooks/useUserInfo"
 
 export default function DashboardPage() {
+    const { userInfo } = useUserInfo()
     const [agents, setAgents] = useState<UserInfo[]>([]);
     const [currentUser, setCurrentUser] = useState<UserInfo | null>(null);
     const [loading, setLoading] = useState(true);
@@ -44,7 +46,9 @@ export default function DashboardPage() {
                         <div>
                             <TabsList className="mt-2">
                                 <TabsTrigger value="personal">Personal Performance</TabsTrigger>
-                                <TabsTrigger value="team">Team Overview</TabsTrigger>
+                                {userInfo?.role === 'broker' && (
+                                    <TabsTrigger value="team">Team Overview</TabsTrigger>
+                                )}
                             </TabsList>
                         </div>
                     </div>
