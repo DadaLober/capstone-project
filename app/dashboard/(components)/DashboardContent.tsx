@@ -145,7 +145,7 @@ function DashboardContent() {
     return (
         <>
             <Header onSearch={handleSearch} onSort={handleSort} />
-            <div className="flex flex-col h-screen bg-background text-foreground">
+            <div className="flex flex-col h-screen text-foreground">
                 <div className="flex flex-grow overflow-hidden">
                     <Suspense fallback={<div className="w-1/2 p-4"><SkeletonCard /></div>}>
                         <div className="w-1/2 p-4 overflow-y-auto custom-scrollbar h-[90vh]">

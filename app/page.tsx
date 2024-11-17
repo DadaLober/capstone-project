@@ -42,16 +42,16 @@ export default function LandingPage() {
       </video>
 
       {/* Content wrapper */}
-      <div className="relative z-10 flex flex-col min-h-screen bg-gradient-to-b from-green-50/90 to-green-100/90">
-        <header className="px-4 lg:px-6 h-14 flex items-center backdrop-blur-md bg-green-200">
+      <div className="relative z-10 flex flex-col min-h-screen bg-gradient-to-b from-teal-100 to-transparent">
+        <header className="px-4 lg:px-6 h-16 flex items-center backdrop-blur-md bg-white/50 border-b border-green-200/50 sticky top-0 z-50">
           <Link className="flex items-center justify-center" href="#">
-            <span className="ml-2 text-lg font-semibold text-green-800">PortMan</span>
+            <span className="ml-2 text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600">PortMan</span>
           </Link>
           <nav className="ml-auto flex gap-4 sm:gap-6">
-            <Link className="text-sm font-medium hover:underline underline-offset-4 text-green-700 hover:translate-y-[-2px]" href="/login">
+            <Link className="text-sm font-medium hover:text-green-600 transition-colors" href="/login">
               Login
             </Link>
-            <Link className="text-sm font-medium hover:underline underline-offset-4 text-green-700 hover:translate-y-[-2px]" href="/register">
+            <Link className="text-sm font-medium hover:text-green-600 transition-colors" href="/register">
               Register
             </Link>
           </nav>
@@ -84,14 +84,14 @@ export default function LandingPage() {
               </motion.div>
             </div>
           </section>
-          <section className="w-full py-12 md:py-24 lg:py-32 bg-green-600/10 backdrop-blur-md">
+          <section className="w-full py-12 md:py-24 lg:py-32 bg-teal-50">
             <div className="container px-4 md:px-6">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 text-green-800"
+                className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600"
               >
                 Key Features
               </motion.h2>
@@ -108,10 +108,12 @@ export default function LandingPage() {
                   { icon: BarChart, title: "Performance Tracking", description: "Monitor your sales performance and identify growth opportunities." }
                 ].map((feature, index) => (
                   <motion.div key={index} variants={fadeIn}>
-                    <Card className="border-0 shadow-lg bg-green-600/20 backdrop-blur-md">
+                    <Card className="group hover:shadow-lg transition-shadow duration-300 bg-gradient-to-br from-white to-green-50 border-none">
                       <CardHeader>
-                        <feature.icon className="h-6 w-6 mb-2 text-green-700" />
-                        <CardTitle className="text-green-800">{feature.title}</CardTitle>
+                        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors duration-300">
+                          <feature.icon className="h-6 w-6 text-green-600" />
+                        </div>
+                        <CardTitle className="text-xl font-semibold text-green-800 group-hover:text-green-600 transition-colors duration-300">{feature.title}</CardTitle>
                         <CardDescription className="text-green-700">{feature.description}</CardDescription>
                       </CardHeader>
                     </Card>
@@ -120,7 +122,7 @@ export default function LandingPage() {
               </motion.div>
             </div>
           </section>
-          <section className="w-full py-12 md:py-24 lg:py-32">
+          <section className="w-full py-12 md:py-24 lg:py-32 bg-teal-100">
             <div className="container px-4 md:px-6">
               <motion.div
                 initial="initial"
@@ -147,16 +149,18 @@ export default function LandingPage() {
             </div>
           </section>
         </main>
-        <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-green-600/10 backdrop-blur-md bg-green-600/10">
-          <p className="text-xs text-green-700">© 2024 PortMan. All rights reserved.</p>
-          <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-            <Link className="text-xs hover:underline underline-offset-4 text-green-700" href="#">
-              Terms of Service
-            </Link>
-            <Link className="text-xs hover:underline underline-offset-4 text-green-700" href="#">
-              Privacy
-            </Link>
-          </nav>
+        <footer className="w-full py-6 bg-white border-t border-green-200">
+          <div className="container px-4 md:px-6 flex flex-col sm:flex-row justify-between items-center">
+            <p className="text-sm text-green-600">© 2024 PortMan. All rights reserved.</p>
+            <nav className="flex gap-4 sm:gap-6 mt-4 sm:mt-0">
+              <Link className="text-sm hover:underline underline-offset-4 text-green-600 hover:text-emerald-600 transition-colors" href="#">
+                Terms of Service
+              </Link>
+              <Link className="text-sm hover:underline underline-offset-4 text-green-600 hover:text-emerald-600 transition-colors" href="#">
+                Privacy Policy
+              </Link>
+            </nav>
+          </div>
         </footer>
       </div>
     </div>

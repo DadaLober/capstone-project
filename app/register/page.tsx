@@ -1,13 +1,15 @@
 'use client';
+
 import React, { useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useForm } from "react-hook-form";
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import "@/components/auth.css";
+import ReCAPTCHA from "react-google-recaptcha";
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+
 
 interface FormData {
     firstName: string;
@@ -41,13 +43,25 @@ const itemVariants = {
 export default function RegisterPage() {
     const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setError } = useForm<FormData>();
     const [showPassword, setShowPassword] = useState(false);
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+    const [showOtpInput, setShowOtpInput] = useState(false);
+
+    const handleCaptchaChange = (token: string | null) => {
+        setCaptchaToken(token);
+    };
 
     const onSubmit = async (data: FormData) => {
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, data);
-            toast.success("Account created successfully!", {
-                description: "Please wait for your confirmation!",
+            if (!captchaToken) {
+                toast.error("Please complete the CAPTCHA");
+                return;
+            }
+
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, {
+                ...data,
             });
+
+            toast.success("Account created successfully!");
             reset();
             setTimeout(() => {
                 window.location.href = '/login';
@@ -55,15 +69,11 @@ export default function RegisterPage() {
         } catch (error) {
             if (error instanceof AxiosError && error.response) {
                 if (error.response.status === 400) {
-                    if (error.response.data.message === "Email already taken") {
-                        setError("email", {
-                            type: "manual",
-                            message: "This email is already registered. Please use a different email."
-                        });
-                        toast.error("This email is already registered");
-                    } else {
-                        toast.error(error.response.data.message || "Registration failed");
-                    }
+                    setError("email", {
+                        type: "manual",
+                        message: "This email is already registered. Please use a different email."
+                    });
+                    toast.error("This email is already registered");
                     return;
                 }
             }
@@ -71,6 +81,7 @@ export default function RegisterPage() {
             console.error('Error:', error);
         }
     };
+
 
     const togglePasswordVisibility = () => {
         setShowPassword((prevState) => !prevState);
@@ -268,6 +279,12 @@ export default function RegisterPage() {
                         )}
                     </motion.div>
 
+                    <motion.div className="mb-6" variants={itemVariants}>
+                        <ReCAPTCHA
+                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                            onChange={handleCaptchaChange}
+                        />
+                    </motion.div>
                     <motion.button
                         disabled={isSubmitting}
                         type="submit"
@@ -277,7 +294,6 @@ export default function RegisterPage() {
                     >
                         {isSubmitting ? 'Creating Account...' : 'Create Account'}
                     </motion.button>
-
                     <motion.div
                         className="mt-6 text-center"
                         variants={itemVariants}
