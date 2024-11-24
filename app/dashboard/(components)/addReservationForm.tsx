@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { Button } from "@/components/ui/button";
 import { Input } from '@/components/ui/input';
 import Modal from './Modal';
-import { Search, User, Calendar, CheckCircle, XCircle, Loader2, Undo2 } from 'lucide-react';
+import { Search, User, Calendar, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { useReservations } from '@/hooks/useReservations';
 
 interface User {
@@ -73,7 +73,7 @@ export const ReservePropertyModal: React.FC<ReservePropertyModalProps> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const { mutation: createReservation, deleteMutation } = useReservations();
+    const { mutation: createReservation } = useReservations();
 
     const { control, handleSubmit, watch, reset, formState: { errors, isValid } } = useForm<FormValues>({
         defaultValues: {

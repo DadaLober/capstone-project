@@ -20,19 +20,21 @@ const StatsComponent = dynamic(() => import('@/app/dashboard/statistics/(compone
     ssr: false,
 });
 
-// const MAX_PRICE = 1000000000; // 1 billion
-// const MAX_AREA = 1000000; // 1 million sqm
+const MAX_PRICE = 1000000000; // 1 billion
+const MAX_AREA = 1000000; // 1 million sqm
+
+const initialFilters = {
+    status: 'all',
+    priceMin: 0,
+    priceMax: MAX_PRICE,
+    areaMin: 0,
+    areaMax: MAX_AREA,
+    selectedArea: 'all',
+};
 
 export default function DashboardPage() {
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
-    const [filters, setFilters] = useState({
-        status: 'all',
-        priceMin: 0,
-        priceMax: 1000000000,
-        areaMin: 0,
-        areaMax: 1000000,
-        selectedArea: 'all',
-    });
+    const [filters, setFilters] = useState(initialFilters);
     const { properties, isLoading, isError } = useProperties();
 
     const handleCardClick = (propertyId: number) => {

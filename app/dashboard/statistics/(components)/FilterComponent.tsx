@@ -6,6 +6,69 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { toast } from 'sonner';
 
+const areas = [
+    { value: "all", label: "All Areas" },
+    { value: "Cabanatuan", label: "Cabanatuan" },
+    { value: "Nueva Ecija", label: "Nueva Ecija" },
+    { value: "Central Luzon", label: "Central Luzon" },
+    { value: "Aduas Centro", label: "Aduas Centro" },
+    { value: "Aduas Norte", label: "Aduas Norte" },
+    { value: "Aduas Sur", label: "Aduas Sur" },
+    { value: "Bakod Bayan", label: "Bakod Bayan" },
+    { value: "Bangad", label: "Bangad" },
+    { value: "Bantug Bulalo", label: "Bantug Bulalo" },
+    { value: "Bantug Norte", label: "Bantug Norte" },
+    { value: "Barlis", label: "Barlis" },
+    { value: "Barrera", label: "Barrera" },
+    { value: "Bernardo", label: "Bernardo" },
+    { value: "Bizerta", label: "Bizerta" },
+    { value: "Bonifacio", label: "Bonifacio" },
+    { value: "Bitas", label: "Bitas" },
+    { value: "Calawagan", label: "Calawagan" },
+    { value: "Camangyanan", label: "Camangyanan" },
+    { value: "Campo Tinio", label: "Campo Tinio" },
+    { value: "Caridad", label: "Caridad" },
+    { value: "Hermogenes C. Concepcion Sr.", label: "Hermogenes C. Concepcion Sr." },
+    { value: "Daang Sarile", label: "Daang Sarile" },
+    { value: "Dionisio S. Garcia", label: "Dionisio S. Garcia" },
+    { value: "Fatima", label: "Fatima" },
+    { value: "General Luna", label: "General Luna" },
+    { value: "H. Concepcion", label: "H. Concepcion" },
+    { value: "Imelda", label: "Imelda" },
+    { value: "Isla", label: "Isla" },
+    { value: "Kalikid Norte", label: "Kalikid Norte" },
+    { value: "Kalikid Sur", label: "Kalikid Sur" },
+    { value: "Lagare", label: "Lagare" },
+    { value: "M.S. Garcia", label: "M.S. Garcia" },
+    { value: "Magsaysay North", label: "Magsaysay North" },
+    { value: "Magsaysay South", label: "Magsaysay South" },
+    { value: "Matadero", label: "Matadero" },
+    { value: "Pagas", label: "Pagas" },
+    { value: "Pamaldan", label: "Pamaldan" },
+    { value: "Penarandia", label: "Penarandia" },
+    { value: "Polilio", label: "Polilio" },
+    { value: "Pula", label: "Pula" },
+    { value: "Rizdelis", label: "Rizdelis" },
+    { value: "San Isidro", label: "San Isidro" },
+    { value: "San Josef Norte", label: "San Josef Norte" },
+    { value: "San Josef Sur", label: "San Josef Sur" },
+    { value: "San Juan Accfa", label: "San Juan Accfa" },
+    { value: "San Roque Norte", label: "San Roque Norte" },
+    { value: "San Roque Sur", label: "San Roque Sur" },
+    { value: "Sanbermicristi", label: "Sanbermicristi" },
+    { value: "Sangitan", label: "Sangitan" },
+    { value: "Sap. Tamo", label: "Sap. Tamo" },
+    { value: "Sumacab Este", label: "Sumacab Este" },
+    { value: "Sumacab Sur", label: "Sumacab Sur" },
+    { value: "Tabuc", label: "Tabuc" },
+    { value: "Talipapa", label: "Talipapa" },
+    { value: "Valle Cruz", label: "Valle Cruz" },
+    { value: "Valdefuente", label: "Valdefuente" },
+    { value: "Vijandre", label: "Vijandre" },
+    { value: "Villa Ofelia", label: "Villa Ofelia" },
+    { value: "Zulueta", label: "Zulueta" }
+] as const;
+
 interface FilterComponentProps {
     filters: {
         status: string;
@@ -154,14 +217,15 @@ const FilterComponent: React.FC<FilterComponentProps> = ({ filters, setFilters }
                             value={localFilters.selectedArea}
                             onValueChange={(value) => setLocalFilters(prev => ({ ...prev, selectedArea: value }))}
                         >
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select area" />
                             </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Areas</SelectItem>
-                                <SelectItem value="Cabanatuan">Cabanatuan</SelectItem>
-                                <SelectItem value="Nueva Ecija">Nueva Ecija</SelectItem>
-                                <SelectItem value="Central Luzon">Central Luzon</SelectItem>
+                            <SelectContent className="max-h-[200px] overflow-y-auto z-[1000]">
+                                {areas.map((area) => (
+                                    <SelectItem key={area.value} value={area.value}>
+                                        {area.label}
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
