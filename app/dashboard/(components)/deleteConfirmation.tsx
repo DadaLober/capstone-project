@@ -63,7 +63,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
                             disabled={confirmationText !== propertyAddress}
                         >
                             <Trash2 className="h-4 w-4 mr-2" />
-                            Delete Property
+                            Archive Property
                         </Button>
                     </div>
                 </div>

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { ReservePropertyModal } from './addReservationForm';
+import { AgentReservePropertyModal } from './agentReservePropertyModal';
 import { DeleteConfirmationModal } from './deleteConfirmation';
 
 interface PropertyCardProps {
@@ -22,6 +23,15 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
     const { userInfo } = useUserInfo();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    const canEdit = userInfo?.role === 'broker';
+    const canAddToReserved = userInfo?.role === 'broker' || userInfo?.role === 'agent';
+    const canDelete = userInfo?.role === 'broker';
+
+    const ReservationModal = userInfo?.role === 'broker'
+        ? ReservePropertyModal
+        : AgentReservePropertyModal;
+
     return (
         <>
             <Card
@@ -36,29 +46,41 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                                 {property.address}
                             </h2>
                         </div>
-                        {userInfo?.role === 'broker' &&
+                        {(canEdit || canAddToReserved || canDelete) && (
                             <div className="ml-auto">
                                 <DropdownMenu>
-                                    <DropdownMenuTrigger >
+                                    <DropdownMenuTrigger>
                                         <SlOptions className="h-4 w-4 mr-1" />
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className="shadow-md rounded-lg z-[500]">
-                                        <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={onUpdate}>
-                                            Edit Property
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={() => setIsModalOpen(true)}>
-                                            Add to Reserved
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            className="focus:outline-none text-red-600"
-                                            onClick={() => setIsDeleteModalOpen(true)}
-                                        >
-                                            Delete Property
-                                        </DropdownMenuItem>
+                                        {canEdit && (
+                                            <DropdownMenuItem
+                                                className="hover:bg-gray-50 focus:outline-none"
+                                                onClick={onUpdate}
+                                            >
+                                                Edit Property
+                                            </DropdownMenuItem>
+                                        )}
+                                        {canAddToReserved && (
+                                            <DropdownMenuItem
+                                                className="hover:bg-gray-50 focus:outline-none"
+                                                onClick={() => setIsModalOpen(true)}
+                                            >
+                                                Add to Reserved
+                                            </DropdownMenuItem>
+                                        )}
+                                        {canDelete && (
+                                            <DropdownMenuItem
+                                                className="focus:outline-none text-red-600"
+                                                onClick={() => setIsDeleteModalOpen(true)}
+                                            >
+                                                Delete Property
+                                            </DropdownMenuItem>
+                                        )}
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>
-                        }
+                        )}
                     </div>
                     <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center">
@@ -76,10 +98,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                             {property.sqm} m²
                         </Badge>
                     </div>
-
                 </CardContent>
             </Card>
-            <ReservePropertyModal
+            <ReservationModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 propertyId={property.id}

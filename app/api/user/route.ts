@@ -15,17 +15,23 @@ export async function GET(request: NextRequest) {
         }
 
         const { payload } = await jwtVerify(token, new TextEncoder().encode(SECRET_KEY));
-        const { roles, ...userInfo } = payload.user as { roles: string[], [key: string]: any };
+        const userInfo = payload.user as {
+            id: number;
+            firstName: string;
+            lastName: string;
+            contactNumber: string;
+            email: string;
+            role: string;
+            status: string;
+        };
 
-        return NextResponse.json({
-            ...userInfo,
-            role: roles[0],
-        });
+        return NextResponse.json(userInfo);
     } catch (error) {
         console.error('Error fetching user info:', error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
 }
+
 
 export async function PATCH(request: Request) {
     try {

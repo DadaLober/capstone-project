@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useUserInfo } from "@/hooks/useUserInfo"
 import axios from "axios"
 import {
     DropdownMenu,
@@ -79,6 +80,7 @@ export const columns: ColumnDef<Users, any>[] = [
         id: "actions",
         cell: ({ row, table }) => {
             const users = row.original
+            const { userInfo } = useUserInfo();
 
             const activateAccount = async () => {
                 try {
@@ -95,6 +97,15 @@ export const columns: ColumnDef<Users, any>[] = [
                     (table.options.meta as TableMeta)?.updateData(users.id, 'status', 'suspended');
                 } catch (error) {
                     console.error('Error suspending account:', error);
+                }
+            }
+
+            const addAsBroker = async () => {
+                try {
+                    await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, { id: users.id, action: 'add-broker' });
+                    (table.options.meta as TableMeta)?.updateData(users.id, 'roles', ['broker']);
+                } catch (error) {
+                    console.error('Error adding as broker:', error);
                 }
             }
 
@@ -120,6 +131,11 @@ export const columns: ColumnDef<Users, any>[] = [
                             >
                                 Copy ID
                             </DropdownMenuItem>
+                            {userInfo?.role === 'admin' && (
+                                <DropdownMenuItem onClick={addAsBroker}>
+                                    Add as a new Broker
+                                </DropdownMenuItem>
+                            )}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

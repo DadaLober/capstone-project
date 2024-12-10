@@ -26,6 +26,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
         }
     };
 
+    console.log(property.priceHistory);
     const latestPrice = property.priceHistory && property.priceHistory.length > 0
         ? property.priceHistory[property.priceHistory.length - 1].price
         : null;

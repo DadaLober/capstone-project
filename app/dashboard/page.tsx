@@ -3,11 +3,17 @@
 import { useEffect, useState } from 'react';
 import DashboardContent from './(components)/DashboardContent';
 import PendingStatusScreen from './(components)/PendingStatus';
+import { useUserInfo } from '@/hooks/useUserInfo';
+import UserAccountsPage from './user-accounts/page';
+import ArchivedPropertiesTable from './(components)/ArchivedPropertiesTable';
 import axios from 'axios';
+import Header from './(components)/header';
+
 
 function Dashboard() {
     const [userStatus, setUserStatus] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const { userInfo } = useUserInfo();
 
     useEffect(() => {
         const fetchStatus = async () => {
@@ -23,6 +29,15 @@ function Dashboard() {
         fetchStatus();
     }, []);
 
+    if (userInfo?.role === "admin") {
+        return (
+            <div className="space-y-6">
+                <Header />
+                <UserAccountsPage />
+                <ArchivedPropertiesTable />
+            </div>
+        );
+    }
 
     if (isLoading) {
         return <div className="flex items-center justify-center h-screen">

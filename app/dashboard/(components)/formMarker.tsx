@@ -138,7 +138,7 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                             ) : files.length > 0 ? (
                                 <CardCarousel
                                     images={files}
-                                    className='h-48'
+                                    className='h-64'
                                     renderItem={(file) => (
                                         <div onClick={() => handleFileClick(file)} className="w-full h-full">
                                             {file.type === 'pdf' ? (
@@ -164,8 +164,8 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                                                         src={file.url}
                                                         alt="Property"
                                                         fill
-                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                        style={{ objectFit: 'cover' }}
+                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 20vw"
+                                                        style={{ objectFit: '-moz-initial' }}
                                                     />
                                                 </div>
                                             )}
@@ -197,13 +197,13 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({ propertyInfo, handleVie
                                         <span>Listed on:</span>
                                         <span>{new Date(propertyInfo.createdAt).toLocaleDateString()}</span>
                                     </div>
-                                    <Button
+                                    {/* <Button
                                         variant="default"
                                         className="mt-4 w-full hover:bg-primary/90 transition-colors duration-300"
                                         onClick={handleViewAdditionalProperties}
                                     >
                                         View More Details
-                                    </Button>
+                                    </Button> */}
                                 </div>
                             </div>
                         </Card>
