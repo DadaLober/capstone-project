@@ -1,9 +1,10 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
+import { MoreHorizontal, ArrowUpDown, ArrowUp, ArrowDown, UserPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useUserInfo } from "@/hooks/useUserInfo"
+import { AddBrokerConfirmationModal } from './addBrokerConfirmation';
 import axios from "axios"
 import {
     DropdownMenu,
@@ -14,6 +15,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
+import { useState } from "react"
 
 export type Users = {
     id: number
@@ -81,6 +83,7 @@ export const columns: ColumnDef<Users, any>[] = [
         cell: ({ row, table }) => {
             const users = row.original
             const { userInfo } = useUserInfo();
+            const [isAddBrokerModalOpen, setIsAddBrokerModalOpen] = useState(false);
 
             const activateAccount = async () => {
                 try {
@@ -126,21 +129,29 @@ export const columns: ColumnDef<Users, any>[] = [
                             <DropdownMenuItem onClick={suspendAccount}>
                                 Suspend Account
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => navigator.clipboard.writeText(`${users.id}`)}
-                            >
-                                Copy ID
-                            </DropdownMenuItem>
                             {userInfo?.role === 'admin' && (
-                                <DropdownMenuItem onClick={addAsBroker}>
-                                    Add as a new Broker
-                                </DropdownMenuItem>
+                                <>
+                                    <DropdownMenuItem
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setIsAddBrokerModalOpen(true);
+                                        }}
+                                    >
+                                        Add as a new Broker
+                                    </DropdownMenuItem>
+                                </>
                             )}
                         </DropdownMenuContent>
                     </DropdownMenu>
+                    <AddBrokerConfirmationModal
+                        isOpen={isAddBrokerModalOpen}
+                        onClose={() => setIsAddBrokerModalOpen(false)}
+                        onConfirm={addAsBroker}
+                        userEmail={users.email}
+                    />
                 </div>
             )
         },
     },
-    // ...
+
 ]

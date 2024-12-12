@@ -9,11 +9,8 @@ export async function GET() {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        const { roles, ...userInfo } = payload.user;
-        return NextResponse.json({
-            ...userInfo,
-            role: roles[0],
-        });
+        const { user } = payload;
+        return NextResponse.json(user);
     } catch (error) {
         console.error('Error fetching user info:', error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

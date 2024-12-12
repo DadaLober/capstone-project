@@ -15,9 +15,10 @@ interface PropertyCardProps {
     onClick: () => void;
     onDelete: () => void;
     onMarkAsSold: () => void;
+    onMarkAsActive: () => void;
 }
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({ reservation, isSelected, onClick, onDelete, onMarkAsSold }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({ reservation, isSelected, onClick, onDelete, onMarkAsSold, onMarkAsActive }) => {
     const { userInfo } = useUserInfo();
     const property = reservation.propertyInfo[0];
 
@@ -37,12 +38,22 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ reservation, isSelec
                                     <SlOptions className="h-4 w-4 mr-1" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="bg-white shadow-md rounded-lg z-[500]">
-                                    <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={(e) => {
-                                        e.stopPropagation();
-                                        onMarkAsSold();
-                                    }}>
-                                        Mark as Sold
-                                    </DropdownMenuItem>
+                                    {reservation.status.toLowerCase() === 'pending' && (
+                                        <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={(e) => {
+                                            e.stopPropagation();
+                                            onMarkAsActive();
+                                        }}>
+                                            Mark as Active
+                                        </DropdownMenuItem>
+                                    )}
+                                    {reservation.status.toLowerCase() !== 'sold' && (
+                                        <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={(e) => {
+                                            e.stopPropagation();
+                                            onMarkAsSold();
+                                        }}>
+                                            Mark as Sold
+                                        </DropdownMenuItem>
+                                    )}
                                     <DropdownMenuItem className="hover:bg-gray-50 focus:outline-none" onClick={(e) => {
                                         e.stopPropagation();
                                         onDelete();
@@ -63,7 +74,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ reservation, isSelec
                     </div>
                 </div>
                 <div className="flex justify-end items-end mb-2 space-x-2">
-                    <Badge variant={reservation.status.toLowerCase() === 'sold' ? 'destructive' : 'default'}>
+                    <Badge variant={
+                        reservation.status.toLowerCase() === 'sold'
+                            ? 'destructive'
+                            : reservation.status.toLowerCase() === 'pending'
+                                ? 'outline'
+                                : 'default'
+                    }>
                         {reservation.status}
                     </Badge>
                     <Badge variant="secondary">

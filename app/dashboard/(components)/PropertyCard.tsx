@@ -74,7 +74,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isSelected
                                                 className="focus:outline-none text-red-600"
                                                 onClick={() => setIsDeleteModalOpen(true)}
                                             >
-                                                Delete Property
+                                                Archive Property
                                             </DropdownMenuItem>
                                         )}
                                     </DropdownMenuContent>

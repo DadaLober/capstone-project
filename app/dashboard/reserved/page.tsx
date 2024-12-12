@@ -18,7 +18,7 @@ const MapComponent = dynamic(() => import('@/app/dashboard/(components)/MapCompo
 function ReservedPage() {
     const queryClient = useQueryClient();
     const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
-    const { properties, isLoading, isError, deleteMutation, markAsSoldMutation } = useReservations();
+    const { properties, isLoading, isError, deleteMutation, markAsSoldMutation, markAsActiveMutation } = useReservations();
 
     useEffect(() => {
         if (properties && properties.length > 0 && !selectedPropertyId) {
@@ -37,6 +37,11 @@ function ReservedPage() {
 
     const handleMarkAsSold = async (propertyId: number) => {
         await markAsSoldMutation.mutateAsync(propertyId);
+        queryClient.invalidateQueries({ queryKey: ['properties', 'reservations'] });
+    };
+
+    const handleMarkAsActive = async (propertyId: number) => {
+        await markAsActiveMutation.mutateAsync(propertyId);
         queryClient.invalidateQueries({ queryKey: ['properties', 'reservations'] });
     };
 
@@ -60,6 +65,7 @@ function ReservedPage() {
                         onClick={() => handleCardClick(reservation.id)}
                         onDelete={() => handleDeleteProperty(reservation.id)}
                         onMarkAsSold={() => handleMarkAsSold(reservation.id)}
+                        onMarkAsActive={() => handleMarkAsActive(reservation.id)}
                     />
                 </React.Fragment>
             ))

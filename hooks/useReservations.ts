@@ -46,6 +46,13 @@ export const useReservations = () => {
         });
     };
 
+    const markAsActive = async (id: number) => {
+        await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations/${id}`, {
+            status: 'active',
+        });
+    };
+
+
     const queryKey = ['properties', 'reservations'];
 
     const { data: properties, isLoading, isError } = useQuery({
@@ -68,10 +75,14 @@ export const useReservations = () => {
         mutationFn: (id: number) => markAsSold(id),
     });
 
+
+    const markAsActiveMutation = useMutation({
+        mutationFn: (id: number) => markAsActive(id),
+    });
     const getAllReserved = useQuery({
         queryKey: ['reservations'],
         queryFn: getAllReservations,
     });
 
-    return { properties, isLoading, isError, mutation, deleteMutation, markAsSoldMutation, getAllReserved };
+    return { properties, isLoading, isError, mutation, deleteMutation, markAsSoldMutation, getAllReserved, markAsActiveMutation };
 };

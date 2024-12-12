@@ -48,8 +48,14 @@ export async function PATCH(request: Request) {
                 },
             });
 
-            const status = action === 'suspend' ? 'suspended' : 'active';
-            const response = await axiosInstance.patch(`${process.env.NEXT_BASE_API_URL}/api/v1/users/${id}`, { status });
+            let response;
+            if (action === 'add-broker') {
+                response = await axiosInstance.patch(`${process.env.NEXT_BASE_API_URL}/api/v1/users/${id}`, { role: 'broker' });
+            } else {
+                const status = action === 'suspend' ? 'suspended' : 'active';
+                response = await axiosInstance.patch(`${process.env.NEXT_BASE_API_URL}/api/v1/users/${id}`, { status });
+            }
+
             return NextResponse.json(response.data);
         }
 
@@ -60,7 +66,7 @@ export async function PATCH(request: Request) {
                 return NextResponse.json({ message: 'User not authorized' }, { status: 403 });
             }
         }
-        console.error('Error updating user status:', error);
+        console.error('Error updating user:', error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
 }

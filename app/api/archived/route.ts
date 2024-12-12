@@ -11,7 +11,7 @@ export async function GET() {
 
         const token = await getTokenFromCookies();
         const api = createAxiosInstance(token);
-        const response = await api.get('/api/v1/properties/archived');
+        const response = await api.get(`api/v1/archived/properties`);
         return NextResponse.json(response.data);
     } catch (error: any) {
         console.error('Error fetching properties:', error);
